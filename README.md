@@ -22,9 +22,15 @@ A benchamark classification toolbox for ERP data
   - - - SVM+ 
   
   # Setup
+  Run the setup.m script
+  
+  # Usage
+  ## First run
   - Download one of the Datasets (or all) in the list.
-  - Create a new folder : "Dataset", create a new folder inside it "epochs".
+  - create a new folder inside the Dataset/epochs.
   - Run one (or all, one by one) scripts related to each dataset in the dataio folder.
+  
+  ## Regular usage
   - Run the script "define_approach_ERP.m"
   
   # Documentation
