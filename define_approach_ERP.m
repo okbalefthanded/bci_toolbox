@@ -4,9 +4,9 @@
 
 % sets = {'LARESI_FACE_SPELLER', 'P300_ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
 tic
-% set = 'P300_ALS';      
+set = 'P300_ALS';      
 % set = 'LARESI_FACE_SPELLER_150';
-set = 'LARESI_FACE_SPELLER_120';
+% set = 'LARESI_FACE_SPELLER_120';
 % set = 'III_CH';
 % set = 'EPFL_IMAGE_SPELLER';
 approach.features.alg = 'DOWNSAMPLE';
@@ -55,6 +55,8 @@ approach.classifier.options.regularizer = 'OAS';
 %% Cross-validation
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;
+%% Check approach validity
+approach = check_approach_validity(set, approach);
 %%
 [results, output, model] = run_analysis_ERP(set, approach);
 % toc
