@@ -1,10 +1,27 @@
 function [] = dataio_create_epochs_LARESI(epoch_length, filter_band)
-%DATAIO_CREATE_EPOCHS_LARESI Summary of this function goes here
-%   Detailed explanation goes here
+%DATAIO_CREATE_EPOCHS_LARSESI segment LARESI Inverted face dataset
+%                             and save epochs in files
+% Arguments:
+%     In:
+%         epoch_length : DOUBLE [1x2] [start end] in msec of epoch relative
+%         to stimulus onset marker.
+%         filter_band : DOUBLE [1x2] [low_cutoff high_cutoff] filtering
+%             frequency band in Hz
+%
+%
+%     Returns:
+%      None.
+% Epoched files are aved in the folder:
+%                       datasets\epochs\LARESI_FACE_SPELLER_150
+% Example :
+%     dataio_create_epochs_LARESI([0 800], [0.5 10])
+%
+% Dependencies :
+%   eeg_filter.m from EEGLAB toolbox
+
 % created : 10-16-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
 
 % EEG structure: epochs     : TxNxEpoxTr
 %                             T   : time samples
@@ -23,7 +40,7 @@ disp('Creating epochs for LARESI INVERSE FACE SPELLER dataset');
 
 
 % dataset
-set_path = '..\datasets\LARESI_FACE_SPELLER\raw_mat';
+set_path = '\datasets\LARESI_FACE_SPELLER\raw_mat';
 dataSetFiles = dir([set_path '\*.mat']);
 dataSetFiles = {dataSetFiles.name};
 nSubj = length(dataSetFiles);
@@ -43,7 +60,6 @@ for subj = 1:nSubj
     wnd = (epoch_length * data.fs) / 10^3;
     phrase_train = data.desired_phrase(train_trials);
     phrase_test = data.desired_phrase(test_trials);
-    channels = length(data.montage);
     s = eeg_filter(data.signal, data.fs, filter_band(1), filter_band(2), filter_order);
     events = dataio_geteventsLARESI(data.events, data.fs);
     trials_train_count = length(train_trials);
@@ -63,12 +79,6 @@ for subj = 1:nSubj
     
     for trial = 1:trials_train_count
         disp(['Segmenting Train data for subject:' data.subject]);
-        %
-        %         dur = [0:diff(wnd)]'*ones(1, length(events_train.pos(trial, :)));
-        %         tDur = size(dur,1);
-        %         epoch_idx = bsxfun(@plus, dur, events_train.pos(trial, :));
-        %         eeg_epochs = reshape(s(epoch_idx, :),[tDur length(events_train.pos(trial, :)) channels]);
-        %         eeg_epochs = permute(eeg_epochs, [1 3 2]);
         eeg_epochs = dataio_getERPEpochs(wnd, events_train.pos(trial, :), s);
         trainEEG{subj}.epochs.signal(:,:,:,trial) = eeg_epochs;
         trainEEG{subj}.epochs.events(:,trial) = events_train.desc(trial, :);
@@ -88,11 +98,6 @@ for subj = 1:nSubj
     
     for trial = 1:trials_test_count
         disp(['Segmenting Test data for subject: ' data.subject]);
-        %         dur = [0:diff(wnd)]'*ones(1, length(events_test.pos(trial, :)));
-        %         tDur = size(dur,1);
-        %         epoch_idx = bsxfun(@plus, dur, events_test.pos(trial, :));
-        %         eeg_epochs = reshape(s(epoch_idx, :),[tDur length(events_test.pos(trial, :)) channels]);
-        %         eeg_epochs = permute(eeg_epochs, [1 3 2]);
         eeg_epochs = dataio_getERPEpochs(wnd, events_test.pos(trial, :), s);
         testEEG{subj}.epochs.signal(:,:,:,trial) = eeg_epochs;
         testEEG{subj}.epochs.events(:,trial) = events_test.desc(trial, :);
@@ -110,11 +115,7 @@ for subj = 1:nSubj
     testEEG{subj}.subject.condition = 'healthy';
     disp(['Processing Test data succeed for subject: ' data.subject]);
 end
-% filter data
-% segment data
-% valide data structure
-% save
-allEpoched_path = '..\datasets\epochs\LARESI_FACE_SPELLER_150\';
+
 Config_path = '..\datasets\epochs\LARESI_FACE_SPELLER_150\';
 
 if(~exist(Config_path,'dir'))
@@ -122,20 +123,18 @@ if(~exist(Config_path,'dir'))
 end
 
 if isempty(filter_band)
-    %     allEpoched_path = [allEpoched_path 'Raw\all_epochs'];
+
     Config_path = [Config_path];
 else
-    %     allEpoched_path = [allEpoched_path 'all_epochs'];
+
     Config_path = [Config_path];
     
 end
 
-% save([allEpoched_path '\allEpochs.mat'],'allEpochs');
 save([Config_path '\trainEEG.mat'],'trainEEG');
 save([Config_path '\testEEG.mat'],'testEEG');
 
 disp('Data epoched saved in:');
-% disp(allEpoched_path);
 disp(Config_path);
 
 toc

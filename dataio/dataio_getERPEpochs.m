@@ -1,6 +1,27 @@
 function [eeg_epochs] = dataio_getERPEpochs(wnd, pos, signal)
-%DATAIO_GETEPOCHS Summary of this function goes here
-%   Detailed explanation goes here
+%DATAIO_GETERPEPOCHS : returns epoches of filtered continuos signal 
+%   
+%                            
+% Arguments:
+%     In:
+%         wnd : DOUBLE [1x2] [start end] epoch window in samples. 
+%         
+%         pos : DOUBLE [1xM] [event_onset_marker] a vector of events onset
+%               markers.
+%       
+%         signal : DOUBLE [NxM] [samples channels] filtered EEG data
+%     Returns:
+%         eeg_epochs : DOUBLE [NxMxL] [samples channels trials] 3D-matrix
+%                       of EEG epochs
+% 
+% Example :
+%   call inside a dataio function dataio_create_DATASETX
+%    wnd = (epoch_length * data.fs) / 10^3; 
+%    pos = events.pos;
+%    signal = eeg_filter(data.signal, data.fs, filter_band(1), ...,
+%                       filter_band(2), filter_order);
+%    eeg_epochs = dataio_getERPEpochs(wnd, pos, signal)
+%     
 
 % created : 10-29-2017
 % last modified : -- -- --

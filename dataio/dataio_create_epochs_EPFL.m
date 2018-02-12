@@ -1,10 +1,26 @@
 function [] = dataio_create_epochs_EPFL(epoch_length, filter_band)
-%DATAIO_CREATE_EPOCHS_EPFL Summary of this function goes here
-%   Detailed explanation goes here
+%DATAIO_CREATE_EPOCHS_EPFL segment EPFL dataset and save epochs
+%                            in files
+% Arguments:
+%     In:
+%         epoch_length : DOUBLE [1x2] [start end] in msec of epoch relative
+%         to stimulus onset marker.
+%         filter_band : DOUBLE [1x2] [low_cutoff high_cutoff] filtering 
+%             frequency band in Hz
+% 
+%     
+%     Returns:
+%      None.
+% Epoched files are aved in the folder: datasets/epochs/EPFL
+% Example :
+%     dataio_create_epochs_EPFL([0 800], [0.5 10])
+%     
+% Dependencies : 
+%   eeg_filter.m from EEGLAB toolbox
+
 % created : 10-19-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
 
 % EEG structure: epochs     : TxNxEpoxTr
 %                             T   : time samples
@@ -18,6 +34,8 @@ function [] = dataio_create_epochs_EPFL(epoch_length, filter_band)
 % 100 ms stimulations - 300 ms ISI
 tic
 disp('Creating epochs for EPFL Image ERP dataset');
+
+
 % path to a session:
 % datasets\EPFL\subject1\subject1\session1
 % subject1\session1
@@ -42,11 +60,11 @@ disabled_subjects.condition = {'Cerebral palsy','Multiple sclerosis',...
     'Traumatic brain and spinal-cord injury, C4 level'};
 
 %
-set_path = '..\datasets\EPFL';
+set_path = '\datasets\EPFL';
 set_subfolders = dir(set_path);
 set_subfolders = set_subfolders(~ismember({set_subfolders.name},{'.','..'}));
 nSubj = length(set_subfolders);
-nSessions = 4;
+% nSessions = 4;
 trainEEG = cell(1, nSubj);
 testEEG = cell(1, nSubj);
 nTrain_session = 3;
@@ -57,7 +75,7 @@ n_trials = 120;
 downsample = 512;
 decimation = fs / downsample;
 filter_order = 2;
-% wnd = (epoch_length * fs) / 10^3;
+
 wnd = (epoch_length * downsample) / 10^3;
 for subj=1:nSubj
     subject_path = [set_path '\' set_subfolders(subj).name];
@@ -76,15 +94,8 @@ for subj=1:nSubj
             d.data = d.data(eeg_channels,:);
             s = eeg_filter(d.data', fs, filter_band(1), filter_band(2), filter_order);
             s = s(1:decimation:end, :);
-            disp(['Segmenting Train data for subject: subj' num2str(subj)]);
-            %             pos = round(etime(d.events(1:n_trials,:), repmat(d.events(1,:), n_trials,1)) .* (fs) + 1 + 0.4*fs);
-            
+            disp(['Segmenting Train data for subject: subj' num2str(subj)]);            
             pos = round(etime(d.events(1:n_trials,:), repmat(d.events(1,:), n_trials,1)) .* (downsample) + 1 + 0.4*downsample);
-            %             dur = [0:diff(wnd)]'*ones(1, length(pos));
-            %             tDur = size(dur,1);
-            %             epoch_idx = bsxfun(@plus, dur, pos');
-            %             eeg_epochs = reshape(s(epoch_idx, :),[tDur length(pos) length(eeg_channels)]);
-            %             eeg_epochs = permute(eeg_epochs, [1 3 2]);
             eeg_epochs = dataio_getERPEpochs(wnd, pos, s);
             trainEEG{subj}.epochs.signal(:,:,:,tr_trial) = eeg_epochs;
             trainEEG{subj}.epochs.events(:,tr_trial) = d.stimuli(1:n_trials);
@@ -130,11 +141,6 @@ for subj=1:nSubj
         s = s(1:decimation:end, :);
         disp(['Segmenting Test data for subject: subj' num2str(subj)]);
         pos = round(etime(d.events(1:n_trials,:), repmat(d.events(1,:), n_trials,1)) .* (downsample) + 1 + 0.4*downsample);
-        %         dur = [0:diff(wnd)]'*ones(1, length(pos));
-        %         tDur = size(dur,1);
-        %         epoch_idx = bsxfun(@plus, dur, pos');
-        %         eeg_epochs = reshape(s(epoch_idx, :),[tDur length(pos) length(eeg_channels)]);
-        %         eeg_epochs = permute(eeg_epochs, [1 3 2]);
         eeg_epochs = dataio_getERPEpochs(wnd, pos, s);
         testEEG{subj}.epochs.signal(:,:,:,run) = eeg_epochs;
         testEEG{subj}.epochs.events(:,run) = d.stimuli(1:n_trials);
@@ -161,32 +167,24 @@ for subj=1:nSubj
     disp(['Processing Test data succeed for subject: ' num2str(subj)]);
     clear s d eeg_epochs
 end
-% filter data
-% segment data
-% valide data structure
+
 % save
-allEpoched_path = '..\datasets\epochs\EPFL\';
-Config_path = '..\datasets\epochs\EPFL\';
+Config_path = '\datasets\epochs\EPFL\';
 
 if(~exist(Config_path,'dir'))
     mkdir(Config_path);
 end
 
 if isempty(filter_band)
-    %     allEpoched_path = [allEpoched_path 'Raw\all_epochs'];
     Config_path = [Config_path];
 else
-    %     allEpoched_path = [allEpoched_path 'all_epochs'];
-    Config_path = [Config_path];
-    
+    Config_path = [Config_path];    
 end
 
-% save([allEpoched_path '\allEpochs.mat'],'allEpochs');
 save([Config_path '\trainEEG.mat'],'trainEEG','-v7.3');
 save([Config_path '\testEEG.mat'],'testEEG','-v7.3');
 
 disp('Data epoched saved in:');
-% disp(allEpoched_path);
 disp(Config_path);
 
 toc

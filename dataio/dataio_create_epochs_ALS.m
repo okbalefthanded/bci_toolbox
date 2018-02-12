@@ -1,6 +1,23 @@
 function [] = dataio_create_epochs_ALS(epoch_length, filter_band)
-%DATAIO_CREATE_EPOCHS_ALS Summary of this function goes here
-%   Detailed explanation goes here
+%DATAIO_CREATE_EPOCHS_ALS : segment ALS-P300 dataset and save epochs
+%                            in files
+% Arguments:
+%     In:
+%         epoch_length : DOUBLE [1x2] [start end] in msec of epoch relative
+%         to stimulus onset marker.
+%         filter_band : DOUBLE [1x2] [low_cutoff high_cutoff] filtering 
+%             frequency band in Hz
+% 
+%     
+%     Returns:
+%      None.
+% Epoched files are aved in the folder: datasets/epochs/P300-ALS
+% Example :
+%     dataio_create_epochs_ALS([0 800], [0.5 10])
+%     
+% Dependencies : 
+%   eeg_filter.m from EEGLAB toolbox
+
 % created : 10-08-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
@@ -15,6 +32,8 @@ function [] = dataio_create_epochs_ALS(epoch_length, filter_band)
 %                             Tr  :  trial
 %                fs         : sampling rate
 %                phrase     : character per trial
+
+% dataset paradigm:
 % 125ms stimulations - 125 ms ISI
 
 tic
@@ -28,7 +47,7 @@ paradigm.type = 'RC';
 disp('Creating epochs for P300-ALS dataset');
 
 % dataset
-set_path = '..\datasets\P300-ALS';
+set_path = '\datasets\P300-ALS';
 dataSetFiles = dir([set_path '\A*.mat']);
 dataSetFiles = {dataSetFiles.name};
 labels = dir([set_path '\labels.mat']);
@@ -45,7 +64,7 @@ phrase_test = target_phrase.labels(test_trials);
 % paradigm
 stimulation = 125; % in ms
 isi = 125; % in ms
-fs = 256;
+fs = 256; % in Hz
 stimDuration = ( (stimulation + isi) / 10^3 ) * fs;
 
 % processing parameters
@@ -59,7 +78,6 @@ for subj= 1:nSubj
     disp(['Loading data for subject: ' subject]);
     load(dataSetFiles{subj});
     clab = data.channels;
-    channels = length(clab);
     
     s = eeg_filter(data.X, fs, filter_band(1), filter_band(2), filter_order);
     events = dataio_geteventsALS(data.y_stim, data.trial, stimDuration);
@@ -72,12 +90,6 @@ for subj= 1:nSubj
     
     for trial = 1:trials_train_count
         disp(['Segmenting Train data for subject: ' subject ' Trial: ' num2str(trial)]);
-        %
-        %         dur = [0:diff(wnd)]'*ones(1, length(events_train.pos(trial, :)));
-        %         tDur = size(dur,1);
-        %         epoch_idx = bsxfun(@plus, dur, events_train.pos(trial, :));
-        %         eeg_epochs = reshape(s(epoch_idx, :),[tDur length(events_train.pos(trial, :)) channels]);
-        %         eeg_epochs = permute(eeg_epochs, [1 3 2]);
         eeg_epochs = dataio_getERPEpochs(wnd, events_train.pos(trial, :), s);
         trainEEG{subj}.epochs.signal(:,:,:,trial) = eeg_epochs;
         trainEEG{subj}.epochs.events(:,trial) = events_train.desc(trial, :);
@@ -98,11 +110,6 @@ for subj= 1:nSubj
     
     for trial = 1:trials_test_count
         disp(['Segmenting Test data for subject: ' subject ' Trial: ' num2str(trial)]);
-        %         dur = [0:diff(wnd)]'*ones(1, length(events_test.pos(trial, :)));
-        %         tDur = size(dur,1);
-        %         epoch_idx = bsxfun(@plus, dur, events_test.pos(trial, :));
-        %         eeg_epochs = reshape(s(epoch_idx, :),[tDur length(events_test.pos(trial, :)) channels]);
-        %         eeg_epochs = permute(eeg_epochs, [1 3 2]);
         eeg_epochs = dataio_getERPEpochs(wnd, events_test.pos(trial, :), s);
         testEEG{subj}.epochs.signal(:,:,:,trial) = eeg_epochs;
         testEEG{subj}.epochs.events(:,trial) = events_test.desc(trial, :);
@@ -122,26 +129,20 @@ for subj= 1:nSubj
     
 end
 % save data
-% save data
-allEpoched_path = '..\datasets\epochs\P300-ALS\';
-Config_path = '..\datasets\epochs\P300-ALS\';
+Config_path = '\datasets\epochs\P300-ALS\';
 
 
 if isempty(filter_band)
-    %     allEpoched_path = [allEpoched_path 'Raw\all_epochs'];
     Config_path = [Config_path];
 else
-    %     allEpoched_path = [allEpoched_path 'all_epochs'];
     Config_path = [Config_path];
     
 end
 
-% save([allEpoched_path '\allEpochs.mat'],'allEpochs');
 save([Config_path '\trainEEG.mat'],'trainEEG');
 save([Config_path '\testEEG.mat'],'testEEG');
 
 disp('Data epoched saved in:');
-% disp(allEpoched_path);
 disp(Config_path);
 
 toc

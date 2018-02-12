@@ -1,18 +1,43 @@
 function [events] = dataio_geteventsLARESI(raw_events, fs)
-%DATAIO_GETEVENTSLARESI Summary of this function goes here
-%   Detailed explanation goes here
+%DATAIO_GETEVENTSLARESI : converts OpenVibe based events for datasets
+%                           recorded at LARESI lab  into the format
+%                             used in this toolbox
+%
+% Arguments:
+%     In:
+%         raw_events : STRUCT DOUBLE
+%                     raw_events.pos [Nx1] [events_count 1] events on set
+%                         in sec relative to experiment start.
+%                     raw_events.desc [Nx1] [events_count 1] description of
+%                           events in OpenVibe framework.
+%
+%         fs : DOUBLE [1] sampling frequency.
+%
+%
+%     Returns:
+%         events : DOUBLE 
+%                     events.y [Mx1] [stimulations_count 1] a vector of 
+%                       binary class labels 1/-1 target/non_target
+% `                   events.desc [Mx1] [stimulations_count 1] a vector
+%                       of events descriptions in numbers (1-9)
+%                     evetns.pos [Mx1] [stimulations_count 1] a vector
+%                       of events onset in samples.
+%
+% Example :
+%       called inside dataio function dataio_create_epochs_LARESI
+%      events = dataio_geteventsLARESI(data.events, data.fs);
+%
+
 % created : 10-17-2017
 % last modified: -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-% events.pos
-% evetns.desc
 
 % OpenVibe Stimulations
-OVTK_StimulationId_TrialStart = 32773;
-OVTK_StimulationId_TrialStop = 32774;
-OVTK_StimulationId_ExperimentStart = 32769;
-OVTK_StimulationId_ExperimentStop = 32770;
-OVTK_StimulationId_VisualStimulationStart = 32779;
+% OVTK_StimulationId_TrialStart = 32773;
+% OVTK_StimulationId_TrialStop = 32774;
+% OVTK_StimulationId_ExperimentStart = 32769;
+% OVTK_StimulationId_ExperimentStop = 32770;
+% OVTK_StimulationId_VisualStimulationStart = 32779;
 OVTK_StimulationId_Target = 33285;
 OVTK_StimulationId_NonTarget = 33286;
 Base_Stimulations = 33024;

@@ -1,6 +1,25 @@
 function [] = dataio_create_epochs_III_CH(epoch_length, filter_band)
-%DATAIO_CREATE_EPOCHS_III_CH Summary of this function goes here
-%   Detailed explanation goes here
+%DATAIO_CREATE_EPOCHS__III_CH segment BCI Compeition III Challenge 2004
+%                           (P300 evoked potentials) dataset
+%                             and save epochs in files
+% Arguments:
+%     In:
+%         epoch_length : DOUBLE [1x2] [start end] in msec of epoch relative
+%         to stimulus onset marker.
+%         filter_band : DOUBLE [1x2] [low_cutoff high_cutoff] filtering
+%             frequency band in Hz
+%
+%
+%     Returns:
+%      None.
+% Epoched files are aved in the folder:
+%                       datasets\epochs\Comp_III_ch_2004\Comp_config
+% Example :
+%     dataio_create_epochs_III_CH([0 800], [0.5 10])
+%
+% Dependencies :
+%   eeg_filter.m from EEGLAB toolbox
+
 % created : 10-08-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
@@ -27,7 +46,7 @@ data.paradigm.stimuli_count = 12;
 data.paradigm.type = 'RC';
 
 disp('Creating epochs for BCI Comp III Challenge 2004');
-set_path = '..\datasets\BCI_Competition\Comp_III_ch_2004';
+set_path = '\datasets\BCI_Competition\Comp_III_ch_2004';
 dataSetFiles = dir([set_path '\Subject*.mat']);
 dataSetFiles = {dataSetFiles.name};
 testSetLabels = dir([set_path '\test_labels_subject*.mat']);
@@ -43,8 +62,6 @@ fs = 240;
 stimulation = 100; % in ms
 isi = 75; % in ms
 stimDuration = ( (stimulation + isi) / 10^3 ) * 240;
-channels = length(clab);
-
 % processing parameters
 filter_order = 2;
 wnd = (epoch_length * fs) / 10^3;
@@ -56,8 +73,7 @@ for file_index=1:2:length(dataSetFiles)
     subject = strsplit(dataSetFiles{file_index}, '_');
     subject = [subject{1} subject{2}];
     disp(['Loading data for subject: ' subject]);
-    train_set = load(dataSetFiles{file_index + 1});
-    
+    train_set = load(dataSetFiles{file_index + 1});    
     
     % filter data
     disp(['Filtering  Train data for subject: ' subject]);
@@ -71,13 +87,6 @@ for file_index=1:2:length(dataSetFiles)
         
         events = dataio_getevents_BCI2000(train_set.StimulusCode(tr, :), stimDuration);
         eeg_epochs = dataio_getERPEpochs(wnd, events.pos, s(:,:,tr));
-        %         dur = [0:diff(wnd)]'*ones(1, length(events.pos));
-        %         tDur = size(dur,1);
-        %         epoch_idx = bsxfun(@plus, dur, events.pos);
-        %         eeg_epochs = reshape(s(epoch_idx, :, tr),[tDur length(events.pos) channels]);
-        %         eeg_epochs = permute(eeg_epochs, [1 3 2]);
-        %         eeg_epochs = dataio_getEpochs(wnd, events, s(:,:,tr));
-        
         trainEEG{subj}.epochs.signal(:,:,:,tr) = eeg_epochs;
         trainEEG{subj}.epochs.events(:,tr) = events.desc;
         trainEEG{subj}.epochs.y(:,tr) = dataio_getlabelERP(events.desc, train_set.TargetChar(tr), 'RC');
@@ -93,8 +102,6 @@ for file_index=1:2:length(dataSetFiles)
     trainEEG{subj}.subject.condition = 'healthy';
     disp(['Processing train data succeed for subject: ' subject]);
     clear s train_set
-    %     whos trainEEG
-    
     test_set = load(dataSetFiles{file_index});
     test_set_true_labels = load(testSetLabels{subj});
     
@@ -114,11 +121,6 @@ for file_index=1:2:length(dataSetFiles)
     for tr = 1:trials_count
         disp(['Segmentation of Test data for subject: ' subject ' Trial:' num2str(tr)]);
         events = dataio_getevents_BCI2000(test_set.StimulusCode(tr, :), stimDuration);
-        %             dur = [0:diff(wnd)]'*ones(1, length(events.pos));
-        %             tDur = size(dur,1);
-        %             epoch_idx = bsxfun(@plus, dur, events.pos);
-        %             eeg_epochs = reshape(s(epoch_idx, :, tr),[tDur length(events.pos) channels]);
-        %             eeg_epochs = permute(eeg_epochs, [1 3 2]);
         eeg_epochs = dataio_getERPEpochs(wnd, events.pos, s(:,:,tr));
         testEEG{subj}.epochs.signal(:,:,:,tr) = eeg_epochs;
         testEEG{subj}.epochs.events(:,tr) = events.desc;
@@ -140,25 +142,22 @@ for file_index=1:2:length(dataSetFiles)
 end
 clear s test_set
 % save data
-allEpoched_path = '..\datasets\epochs\Comp_III_ch_2004\';
-compConfig_path = '..\datasets\epochs\Comp_III_ch_2004\';
+
+compConfig_path = '\datasets\epochs\Comp_III_ch_2004\';
 
 
 if isempty(filter_band)
-    %     allEpoched_path = [allEpoched_path 'Raw\all_epochs'];
     compConfig_path = [compConfig_path 'Raw\Comp_config'];
 else
-    %     allEpoched_path = [allEpoched_path 'all_epochs'];
     compConfig_path = [compConfig_path 'Comp_config'];
     
 end
 
-% save([allEpoched_path '\allEpochs.mat'],'allEpochs');
 save([compConfig_path '\trainEEG.mat'],'trainEEG', '-v7.3');
 save([compConfig_path '\testEEG.mat'],'testEEG', '-v7.3');
 
 disp('Data epoched saved in:');
-% disp(allEpoched_path);
+
 disp(compConfig_path);
 toc
 end
