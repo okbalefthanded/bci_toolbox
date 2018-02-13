@@ -22,7 +22,7 @@ function [data] = dataio_read_ERP(set, datatype)
 %                       data.montage.clab cell of STR channels labels.
 %                  data.classes cell {1x2} STR classes descriptions
 %                       target , non_target
-%                  data.paradigm STRUCT 1x1
+%                  data.paradigm STRUCT 1x1 experimental protocol.
 %                       data.paradigm.title STR paradigm description.
 %                       data.paradigm.stimulation DOUBLE stimulation 
 %                                       duration in msec
