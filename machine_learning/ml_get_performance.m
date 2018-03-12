@@ -1,14 +1,43 @@
 function [ output ] = ml_get_performance(output)
-%ML_GET_PERFORMANCE Summary of this function goes here
-%   Detailed explanation goes here
+%ML_GET_PERFORMANCE : returns model's performance [1]
+%                            
+% Arguments:
+%     In:
+%         output : STRUCT [1x1] initial performance measures
+%                output.trueClasses: DOUBLE [1xN] [1 epochs_count] true
+%                                    target labels.
+%                output.y: DOUBLE [1xN] [1 epochs_count] predict labels
+%                output.score: DOUBLE [1xN] [1 epochs_count] classifier's
+%                               decision function output.
+%                output.accuracy: DOUBLE correct classification rate
+%                output.subject: STR subject id for the current data.
+%                output.alg: STRUCT [1x1]
+%                           output.alg.learner : STR classification algorithm
+%                           output.alg.regularizer: (optional) STR regularization
+%                                                   method for the alg.learner.
+%     Returns:
+%         output : STRUCT [1x1] add performance metrics as fields:
+%                output.confusion: DOUBLE [2x2] confusion matrix.
+%                output.sensitivity: DOUBLE classifier's sensitivity.
+%                output.specificity: DOUBLE classifier's specificicty.
+%                output.fpr: DOUBLE classifier's false positive rate.
+%                output.false_detection: DOUBLE classifier's false detection.
+%                output. precision: DOUBLE classifier's precision.
+%                output.hf_difference: DOUBLE classifier's hf difference.
+%                output.kappa: DOUBLE classifier's kappa coefficient.
+% Example :
+%     call inside ml_applyAAA.m
+%     output = ml_get_performance(output);
+% 
+% See Also : ml_applyAAA.m
+% 
+% References : 
+% [1] M. Billinger et al. chapter 17: is it significant? Guidlines for Reporting BCI
+% Performance
 
 % created 11-08-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
-% [1] M. Billinger et al. chapter 17: is it significant? Guidlines for Reporting BCI
-% Performance
-
 
 output.confusion = flip(confusionmat(output.trueClasses, output.y));
 

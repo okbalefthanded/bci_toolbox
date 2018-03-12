@@ -1,4 +1,4 @@
-function [model] = ml_trainSvm(features, alg, cv)
+function [model] = ml_trainSVM(features, alg, cv)
 %ML_TRAINSVM Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -16,9 +16,6 @@ if (cv.nfolds == 0)
     end
     trainLabel = features.y;
     
-    %     if isfield(alg, 'options')
-    %         svmoptions = ml_parseOptions(alg, cv);
-    %     else
     if(~isfield(cv,'c') || ~isfield(cv,'g'))
         c = 1;
         g = 1 / size(trainData, 2);
@@ -38,13 +35,12 @@ if (cv.nfolds == 0)
     model.classifier = classifier;
     model.alg.learner = 'SVM';
     
-else
-    
+else    
     acc_cv = 0;
     accuracy_folds = zeros(1,cv.nfolds);
     cv_models = cell(1,cv.nfolds);
     folds = ml_crossValidation(cv, size(features.x, 1));
-    %     TODO RANDOM SEARCH HYPERPARAMETER TUNING
+    %     TODO RANDOM SEARCH HYPERPARAMETER TUNING?
     Cs = [0.001, 0.01, 0.1, 1, 10, 100];
     gammas = [0.001, 0.01, 0.1, 1, 10, 100];
     if(strcmp(alg.options.kernel,'RBF'))

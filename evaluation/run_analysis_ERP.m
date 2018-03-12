@@ -69,7 +69,9 @@ function [results, output, model] = run_analysis_ERP(set, approach)
 %                                 stimulus presented to the subject.
 %         model : STRUCT [1x1] trained classifier parameters, depending on
 %         the algorithms the struct may contain weights and bias for linear
-%         models and other specific attributes for non-linear models.
+%         models and other specific attributes for non-linear models.See
+%         specific models functions in machine_learning/classification
+%         folder.
 %
 % Example :
 %      call inside define_approach_ERP script.
@@ -79,7 +81,6 @@ function [results, output, model] = run_analysis_ERP(set, approach)
 % created 10-30-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
 
 %% load  train data
 trainEEG = dataio_read_ERP(set,'train');

@@ -1,6 +1,43 @@
 function [model] = ml_trainClassifier(features, alg, cv)
-%TRAINCLASSIFIER Summary of this function goes here
-%   Detailed explanation goes here
+%TRAINCLASSIFIER dispatcher function for model training.
+% select the classification algorithm model to be trained then call its 
+% specific function.
+% Arguments:
+%     In:
+%      features : STRUCT [1x1] feature vector struct 
+%                 features.x : DOUBLE [NxM] [feature_vector_dim epochs_count]
+%                     a matrix of feature vectors.
+%                 features.y : DOUBLE [Mx1] [epochs_count 1] vector
+%                   of class labels 1/-1 target/non_target.
+%                 features.events : DOUBLE | INT16  [Mx1] [epochs_count 1]
+%                   a vector of stimuli following each epoch.
+%                 features.paradigm : STRUCT [1x1] experimental protocol.
+%                    same as Input argument EEG.paradigm.
+%                 features.n_channels : DOUBLE number of electrodes used
+%                   in the experiment.
+%         
+%         alg : STRUCT [1x1]
+%               alg.learner : STR classification algorithm.
+%               alg.options: STRUCT [1x1] classifier specific options like
+%               regularization and other parameters.  
+% 
+%         cv : STRUCT [1x1] cross-validation settings
+%            cv.method : STR cross-validation technique to be used from 
+%                        the set of available methods.
+%            cv.nfolds : DOUBLE number of folds for train/validation split.
+% 
+%     Returns:
+%         model : STRUCT [1x1] trained classifier parameters, depending on
+%         the algorithms the struct may contain weights and bias for linear
+%         models and other specific attributes for non-linear models. See
+%         specific models functions in machine_learning/classification
+%         folder.
+% Example :
+%   call inside run_analysis_ERP.m
+%   model = ml_trainClassifier(features, approach.classifier, approach.cv);
+%     
+% See Also : define_approach_ERP.m, run_analysis_ERP.m,
+% extractERP_features.m
 
 % created 05-12-2016
 % last modified -- -- --
@@ -32,8 +69,14 @@ switch upper(alg.learner)
         model = ml_trainRF(features,alg,cv);
     case 'SVM+'
         model = ml_trainSVMPlus(features, alg, cv);
+    case 'MKL'
+        % TODO
+        % Implement classifier
+    case 'RVM'
+        % TODO
+        % Implement classifier
     case 'MDM'
-%         TODO
+        %         TODO
         model = ml_trainMDM(features, alg);
     otherwise
         error('Incorrect classifier')

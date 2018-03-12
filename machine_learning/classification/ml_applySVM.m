@@ -1,4 +1,4 @@
-function [output] = applySvm(features, model)
+function [output] = ml_applySVM(features, model)
 %ML_APPLYSVM Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -28,7 +28,6 @@ end
 output.y = predicted_label;
 output.score = decision_values;
 output.accuracy = accuracy(1);
-% output.confusion = flip(confusionmat(output.trueClasses, output.y));
 output = ml_get_performance(output);
 output.subject = '';
 output.alg = model.alg;

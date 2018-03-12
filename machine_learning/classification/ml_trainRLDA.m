@@ -77,5 +77,6 @@ else
     model.w = inv(sig_both)*(mu{2} - mu{1})';
     model.b = - mu_both * model.w;
 end
-
+model
+model.alg
 end
