@@ -9,6 +9,9 @@ folders = dir;
 folders_idx = cell2mat({folders.isdir});
 folders = folders(folders_idx);
 folders = {folders(4:end).name};
+dep_idx = strfind(folders, 'dependencies');
+dep_idx_logic = ~cellfun(@isempty, dep_idx);
+folders(dep_idx_logic) = [];
 pth = strcat({[pwd '\']}, folders);
 p =[];
 for i=1:length(pth)
@@ -16,6 +19,7 @@ for i=1:length(pth)
 end
 pth = strcat(p, ';', pwd);
 addpath(pth);
+
 savepath
 disp('Setup completed.');
 clear
