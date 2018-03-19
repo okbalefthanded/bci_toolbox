@@ -1,6 +1,27 @@
 function [model] = ml_trainSVM(features, alg, cv)
-%ML_TRAINSVM Summary of this function goes here
-%   Detailed explanation goes here
+%ML_TRAINSVM : wrapper function to LIBSVM[1], train SVM model.
+%                            
+% Arguments:
+%     In:
+%         features : TYPE [NxM (dimension)] [N_ M_] lorem opsum 
+%         
+%         alg : TYPE [N1xN1 (dimesnion)] [N1_ M1_]  lorem opsum
+%       
+%         cv : ...
+%     Returns:
+%         model : TYPE [NxM (dimension)] [N_ M_] lorem opsum 
+% 
+% [further explanation goes here]
+% Example :
+%     FUNCTIONALITY_TASK_OBJECT_TYPE(ARG_IN1, ARG_IN2)
+%     
+% Dependencies : 
+%   LIBSVM mex files: svmtrain.mexw64
+% See Also : ml_trainClassifier.m, 
+% References : 
+% [1] C.-C. Chang and C.-J. Lin, “LIBSVM,” ACM Trans. Intell. Syst. 
+%  Technol., 2011.
+
 
 % date created 06-02-2016
 % last modified -- -- --

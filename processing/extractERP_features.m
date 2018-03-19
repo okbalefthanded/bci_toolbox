@@ -90,6 +90,7 @@ switch upper(method)
         features = extractERP_downsample(EEG, approach.features.options);
     case 'MOVING_AVERAGE'
         %         TODO
+        features = extractERP_movingAverage(EEG, approach.features.options);
     case 'SPARSE_CODING'
         %         TODO
     case 'REIMANN'

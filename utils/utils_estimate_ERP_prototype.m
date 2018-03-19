@@ -10,8 +10,8 @@ function [P] = utils_estimate_ERP_prototype(x, y)
 % P = zeros(nChannels, nSamples,nTrials);
 % P = zeros(nChannels, nSamples);
 % for trial = 1:nTrials
-    P = mean(x(:,:,y==1),3);
+%     P = mean(x(:,:,y==1), 3);
 % end
-
+P = mean(x(:,:,y==1), 3);
 end
 

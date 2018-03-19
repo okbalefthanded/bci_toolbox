@@ -31,6 +31,7 @@ xlabel('Number of sequences'),
 ylabel('Characters Detection Rate'),
 title(['Performance curve in set ' set ' for subject ' subject]),
 legend('correct detection');
+ylim([0 100])
 
 
 end

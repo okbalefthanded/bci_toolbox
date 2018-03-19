@@ -14,13 +14,13 @@ approach.features.options.decimation_factor = 12;
 
 %% Regularized LDA approach
 % 
-approach.classifier.learner = 'RLDA';
-approach.classifier.options.regularizer = 'OAS';
+% approach.classifier.learner = 'RLDA';
+% approach.classifier.options.regularizer = 'OAS';
 % approach.classifier.learner = 'LDA';
 %  
-% approach.classifier.learner = 'SWLDA';
-% approach.classifier.options.penter = 0.1;
-% approach.classifier.options.premove = 0.15;
+approach.classifier.learner = 'SWLDA';
+approach.classifier.options.penter = 0.1;
+approach.classifier.options.premove = 0.15;
 
 % approach.classifier.learner = 'BLDA';
 

@@ -7,7 +7,7 @@ function [approach] = check_approach_validity(set, approach)
 %%
 datasets = {'LARESI_FACE_SPELLER_150', 'LARESI_FACE_SPELLER_120',...
     'III_CH', 'EPFL_IMAGE_SPELLER', 'P300_ALS'};
-normalization = {'ZSCORE', 'MIN_MAX', 'L1NORM'};
+normalizations = {'ZSCORE', 'MIN_MAX', 'L1NORM'};
 features = {'DOWNSAMPLE'};
 privileged_features = {'DOWNSAMPLE'};
 classifiers = {'LDA', 'RLDA', 'SWLDA', 'LR', 'SVM', 'GBOOST',...
@@ -33,7 +33,8 @@ end
 %% classifiers
 if(isfield(approach,'classifier'))
     if(isfield(approach.classifier, 'normalization'))
-        assert(approach.classifier.normalization, normalization);
+        assert(utils_check_field_validity(approach.classifier.normalization, normalizations), ...
+            'Incorrect Normalization method');
     end
     assert(utils_check_field_validity(approach.classifier.learner, classifiers),...
         'Incorrect classifiers');

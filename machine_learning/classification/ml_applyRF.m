@@ -1,4 +1,4 @@
-function [output] = applyRF(features, model)
+function [output] = ml_applyRF(features, model)
 %APPLY_RF Summary of this function goes here
 %   Detailed explanation goes here
 
