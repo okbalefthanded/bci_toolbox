@@ -1,6 +1,6 @@
 function [eeg_epochs] = dataio_getERPEpochs(wnd, pos, signal)
 %DATAIO_GETERPEPOCHS : returns epoches of filtered continuos signal 
-%   
+%% needs a rename   
 %                            
 % Arguments:
 %     In:
