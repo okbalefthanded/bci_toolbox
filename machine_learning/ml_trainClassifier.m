@@ -58,13 +58,16 @@ switch upper(alg.learner)
     case 'SLDA'
         %         TODO
         model = ml_trainSLDA(features, cv, alg.options);
+    case 'STDA'
+%         TODO
+        model = ml_trainSTDA(features, cv, alg.options);
     case 'LR'
         model = ml_trainLR(features, alg, cv);
     case 'GBOOST'
         %         OLS-GBOOST
         model = ml_trainLogitBoost(features, cv, alg.options);
     case 'SVM'
-        model = ml_trainSVM(features, alg, cv);
+        model = ml_trainSvm(features, alg, cv);
     case 'RF'
         model = ml_trainRF(features,alg,cv);
     case 'SVM+'

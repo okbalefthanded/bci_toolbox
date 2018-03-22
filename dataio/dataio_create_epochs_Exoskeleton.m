@@ -35,7 +35,6 @@ function [] = dataio_create_epochs_Exoskeleton(epoch_length, filter_band)
 % dataset paradigm:
 % ON/OFF 5s - 3s
 
-
 tic
 disp('Creating epochs for SSVEP-EXOSKELETON dataset');
 
@@ -69,6 +68,7 @@ for subj = 1:nSubj
     ev.desc = [];
     ev.y = [];
     % Train data, first files
+    disp(['Processing Train data succeed for subject: ' num2str(subj)]);
     for file = 1:files_count - 1
         [signal, header] = mexSLOAD([subject_path '\' subject_files(file).name]);
         signal = signal * gain; % amplifying the signal
@@ -90,8 +90,8 @@ for subj = 1:nSubj
     trainEEG{subj}.subject.gender = '';
     trainEEG{subj}.subject.age = 0;
     trainEEG{subj}.subject.condition = 'healthy';
-    disp(['Processing Train data succeed for subject: ' num2str(subj)]);
     
+    disp(['Processing Test data succeed for subject: ' num2str(subj)]); 
     % Test data
     [signal, header] = mexSLOAD([subject_path '\' subject_files(files_count).name]);
     signal = signal * gain; % amplifying the signal
@@ -108,9 +108,7 @@ for subj = 1:nSubj
     testEEG{subj}.subject.id = num2str(subj);
     testEEG{subj}.subject.gender = '';
     testEEG{subj}.subject.age = 0;
-    testEEG{subj}.subject.condition = 'healthy';
-    disp(['Processing Test data succeed for subject: ' num2str(subj)]);    
-    
+    testEEG{subj}.subject.condition = 'healthy';     
 end
 % save
 Config_path = 'datasets\epochs\ssvep_exoskeleton\';
@@ -118,7 +116,6 @@ Config_path = 'datasets\epochs\ssvep_exoskeleton\';
 if(~exist(Config_path,'dir'))
     mkdir(Config_path);
 end
-
 
 save([Config_path '\trainEEG.mat'],'trainEEG','-v7.3');
 save([Config_path '\testEEG.mat'],'testEEG','-v7.3');

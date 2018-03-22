@@ -63,6 +63,9 @@ switch upper(model.alg.learner)
         output = ml_applyDA(features, model);
     case 'BLDA'
         output = ml_applyBLDA(features, model);
+    case 'STDA'
+%         TODO
+        output = ml_applySTDA(features, model);
     case 'SVM'
         output = ml_applySVM(features, model);
     case 'LR'
@@ -86,6 +89,8 @@ switch upper(model.alg.learner)
     case 'MDM'
         %         TODO
         output = ml_applyMDM(features, model);
+    case 'CCA'
+        output = ml_applyCCA(features, model);
         
     otherwise
         error('Incorrect Classifier');
