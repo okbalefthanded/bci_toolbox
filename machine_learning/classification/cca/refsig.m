@@ -1,5 +1,6 @@
 function y=refsig(f, S, T, H)
 
+
 % f-- the fundermental frequency
 % S-- the sampling rate
 % T-- the number of sampling points

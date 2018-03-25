@@ -5,12 +5,13 @@ function [output] = ml_applyCCA(features, model)
 % last modification -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
+
 [samples,~,epochs] = size(features.signal);
 stimuli_count = length(model.stimuli_frequencies);
-
 reference_signals = cell(1, stimuli_count);
 output.y = zeros(1, epochs);
 output.score = zeros(1, epochs);
+
 % construct reference signals
 for stimulus=1:stimuli_count
     reference_signals{stimulus} = refsig(model.stimuli_frequencies(stimulus),...

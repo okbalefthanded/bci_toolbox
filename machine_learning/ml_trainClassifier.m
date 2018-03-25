@@ -81,6 +81,9 @@ switch upper(alg.learner)
     case 'MDM'
         %         TODO
         model = ml_trainMDM(features, alg);
+    case 'L1MCCA'
+%         TODO
+        model = ml_trainL1MCCA(features, alg);
     otherwise
         error('Incorrect classifier')
 end
