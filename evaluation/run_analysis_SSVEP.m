@@ -90,32 +90,17 @@ nSubj = length(trainEEG);
 
 for subj = 1:nSubj
     disp(['Analyising data from subject:' ' ' trainEEG{subj}.subject.id]);
-    
-    %% Train
-    
-    
-    if (~isfield(approach, 'features'))
-        % CCA based analysis
-        model.fs = trainEEG{subj}.fs;
-        model.harmonics = approach.classifier.options.harmonics;
-        model.alg.learner = approach.classifier.learner;
-        model.stimuli_frequencies = trainEEG{subj}.paradigm.stimuli;
-        output_train = ml_applyClassifier(trainEEG{subj}.epochs, model);
-        output_test = ml_applyClassifier(testEEG{subj}.epochs, model);
-    else
-        % TODO
-        features.x = trainEEG{subj}.epochs;
-        features.fs = trainEEG{subj}.fs;
-        features.stimuli_frequencies = trainEEG{subj}.paradigm.stimuli;
-        model = ml_trainClassifier(features, approach.classifier, approach.cv);
-        % regular analysis with training a model
-    end
-    
+    %% Train & Test
+    features = trainEEG{subj}.epochs;
+    features.fs = trainEEG{subj}.fs;
+    features.stimuli_frequencies = trainEEG{subj}.paradigm.stimuli;
+    model = ml_trainClassifier(features, approach.classifier, approach.cv);
+    output_test = ml_applyClassifier(testEEG{subj}.epochs, model);
     %% Display & plot results
     %     interSubject_results(subj) = output.accuracy;
-    disp(['Accuracy on Train set: ' num2str(output_train.accuracy)]);
+    %     disp(['Accuracy on Train set: ' num2str(output_train.accuracy)]);
     disp(['Accuracy on Test set: ' num2str(output_test.accuracy)]);
-    disp(['Accuracy on Total data: ' num2str((output_train.accuracy+output_test.accuracy)/2)]);
+    %     disp(['Accuracy on Total data: ' num2str((output_train.accuracy+output_test.accuracy)/2)]);
     disp(repmat('-',1,50))
     results = [];
 end

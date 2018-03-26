@@ -40,6 +40,7 @@ switch lower(cv.method)
     case 'leave1out'
         % TODO
         % Implement
+%         folds = ;
         
     otherwise
         error('Incorrect Cross Validation method');

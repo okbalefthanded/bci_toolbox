@@ -51,7 +51,6 @@ path = 'datasets\epochs\';
 switch upper(set)
     
     case 'SSVEP_EXOSKELETON'
-
         ssvep_exoskeleton = [path 'ssvep_exoskeleton\'];
         if (strcmp(datatype,'train'))
             data = load([ssvep_exoskeleton 'trainEEG.mat']);
@@ -73,9 +72,8 @@ switch upper(set)
         
     otherwise
         error('Incorrect SSVEP Dataset');
-        
+      
 end
-
 end
 
 
