@@ -66,7 +66,7 @@ switch upper(alg.learner)
     case 'GBOOST'
         model = ml_trainLogitBoost(features, cv, alg.options); % OLS-GBOOST
     case 'SVM'
-        model = ml_trainSvm(features, alg, cv);
+        model = ml_trainSVM(features, alg, cv);
     case 'RF'
         model = ml_trainRF(features,alg,cv);
     case 'SVM+'

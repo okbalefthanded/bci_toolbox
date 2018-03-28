@@ -84,9 +84,9 @@ function [features] = extractERP_features(EEG, approach)
 method = approach.features.alg;
 switch upper(method)
     case 'DOWNSAMPLE'
-        %         TODO
-        %     features = extractERP_downsample(EEG, approach.features.options, privileged);
-        %         opts.decimation = approach.features.options;
+        % TODO
+        % features = extractERP_downsample(EEG, approach.features.options, privileged);
+        % opts.decimation = approach.features.options;
         features = extractERP_downsample(EEG, approach.features.options);
     case 'MOVING_AVERAGE'
         %         TODO

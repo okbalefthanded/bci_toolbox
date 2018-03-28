@@ -87,15 +87,22 @@ function [results, output_test, model] = run_analysis_SSVEP(set, approach)
 trainEEG = dataio_read_SSVEP(set,'train');
 testEEG = dataio_read_SSVEP(set, 'test');
 nSubj = length(trainEEG);
-
 for subj = 1:nSubj
     disp(['Analyising data from subject:' ' ' trainEEG{subj}.subject.id]);
     %% Train & Test
-    features = trainEEG{subj}.epochs;
-    features.fs = trainEEG{subj}.fs;
-    features.stimuli_frequencies = trainEEG{subj}.paradigm.stimuli;
+    if (~isfield(approach, 'features'))
+        features = trainEEG{subj}.epochs;
+        features.fs = trainEEG{subj}.fs;
+        features.stimuli_frequencies = trainEEG{subj}.paradigm.stimuli;
+    else
+        approach.features.options.mode = 'estimate';
+        features = extractSSVEP_features(trainEEG{subj}, approach);
+    end
+    approach = utils_augment_approach(approach, features.af);
     model = ml_trainClassifier(features, approach.classifier, approach.cv);
-    output_test = ml_applyClassifier(testEEG{subj}.epochs, model);
+    approach.features.mode = 'transform';
+    test_features = extractSSVEP_features(testEEG{subj}, approach);
+    output_test = ml_applyClassifier(test_features, model);
     %% Display & plot results
     %     interSubject_results(subj) = output.accuracy;
     %     disp(['Accuracy on Train set: ' num2str(output_train.accuracy)]);
@@ -105,6 +112,4 @@ for subj = 1:nSubj
     results = [];
 end
 % disp(['Average accuracy on ' set ' ' num2str(mean(interSubject_results))]);
-
 end
-

@@ -2,8 +2,6 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-
-
 % set = 'SSVEP_EXOSKELETON';
 set = 'SSVEP_DEMO';
 %% vanilla CCA
@@ -21,8 +19,9 @@ set = 'SSVEP_DEMO';
 %% MLR
 approach.features.alg = 'MLR';
 approach.features.options = [];
-approach.classifier.learner = 'RLDA';
-approach.classifier.options.regularizer = 'OAS';
+approach.classifier.normalization = 'ZSCORE';
+approach.classifier.learner = 'SVM';
+approach.classifier.options.kernel = 'LIN';
 %%
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;
