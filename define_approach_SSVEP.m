@@ -17,11 +17,15 @@ set = 'SSVEP_DEMO';
 % approach.classifier.learner = 'MSETCCA';
 % approach.classifier.options.n_comp = 1;
 %% MLR
-approach.features.alg = 'MLR';
-approach.features.options = [];
-approach.classifier.normalization = 'ZSCORE';
-approach.classifier.learner = 'SVM';
-approach.classifier.options.kernel = 'LIN';
+% approach.features.alg = 'MLR';
+% approach.features.options = [];
+% approach.classifier.normalization = 'ZSCORE';
+% approach.classifier.learner = 'SVM';
+% approach.classifier.options.kernel = 'LIN';
+%% TRCA
+approach.classifier.learner = 'TRCA';
+approach.classifier.options.num_fbs = 5;
+approach.classifier.options.is_ensemble = 1;
 %%
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;

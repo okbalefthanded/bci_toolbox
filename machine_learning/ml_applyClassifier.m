@@ -91,12 +91,8 @@ switch upper(model.alg.learner)
         output = ml_applyMDM(features, model);
     case {'CCA','L1MCCA', 'MSETCCA'}    
         output = ml_applyCCA(features, model);
-%     case 'L1MCCA'
-% %         TODO
-%         output = ml_applyL1MCCA(features, model);
-%     case 'MSETCCA'
-% %         TODO
-%         output = ml_applyMsetCCA(features, model);
+    case 'TRCA'
+        output = ml_applyTRCA(features, model);
     otherwise
         error('Incorrect Classifier');
 end
