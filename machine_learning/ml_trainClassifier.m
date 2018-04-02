@@ -86,6 +86,8 @@ switch upper(alg.learner)
         model = ml_trainL1MCCA(features, alg, cv);
     case 'MSETCCA'
         model = ml_trainMsetCCA(features, alg, cv);
+    case 'FBCCA'
+        model = ml_trainFBCCA(features, alg, cv);
     case 'TRCA'
         model = ml_trainTRCA(features, alg, cv);
     otherwise

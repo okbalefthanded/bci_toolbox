@@ -37,8 +37,9 @@ if ~exist('model', 'var')
 end
 
 fb_coefs = [1:model.num_fbs].^(-1.25)+0.25;
-
-for targ_i = 1:1:model.num_targs
+epochs = size(eeg, 1);
+% for targ_i = 1:1:model.num_targs
+for targ_i = 1:epochs
     test_tmp = squeeze(eeg(targ_i, :, :));
     for fb_i = 1:1:model.num_fbs
         testdata = filterbank(test_tmp, model.fs, fb_i);
@@ -55,5 +56,7 @@ for targ_i = 1:1:model.num_targs
     end % fb_i
     rho = fb_coefs*r;
     [~, tau] = max(rho);
-    results(targ_i) = tau;
+%     results(targ_i) = tau;
+    results.output(:,targ_i) = rho;
+    results.y(:,targ_i) = tau;
 end % targ_i
