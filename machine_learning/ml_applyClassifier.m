@@ -91,6 +91,8 @@ switch upper(model.alg.learner)
         output = ml_applyMDM(features, model);
     case {'CCA','L1MCCA', 'MSETCCA'}    
         output = ml_applyCCA(features, model);
+    case 'FBCCA'
+        output = ml_applyFBCCA(features, model);
     case 'TRCA'
         output = ml_applyTRCA(features, model);
     otherwise

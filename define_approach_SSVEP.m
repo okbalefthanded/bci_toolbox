@@ -23,9 +23,13 @@ set = 'SSVEP_DEMO';
 % approach.classifier.learner = 'SVM';
 % approach.classifier.options.kernel = 'LIN';
 %% TRCA
-approach.classifier.learner = 'TRCA';
-approach.classifier.options.num_fbs = 5;
-approach.classifier.options.is_ensemble = 1;
+% approach.classifier.learner = 'TRCA';
+% approach.classifier.options.num_fbs = 5;
+% approach.classifier.options.is_ensemble = 1;
+%% FBCCA
+approach.classifier.learner = 'FBCCA';
+approach.classifier.options.harmonics = 5;
+approach.classifier.options.nrFbs = 5;
 %%
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;

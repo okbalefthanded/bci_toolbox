@@ -71,9 +71,27 @@ switch upper(alg.learner)
         model = ml_trainRF(features,alg,cv);
     case 'SVM+'
         model = ml_trainSVMPlus(features, alg, cv);
+    % MKL
+    % TODO
+    case 'RBMKL'
+        % TODO
+        model = ml_trainRBMKL(features, alg, cv);
+    case 'ABMKL'
+        % TODO
+    case 'CABMKL'
+        % TODO
     case 'MKL'
         % TODO
-        % Implement classifier
+    case 'SIMPLEMKL'
+        % TODO
+    case 'GMKL'
+        % TODO
+    case 'GLMKL'
+        % TODO
+    case 'NLMKL'
+        % TODO
+    case 'LMKL'
+        % TODO
     case 'RVM'
         % TODO
         % Implement classifier
