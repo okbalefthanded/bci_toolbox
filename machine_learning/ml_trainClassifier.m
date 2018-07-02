@@ -71,8 +71,8 @@ switch upper(alg.learner)
         model = ml_trainRF(features,alg,cv);
     case 'SVM+'
         model = ml_trainSVMPlus(features, alg, cv);
-    % MKL
-    % TODO
+        % MKL
+        % TODO
     case 'RBMKL'
         % TODO
         model = ml_trainRBMKL(features, alg, cv);
@@ -106,6 +106,8 @@ switch upper(alg.learner)
         model = ml_trainMsetCCA(features, alg, cv);
     case 'FBCCA'
         model = ml_trainFBCCA(features, alg, cv);
+    case 'ITCCA'
+        model = ml_trainITCCA(features, alg);
     case 'TRCA'
         model = ml_trainTRCA(features, alg, cv);
     otherwise
