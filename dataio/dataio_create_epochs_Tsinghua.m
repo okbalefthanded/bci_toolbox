@@ -74,28 +74,36 @@ for subj=1:nSubj
     subject_path = [set_path '\' dataSetFiles{subj}];
     rawData = load(subject_path);
     eeg = permute(rawData.data, [2 1 3 4]);
-    [~, ~, ~, blocks] = size(eeg);
+    [~, ~, targets, blocks] = size(eeg);
     disp(['Filtering data for subject S0' num2str(subj)]);
     % filter data
-    for block=1:blocks        
+    for block=1:blocks
         eeg(:,:,:,block) = eeg_filter(eeg(:,:,:,block), ...
-                         fs,... 
-                         filter_band(1),... 
-                         filter_band(2),... 
-                         filter_order...
-                        );
+            fs,...
+            filter_band(1),...
+            filter_band(2),...
+            filter_order...
+            );
     end
     %     segment data
     eeg = eeg(wnd(1):wnd(2),:,:,:);
     %     split data
     disp(['Spliting data for subject S0' num2str(subj)]);
-    trainEEG{subj}.epochs.signal = eeg(:,:,:,1:nTrainBlocks);   
+    %     trainEEG{subj}.epochs.signal = eeg(:,:,:,1:nTrainBlocks); %needs a reshape
+    %     trainEEG{subj}.epochs.events = repmat(paradigm.stimuli, 1, nTrainBlocks);
+    %     trainEEG{subj}.epochs.y = repmat(classes, 1, nTrainBlocks);
+    %
+    %     testEEG{subj}.epochs.signal = eeg(:,:,:,nTrainBlocks+1:end); %needs a reshape
+    %     testEEG{subj}.epochs.events = repmat(paradigm.stimuli, 1, nTestBlocks);
+    %     testEEG{subj}.epochs.y = repmat(classes, 1, nTestBlocks);
+    
+    trainEEG{subj}.epochs.signal = reshape(eeg(:,:,:,1:nTrainBlocks), [samples channels nTrainBlocks*targets]);
     trainEEG{subj}.epochs.events = repmat(paradigm.stimuli, 1, nTrainBlocks);
     trainEEG{subj}.epochs.y = repmat(classes, 1, nTrainBlocks);
     
-    testEEG{subj}.epochs.signal = eeg(:,:,:,nTrainBlocks+1:end);   
+    testEEG{subj}.epochs.signal = reshape(eeg(:,:,:,nTrainBlocks+1:end), [samples channels nTestBlocks*targets]);
     testEEG{subj}.epochs.events = repmat(paradigm.stimuli, 1, nTestBlocks);
-    testEEG{subj}.epochs.y = repmat(classes, 1, nTestBlocks);    
+    testEEG{subj}.epochs.y = repmat(classes, 1, nTestBlocks);
     %     construct data structures
     trainEEG{subj}.fs = fs;
     trainEEG{subj}.montage.clab = clab;
@@ -112,7 +120,7 @@ for subj=1:nSubj
     testEEG{subj}.montage.clab = clab;
     testEEG{subj}.classes = classes_r;
     testEEG{subj}.paradigm = paradigm;
-    testEEG{subj}.subject = trainEEG{subj}.subject;    
+    testEEG{subj}.subject = trainEEG{subj}.subject;
     %     save data
 end
 

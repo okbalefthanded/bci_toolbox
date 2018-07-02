@@ -2,9 +2,10 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-set = 'SSVEP_EXOSKELETON';
+% set = 'SSVEP_EXOSKELETON';
 % set = 'SSVEP_DEMO'; 
 % set = 'SSVEP_TSINGHUA';
+set = 'SSVEP_SANDIEGO';
 %% vanilla CCA
 approach.classifier.learner = 'CCA';
 approach.classifier.options.harmonics = 2;
