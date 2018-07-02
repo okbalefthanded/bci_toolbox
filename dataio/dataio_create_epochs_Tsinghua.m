@@ -56,7 +56,7 @@ paradigm.type = 'SSVEP-JFPM';
 paradigm.stimuli = freqPhase.freqs;
 paradigm.phase = freqPhase.phases; %0 pi/2 pi 3pi/2
 %
-classes = cellfun(@num2str,num2cell(paradigm.stimuli),'UniformOutput',0);
+classes_r = cellfun(@num2str,num2cell(paradigm.stimuli),'UniformOutput',0);
 %
 nSubj = 35;
 trainEEG = cell(1, nSubj);
@@ -67,7 +67,7 @@ filter_order = 6;
 wnd = (epoch_length * fs) / 10^3;
 nTrainBlocks = 4;
 nTestBlocks = 2;
-
+classes = 1:40;
 for subj=1:nSubj
     %     load data, subject info
     disp(['Loading data for subject S0' num2str(subj)]);
@@ -91,15 +91,15 @@ for subj=1:nSubj
     disp(['Spliting data for subject S0' num2str(subj)]);
     trainEEG{subj}.epochs.signal = eeg(:,:,:,1:nTrainBlocks);   
     trainEEG{subj}.epochs.events = repmat(paradigm.stimuli, 1, nTrainBlocks);
-    trainEEG{subj}.epochs.y = trainEEG{subj}.epochs.events;
+    trainEEG{subj}.epochs.y = repmat(classes, 1, nTrainBlocks);
     
     testEEG{subj}.epochs.signal = eeg(:,:,:,nTrainBlocks+1:end);   
     testEEG{subj}.epochs.events = repmat(paradigm.stimuli, 1, nTestBlocks);
-    testEEG{subj}.epochs.y = testEEG{subj}.epochs.events;    
+    testEEG{subj}.epochs.y = repmat(classes, 1, nTestBlocks);    
     %     construct data structures
     trainEEG{subj}.fs = fs;
     trainEEG{subj}.montage.clab = clab;
-    trainEEG{subj}.classes = classes;
+    trainEEG{subj}.classes = classes_r;
     trainEEG{subj}.paradigm = paradigm;
     subj_info = strsplit(subjects_info{subj}, ' ');
     trainEEG{subj}.subject.id = subj_info{2};
@@ -110,7 +110,7 @@ for subj=1:nSubj
     
     testEEG{subj}.fs = fs;
     testEEG{subj}.montage.clab = clab;
-    testEEG{subj}.classes = classes;
+    testEEG{subj}.classes = classes_r;
     testEEG{subj}.paradigm = paradigm;
     testEEG{subj}.subject = trainEEG{subj}.subject;    
     %     save data

@@ -81,7 +81,7 @@ for subj = 1:nSubj
     end
     trainEEG{subj}.epochs.signal = epo;
     trainEEG{subj}.epochs.events = ev.desc;
-    trainEEG{subj}.epochs.y = ev.y;
+    trainEEG{subj}.epochs.y = ev.y';
     trainEEG{subj}.fs = fs;
     trainEEG{subj}.montage.clab = header.Label;
     trainEEG{subj}.classes = paradigm.stimuli;
@@ -100,7 +100,7 @@ for subj = 1:nSubj
     epochs = dataio_getERPEpochs(wnd, events.pos, signal);
     testEEG{subj}.epochs.signal = epochs;
     testEEG{subj}.epochs.events = events.desc;
-    testEEG{subj}.epochs.y = events.y;
+    testEEG{subj}.epochs.y = events.y';
     testEEG{subj}.fs = fs;
     testEEG{subj}.montage.clab = header.Label;
     testEEG{subj}.classes = paradigm.stimuli;

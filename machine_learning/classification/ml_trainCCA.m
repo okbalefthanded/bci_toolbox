@@ -6,16 +6,22 @@ function [model] = ml_trainCCA(features, alg)
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
 [samples, ~, ~] = size(features.signal);
-stimuli_count = length(features.stimuli_frequencies);
+if (iscell(features.stimuli_frequencies))
+    stimFrqId = cellfun(@isstr, features.stimuli_frequencies);
+    stimFrq = features.stimuli_frequencies(~stimFrqId);
+    frqs = cell2mat(stimFrq);
+else
+    frqs = features.stimuli_frequencies;
+end
+stimuli_count = length(frqs);
 reference_signals = cell(1, stimuli_count);
-% construct reference signals
 for stimulus=1:stimuli_count
-    reference_signals{stimulus} = refsig(features.stimuli_frequencies(stimulus),...
-                                         features.fs, ... 
+    reference_signals{stimulus} = refsig(frqs(stimulus),...
+                                         features.fs, ...
                                          samples, ...
                                          alg.options.harmonics);
 end
 model.alg.learner = 'CCA';
-model.ref = reference_signals; 
+model.ref = reference_signals;
 end
 

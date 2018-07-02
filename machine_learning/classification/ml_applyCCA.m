@@ -6,7 +6,7 @@ function [output] = ml_applyCCA(features, model)
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
 [~,~,epochs] = size(features.signal);
-stimuli_count = max(features.events);
+stimuli_count = length(model.ref);
 output.y = zeros(1, epochs);
 output.score = zeros(1, epochs);
 % apply CCA
