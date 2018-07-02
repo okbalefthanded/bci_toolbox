@@ -69,6 +69,17 @@ switch upper(set)
             data = load([ssvep_demo 'testEEG.mat']);
             data = data.testEEG;
         end
+            
+    case 'SSVEP_TSINGHUA'
+          ssvep_tsinghua = [path 'tsinghua_jfpm\'];
+        if (strcmp(datatype,'train'))
+            data = load([ssvep_tsinghua 'trainEEG.mat']);
+            data = data.trainEEG;
+        else
+            data = load([ssvep_tsinghua 'testEEG.mat']);
+            data = data.testEEG;
+        end
+        
         
     otherwise
         error('Incorrect SSVEP Dataset');

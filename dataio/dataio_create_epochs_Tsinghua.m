@@ -70,11 +70,12 @@ nTestBlocks = 2;
 
 for subj=1:nSubj
     %     load data, subject info
+    disp(['Loading data for subject S0' num2str(subj)]);
     subject_path = [set_path '\' dataSetFiles{subj}];
     rawData = load(subject_path);
     eeg = permute(rawData.data, [2 1 3 4]);
     [~, ~, ~, blocks] = size(eeg);
-    
+    disp(['Filtering data for subject S0' num2str(subj)]);
     % filter data
     for block=1:blocks        
         eeg(:,:,:,block) = eeg_filter(eeg(:,:,:,block), ...
@@ -87,6 +88,7 @@ for subj=1:nSubj
     %     segment data
     eeg = eeg(wnd(1):wnd(2),:,:,:);
     %     split data
+    disp(['Spliting data for subject S0' num2str(subj)]);
     trainEEG{subj}.epochs.signal = eeg(:,:,:,1:nTrainBlocks);   
     trainEEG{subj}.epochs.events = repmat(paradigm.stimuli, 1, nTrainBlocks);
     trainEEG{subj}.epochs.y = trainEEG{subj}.epochs.events;
@@ -110,11 +112,12 @@ for subj=1:nSubj
     testEEG{subj}.montage.clab = clab;
     testEEG{subj}.classes = classes;
     testEEG{subj}.paradigm = paradigm;
-    testEEG{subj}.subject = trainEEG{subj};    
+    testEEG{subj}.subject = trainEEG{subj}.subject;    
     %     save data
 end
 
 % save
+disp('Saving dataset TSINGHUA-SSVEP');
 Config_path = 'datasets\epochs\tsinghua_jfpm\';
 
 if(~exist(Config_path,'dir'))
@@ -122,8 +125,9 @@ if(~exist(Config_path,'dir'))
 end
 
 save([Config_path '\trainEEG.mat'],'trainEEG','-v7.3');
+clear trainEEG
 save([Config_path '\testEEG.mat'],'testEEG','-v7.3');
-
+clear testEEG
 disp('Data epoched saved in:');
 disp(Config_path);
 end
