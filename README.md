@@ -1,6 +1,6 @@
 # bci_toolbox (work in Progress)
 
-A benchamark classification toolbox for ERP data
+A benchamark classification toolbox for Brain-Computer Interface EEG data
 
  Data sets available:
  
@@ -13,7 +13,7 @@ A benchamark classification toolbox for ERP data
 ## SSVEP Data sets:
   1. SSVEP Exoskeleton (https://old.datahub.io/dataset/dataset-ssvep-exoskeleton)
   2. Tsinghua Sampled sinusoidal Joint Frequency-Phase Modulation SSVEP (http://www.thubci.org/en/?a=nr&id=100)
-  3. San Diego Square Joint Frequnecy-Phase Modulation SSVEP (ftp://sccn.ucsd.edu/pub/cca_ssvep/)
+  3. San Diego Square Joint Frequnecy-Phase Modulation SSVEP (ftp://sccn.ucsd.edu/pub/cca_ssvep)
 
 
 - Processing methods available: 
@@ -30,7 +30,7 @@ A benchamark classification toolbox for ERP data
   - - - Random Forest 
   - - - SVM+ 
   - - - Canonical Correlation Analysis based methods : 
-               - - - CCA, FilterBank CCA (FBCCA),L1-Multiway CCA, Mset CCA,Individual TemplaceCCA (ITCCA)
+               - - - CCA, FilterBank CCA (FBCCA), L1-Multiway CCA, MsetCCA, Individual Template CCA (ITCCA)
   - - - Task-related Component Analysis (TRCA)
   
   
