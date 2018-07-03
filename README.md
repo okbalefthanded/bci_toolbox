@@ -12,7 +12,8 @@ A benchamark classification toolbox for ERP data
 
 ## SSVEP Data sets:
   1. SSVEP Exoskeleton (https://old.datahub.io/dataset/dataset-ssvep-exoskeleton)
-  2. Tsinghua Joint Frequenty-Phase Modulation SSVEP (http://www.thubci.org/en/?a=nr&id=100)
+  2. Tsinghua Sampled sinusoidal Joint Frequency-Phase Modulation SSVEP (http://www.thubci.org/en/?a=nr&id=100)
+  3. San Diego Square Joint Frequnecy-Phase Modulation SSVEP (ftp://sccn.ucsd.edu/pub/cca_ssvep/)
 
 
 - Processing methods available: 
@@ -28,7 +29,9 @@ A benchamark classification toolbox for ERP data
   - - - Logistic Regression (LIBLINEAR)
   - - - Random Forest 
   - - - SVM+ 
-  - - - CCA, L1-Multiway CCA, Mset CCA, TRCA
+  - - - Canonical Correlation Analysis based methods : 
+               - - - CCA, FilterBank CCA (FBCCA),L1-Multiway CCA, Mset CCA,Individual TemplaceCCA (ITCCA)
+  - - - Task-related Component Analysis (TRCA)
   
   
   # Setup
