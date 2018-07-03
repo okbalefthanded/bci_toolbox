@@ -124,5 +124,6 @@ save([Config_path '\testEEG.mat'],'testEEG','-v7.3');
 clear testEEG
 disp('Data epoched saved in:');
 disp(Config_path);
+% TODO add to path
 end
 

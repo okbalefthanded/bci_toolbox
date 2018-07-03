@@ -27,9 +27,11 @@ function [] = dataio_create_epochs_Tsinghua(epoch_length, filter_band)
 %                                 the subject)
 
 % dataset paradigm:
-% joint frequency-phase modulation (JFPM) -0.5s, 5s, +0.5s
-
-
+% sampled sinusoidal joint frequency-phase modulation (JFPM) -0.5s, 5s, +0.5s
+% Reference
+%  [1] X. Chen, Y. Wang, M. Nakanishi, X. Gao, T. -P. Jung, S. Gao,
+%       "High-speed spelling with a noninvasive brain-computer interface",
+%       Proc. Int. Natl. Acad. Sci. U. S. A, 112(44): E6058-6067, 2015.
 tic
 disp('Creating epochs for Tsinghua lab JPFM SSVEP dataset');
 
@@ -74,7 +76,7 @@ for subj=1:nSubj
     subject_path = [set_path '\' dataSetFiles{subj}];
     rawData = load(subject_path);
     eeg = permute(rawData.data, [2 1 3 4]);
-    [~, ~, targets, blocks] = size(eeg);
+    [~, channels, targets, blocks] = size(eeg);
     disp(['Filtering data for subject S0' num2str(subj)]);
     % filter data
     for block=1:blocks
@@ -87,15 +89,9 @@ for subj=1:nSubj
     end
     %     segment data
     eeg = eeg(wnd(1):wnd(2),:,:,:);
+    [samples, ~, ~, ~] = size(eeg);
     %     split data
     disp(['Spliting data for subject S0' num2str(subj)]);
-    %     trainEEG{subj}.epochs.signal = eeg(:,:,:,1:nTrainBlocks); %needs a reshape
-    %     trainEEG{subj}.epochs.events = repmat(paradigm.stimuli, 1, nTrainBlocks);
-    %     trainEEG{subj}.epochs.y = repmat(classes, 1, nTrainBlocks);
-    %
-    %     testEEG{subj}.epochs.signal = eeg(:,:,:,nTrainBlocks+1:end); %needs a reshape
-    %     testEEG{subj}.epochs.events = repmat(paradigm.stimuli, 1, nTestBlocks);
-    %     testEEG{subj}.epochs.y = repmat(classes, 1, nTestBlocks);
     
     trainEEG{subj}.epochs.signal = reshape(eeg(:,:,:,1:nTrainBlocks), [samples channels nTrainBlocks*targets]);
     trainEEG{subj}.epochs.events = repmat(paradigm.stimuli, 1, nTrainBlocks);
@@ -138,5 +134,6 @@ save([Config_path '\testEEG.mat'],'testEEG','-v7.3');
 clear testEEG
 disp('Data epoched saved in:');
 disp(Config_path);
+% TODO add to path
 end
 

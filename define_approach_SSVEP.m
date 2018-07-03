@@ -4,11 +4,11 @@
 tic
 % set = 'SSVEP_EXOSKELETON';
 % set = 'SSVEP_DEMO'; 
-% set = 'SSVEP_TSINGHUA';
-set = 'SSVEP_SANDIEGO';
+set = 'SSVEP_TSINGHUA';
+% set = 'SSVEP_SANDIEGO';
 %% vanilla CCA
-% approach.classifier.learner = 'CCA';
-% approach.classifier.options.harmonics = 2;
+approach.classifier.learner = 'CCA';
+approach.classifier.options.harmonics = 2;
 %% L1 Multiway CCA
 % approach.classifier.learner = 'L1MCCA';
 % approach.classifier.options.harmonics = 2;
@@ -33,8 +33,8 @@ set = 'SSVEP_SANDIEGO';
 % approach.classifier.options.harmonics = 5;
 % approach.classifier.options.nrFbs = 5;
 %% ITCCA
-approach.classifier.learner = 'ITCCA';
-approach.classifier.options.harmonics = 2;
+% approach.classifier.learner = 'ITCCA';
+% approach.classifier.options.harmonics = 2;
 %%
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;
