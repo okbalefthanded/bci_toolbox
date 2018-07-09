@@ -6,7 +6,10 @@ function [model] = ml_trainSWLDA(features, cv, opts)
 % created 11-04-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
+if(isempty(opts))
+    opts.penter = 0.1;
+    opts.premove = 0.15;
+end
 
 if (cv.nfolds ~=0)
     accuracy_folds = zeros(1, cv.nfolds);

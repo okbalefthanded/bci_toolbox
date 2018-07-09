@@ -49,6 +49,9 @@ switch upper(alg.learner)
     case 'LDA'
         model = ml_trainRLDA(features, cv, '');
     case 'RLDA'
+        if(isempty(alg.options))
+            alg.options.regularizer = 'OAS';
+        end
         model = ml_trainRLDA(features, cv, alg.options.regularizer);
     case 'SWLDA'
         model = ml_trainSWLDA(features, cv, alg.options);

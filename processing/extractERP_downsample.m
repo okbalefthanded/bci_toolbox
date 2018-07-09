@@ -60,8 +60,11 @@ function [features] = extractERP_downsample(EEG, opt)
 % created 11-02-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
-decimation = opt.decimation_factor;
+if(isempty(opt))
+    decimation = 12;
+else
+    decimation = opt.decimation_factor;
+end
 x = EEG.epochs.signal(1:decimation:end,:,:,:);
 [nSamples, nChannels, nEpochs, nTrials] = size(x);
 features.x = permute(reshape(x,[nSamples*nChannels nEpochs*nTrials]), [2 1]);

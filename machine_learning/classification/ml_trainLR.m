@@ -4,7 +4,9 @@ function [model] = ml_trainLR(features, alg, cv)
 
 % created : 05-10-2017
 % last modified : -- -- --
-
+if(isempty(alg.options))
+    alg.options.regularizer = 'L1';
+end
 trainData = sparse(features.x);
 trainLabel = features.y;
 % -s -c -p -e -B -wi -v -C -q

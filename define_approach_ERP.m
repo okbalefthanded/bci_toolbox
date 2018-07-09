@@ -38,7 +38,7 @@ approach.classifier.options.premove = 0.15;
 % approach.classifier.learner = 'RF';
 % approach.classifier.options.ntress ='';
 % approach.classifier.options.mtry = '';
-%% LogitBoost OLD approach
+%% LogitBoost OLS approach
 % approach.classifier.learner = 'GBOOST';
 % approach.classifier.options.n_steps = 300;
 % approach.classifier.options.stepsize = 0.05;

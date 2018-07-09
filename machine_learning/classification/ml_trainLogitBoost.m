@@ -24,6 +24,12 @@ function [model] = ml_trainLogitBoost(features, cv, opts)
 % Copyright: Ulrich Hoffmann - EPFL
 % -------------------------------------------------------------------------
 %
+if(isempty(opts))
+    opts.n_steps = 300;
+    opts.stepsize = 0.05;
+    opts.display = 1;
+end
+
 
 if (cv.nfolds==0)
     %     if(~isfield(cv,'n_steps'))
