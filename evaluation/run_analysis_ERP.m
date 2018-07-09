@@ -1,4 +1,4 @@
-function [results, output, model] = run_analysis_ERP(set, approach)
+function [results, output, model] = run_analysis_ERP(set, approach, report)
 %RUN_ANALYSIS_ERP : main analysis function, performs the following
 %operations:
 %                  - load train/test data
@@ -89,6 +89,7 @@ nSubj = length(trainEEG);
 
 interSubject_results = zeros(1, nSubj);
 min_best_sequence = zeros(2, nSubj);
+% results = struct([]);
 for subj = 1:nSubj
     disp(['Analyising data from subject:' ' ' trainEEG{subj}.subject.id]);
     disp(['Approach: ' approach.features.alg ' ' approach.classifier.learner]);
@@ -101,21 +102,29 @@ for subj = 1:nSubj
     %% Test
     test_features = extractERP_features(testEEG{subj}, approach);
     output_test = ml_applyClassifier(test_features, model);
-    results = evaluation_ERP(output_test, test_features.paradigm, testEEG{subj}.phrase);
-    
+    res = evaluation_ERP(output_test, test_features.paradigm, testEEG{subj}.phrase);
+    results(subj).phrase = res.phrase;
+    results(subj).correct = res.correct;
     %% Display & plot results
     interSubject_results(subj) = output_test.accuracy;
-    [min_best_sequence(1,subj), min_best_sequence(2,subj)]= max(results.correct);
+    [min_best_sequence(1,subj), min_best_sequence(2,subj)]= max(results(subj).correct);
     disp(['Correct classification rate: ' num2str(output_test.accuracy)]);
     disp(['Desired Phrase: ' testEEG{subj}.phrase]);
-    disp(['Characters output: ' results.phrase(end,:)]);
-    disp(['Characters detection rate: ' num2str(results.correct(end))]);
+    disp(['Characters output: ' results(subj).phrase(end,:)]);
+    disp(['Characters detection rate: ' num2str(results(subj).correct(end))]);
     %     disp(['Failed detection: ' results.incorrect_characters]);
     disp(repmat('-',1,50))
-    plot_results_sequenceERP(results, set, test_features.paradigm, testEEG{subj}.subject.id)
-    output ={output_train, output_test};
+    plot_results_sequenceERP(results(subj), set, test_features.paradigm, testEEG{subj}.subject.id)
+    output = {output_train, output_test};
+    results(subj).train_acc = output_train.accuracy;
+    results(subj).test_acc = output_test.accuracy;
+    results(subj).min_subject_sequence = min_best_sequence(:,subj);
 end
 plot_results_minSequenceERP(min_best_sequence, set);
 disp(['Average accuracy on ' set ' ' num2str(mean(interSubject_results))]);
+%% Reports
+if(report)
+    report_analysis_ERP(set, approach, results);
+end
 end
 

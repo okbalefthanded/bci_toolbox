@@ -40,7 +40,7 @@ approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;
 %%
 [results, output, model] = run_analysis_SSVEP(set, approach, report);
-t= toc;
+t = toc;
 if(t>=60)
     t = t/60;
     disp(['Time elapsed for computing: ' num2str(t) ' minutes']);

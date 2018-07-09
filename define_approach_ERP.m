@@ -9,6 +9,8 @@ set = 'P300_ALS';
 % set = 'LARESI_FACE_SPELLER_120';
 % set = 'III_CH';
 % set = 'EPFL_IMAGE_SPELLER';
+report = 1;
+%% Downsample
 approach.features.alg = 'DOWNSAMPLE';
 approach.features.options.decimation_factor = 12;
 
@@ -58,7 +60,7 @@ approach.cv.nfolds = 0;
 %% Check approach validity
 approach = check_approach_validity(set, approach);
 %%
-[results, output, model] = run_analysis_ERP(set, approach);
+[results, output, model] = run_analysis_ERP(set, approach, report);
 % toc
 %% Reimann Geometry Based Analysis
 % approach.features.alg = 'REIMANN';

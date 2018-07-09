@@ -15,7 +15,7 @@ current_day_time = fix(clock);
 current_day_time = arrayfun(@num2str, current_day_time, 'UniformOutput', 0);
 current_day_time = strjoin(current_day_time,'_');
 
-reportFolder = strcat('reports\',current_day_time);
+reportFolder = strcat('reports\SSVEP', current_day_time);
 mkdir(reportFolder);
 reportFileName = strcat(reportFolder,'\',set.name,'_',approach_title,'_',current_day_time);
 fid = fopen(reportFileName, 'w');
@@ -34,7 +34,6 @@ for i=1:2
     end
     fprintf(fid, 'mean accuracy %f std: %f\n\n', mean(results(i, :)), std(results(i, :)));
 end
-
 fclose(fid);
 end
 
