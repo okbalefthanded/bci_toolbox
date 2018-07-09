@@ -5,8 +5,13 @@ function [model] = ml_trainCCA(features, alg)
 % last modification -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
-[samples, ~, ~] = size(features.signal);
+% checking classifier's options/params
+if(~isfield(alg, 'options'))
+    alg.options.harmonics = 2;
+end
 
+[samples, ~, ~] = size(features.signal);
+% checking if data contain idle stat
 if (iscell(features.stimuli_frequencies))
     stimFrqId = cellfun(@isstr, features.stimuli_frequencies);
     stimFrq = features.stimuli_frequencies(~stimFrqId);
@@ -14,6 +19,7 @@ if (iscell(features.stimuli_frequencies))
 else
     frqs = features.stimuli_frequencies;
 end
+
 
 stimuli_count = length(frqs);
 reference_signals = cell(1, stimuli_count);

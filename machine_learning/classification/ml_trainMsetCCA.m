@@ -6,8 +6,11 @@ function [model] = ml_trainMsetCCA(features, alg, cv)
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
+if(~isfield(alg, 'options'))
+    alg.options.n_comp = 1;
+end
 
-[samples,~,epochs] = size(features.signal);
+[samples,~,~] = size(features.signal);
 
 if (iscell(features.stimuli_frequencies))
     stimFrqId = cellfun(@isstr, features.stimuli_frequencies);

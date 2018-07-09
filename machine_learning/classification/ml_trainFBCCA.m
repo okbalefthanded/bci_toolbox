@@ -5,6 +5,11 @@ function [model] = ml_trainFBCCA(features, alg, cv)
 % last modified -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
+if(~isfield(alg, 'options'))
+    alg.options.harmonics = 5;
+    alg.options.nrFbs = 5;
+end
+
 model.fs = features.fs;
 [samples, ~, ~] = size(features.signal);
 

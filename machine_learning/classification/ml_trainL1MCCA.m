@@ -6,6 +6,13 @@ function [model] = ml_trainL1MCCA(features, alg, cv)
 % created 03-21-2016
 % last modification -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
+if(~isfield(alg, 'options'))
+    alg.options.harmonics = 2;
+    alg.options.max_iter = 200; % the maximal number of iteration for running L1MCCA    
+    alg.options.n_comp = 1;  % number of projection components for learning the reference signals
+    alg.options.lambda = 0.02; % regularization parameter for the 3rd-way (i.e., trial-way), which can be more precisely decided b
+end
+
 [samples,~,~] = size(features.signal);
 
 if (iscell(features.stimuli_frequencies))

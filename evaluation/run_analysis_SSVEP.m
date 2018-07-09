@@ -116,5 +116,5 @@ for subj = 1:nSubj
     results = [];
     output ={output_train, output_test};
 end
-% disp(['Average accuracy on ' set ' ' num2str(mean(interSubject_results))]);
+disp(['Average accuracy on ' set ' ' num2str(mean(interSubject_results(2,:)))]);
 end
