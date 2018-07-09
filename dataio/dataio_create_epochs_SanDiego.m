@@ -69,7 +69,7 @@ for subj=1:nSubj
     rawData = load(subject_path);
 %     [Num. of targets, Num. of channels, Num. of sampling points, Num. of trials]
     eeg = permute(rawData.eeg, [3 2 4 1]);
-    [~,channels, trials, blocks] = size(eeg);
+    [~,channels, ~, blocks] = size(eeg);
     disp(['Filtering data for subject S0' num2str(subj)]);
     % filter data
     for block=1:blocks        

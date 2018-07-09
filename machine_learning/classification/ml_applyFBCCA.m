@@ -6,7 +6,9 @@ function [output] = ml_applyFBCCA(features, model)
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
 [~,~,epochs] = size(features.signal);
-stimuli_count = max(features.events);
+% stimuli_count = max(features.events);
+% simuli_count = max(features.y);
+stimuli_count = length(model.ref);
 output.y = zeros(1, epochs);
 output.score = zeros(1, epochs);
 % apply CCA
@@ -31,7 +33,7 @@ end
 
 output.accuracy = ((sum(features.y == output.y)) / epochs)*100;
 output.trueClasses = features.y;
-% output = ml_get_performance(output);
+output = ml_get_performance(output);
 output.subject = '';
 output.alg = model.alg;
 end

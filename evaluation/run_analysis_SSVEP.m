@@ -1,4 +1,4 @@
-function [results, output_test, model] = run_analysis_SSVEP(set, approach)
+function [results, output, model] = run_analysis_SSVEP(set, approach)
 %RUN_ANALYSIS_SSVEP Summary of this function goes here
 %   Detailed explanation goes here
 %operations:
@@ -87,6 +87,7 @@ function [results, output_test, model] = run_analysis_SSVEP(set, approach)
 trainEEG = dataio_read_SSVEP(set,'train');
 testEEG = dataio_read_SSVEP(set, 'test');
 nSubj = length(trainEEG);
+interSubject_results = zeros(2, nSubj);
 for subj = 1:nSubj
     disp(['Analyising data from subject:' ' ' trainEEG{subj}.subject.id]);
     %% Train & Test
@@ -101,16 +102,19 @@ for subj = 1:nSubj
         approach = utils_augment_approach(approach, features.af);
         approach.features.mode = 'transform';
         test_features = extractSSVEP_features(testEEG{subj}, approach);
-    end    
+    end
     model = ml_trainClassifier(features, approach.classifier, approach.cv);
+    output_train = ml_applyClassifier(features, model);
     output_test = ml_applyClassifier(test_features, model);
     %% Display & plot results
-    %     interSubject_results(subj) = output.accuracy;
-    %     disp(['Accuracy on Train set: ' num2str(output_train.accuracy)]);
+    interSubject_results(1, subj) = output_train.accuracy;
+    interSubject_results(2, subj) = output_test.accuracy;
+    disp(['Accuracy on Train set: ' num2str(output_train.accuracy)]);
     disp(['Accuracy on Test set: ' num2str(output_test.accuracy)]);
-    %     disp(['Accuracy on Total data: ' num2str((output_train.accuracy+output_test.accuracy)/2)]);
+    disp( ['Accuracy on Total data: ' num2str(mean(interSubject_results(:, subj)))]);
     disp(repmat('-',1,50))
     results = [];
+    output ={output_train, output_test};
 end
 % disp(['Average accuracy on ' set ' ' num2str(mean(interSubject_results))]);
 end

@@ -21,7 +21,7 @@ end
 
 output.accuracy = ((sum(features.y == output.y)) / epochs)*100;
 output.trueClasses = features.y;
-% output = ml_get_performance(output);
+output = ml_get_performance(output);
 output.subject = '';
 output.alg = model.alg;
 end

@@ -1,6 +1,6 @@
 function [ output ] = ml_get_performance(output)
 %ML_GET_PERFORMANCE : returns model's performance [1]
-%                            
+%
 % Arguments:
 %     In:
 %         output : STRUCT [1x1] initial performance measures
@@ -28,33 +28,39 @@ function [ output ] = ml_get_performance(output)
 % Example :
 %     call inside ml_applyAAA.m
 %     output = ml_get_performance(output);
-% 
+%
 % See Also : ml_applyAAA.m
-% 
-% References : 
+%
+% References :
 % [1] M. Billinger et al. chapter 17: is it significant? Guidlines for Reporting BCI
 % Performance
 
 % created 11-08-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
+num_classes = unique(output.trueClasses);
 output.confusion = flip(confusionmat(output.trueClasses, output.y));
 
 p0 = sum(dot(output.confusion,output.confusion')) / length(output.y)^2;
-tp = output.confusion(1,1);
-fn = output.confusion(1,2);
-fp = output.confusion(2,1);
-tn = output.confusion(2,2);
+if(num_classes == 2)
+    % binary classes
+    tp = output.confusion(1,1);
+    fn = output.confusion(1,2);
+    fp = output.confusion(2,1);
+    tn = output.confusion(2,2);
+    
+    output.sensitivity = tp / (tp + fn); % TPR, recall, H
+    output.specificity = tn / (tn + fp); %
+    output.fpr = 1 - output.specificity; % FPR
+    output.false_detection = fp / (tp + fp); % False detection rate, F
+    output.precision = 1 - output.false_detection; % PPV (positive predictive value)
+    output.hf_difference = output.sensitivity - output.false_detection; % H-F
+    %     output.f1 = 2*(output.precision * output.sensitivity) / (output.precision + output.sensitivity);
 
-output.sensitivity = tp / (tp + fn); % TPR, recall, H
-output.specificity = tn / (tn + fp); %
-output.fpr = 1 - output.specificity; % FPR
-output.false_detection = fp / (tp + fp); % False detection rate, F
-output.precision = 1 - output.false_detection; % PPV (positive predictive value)
-output.hf_difference = output.sensitivity - output.false_detection; % H-F
-acc = output.accuracy / 100;
-output.kappa = (acc - p0)/(1-p0);
-% output.f1 = 2*(output.precision * output.sensitivity) / (output.precision + output.sensitivity);
+else
+    % multi-class
+    acc = output.accuracy / 100;
+    output.kappa = (acc - p0)/(1-p0);
+end
 end
 
