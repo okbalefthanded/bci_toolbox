@@ -64,7 +64,7 @@ switch upper(model.alg.learner)
     case 'BLDA'
         output = ml_applyBLDA(features, model);
     case 'STDA'
-%         TODO
+       % TODO
         output = ml_applySTDA(features, model);
     case 'SVM'
         output = ml_applySVM(features, model);
@@ -78,7 +78,7 @@ switch upper(model.alg.learner)
     case 'RF'
         output = ml_applyRF(features, model);
     case 'SVM+'
-        %         TODO
+        % TODO
         output = ml_applySVMPlus(features, model);
     case 'MKL'
         % TODO

@@ -40,7 +40,7 @@ function [ output ] = ml_get_performance(output)
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 num_classes = unique(output.trueClasses);
 output.confusion = flip(confusionmat(output.trueClasses, output.y));
-
+% output.confusion = confusionmat(output.trueClasses, output.y);
 p0 = sum(dot(output.confusion,output.confusion')) / length(output.y)^2;
 if(num_classes == 2)
     % binary classes

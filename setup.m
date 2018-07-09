@@ -5,6 +5,11 @@
 if (~isdir('datasets'))
     mkdir('datasets');
 end
+% add report folder
+if(~isdir('reports'))
+    mkdir('reports');
+end
+%
 folders = dir;
 folders_idx = cell2mat({folders.isdir});
 folders = folders(folders_idx);

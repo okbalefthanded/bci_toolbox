@@ -66,6 +66,7 @@ testEEG = cell(1, nSubj);
 %
 fs = 250;
 filter_order = 6;
+epoch_length = epoch_length + 500; 
 wnd = (epoch_length * fs) / 10^3;
 nTrainBlocks = 4;
 nTestBlocks = 2;

@@ -97,22 +97,23 @@ for subj = 1:nSubj
     %     spatial filters (optional)
     features = extractERP_features(trainEEG{subj}, approach);
     model = ml_trainClassifier(features, approach.classifier, approach.cv);
-    
+    output_train = ml_applyClassifier(features, model);
     %% Test
     test_features = extractERP_features(testEEG{subj}, approach);
-    output = ml_applyClassifier(test_features, model);
-    results = evaluation_ERP(output, test_features.paradigm, testEEG{subj}.phrase);
+    output_test = ml_applyClassifier(test_features, model);
+    results = evaluation_ERP(output_test, test_features.paradigm, testEEG{subj}.phrase);
     
     %% Display & plot results
-    interSubject_results(subj) = output.accuracy;
+    interSubject_results(subj) = output_test.accuracy;
     [min_best_sequence(1,subj), min_best_sequence(2,subj)]= max(results.correct);
-    disp(['Correct classification rate: ' num2str(output.accuracy)]);
+    disp(['Correct classification rate: ' num2str(output_test.accuracy)]);
     disp(['Desired Phrase: ' testEEG{subj}.phrase]);
     disp(['Characters output: ' results.phrase(end,:)]);
     disp(['Characters detection rate: ' num2str(results.correct(end))]);
     %     disp(['Failed detection: ' results.incorrect_characters]);
     disp(repmat('-',1,50))
     plot_results_sequenceERP(results, set, test_features.paradigm, testEEG{subj}.subject.id)
+    output ={output_train, output_test};
 end
 plot_results_minSequenceERP(min_best_sequence, set);
 disp(['Average accuracy on ' set ' ' num2str(mean(interSubject_results))]);

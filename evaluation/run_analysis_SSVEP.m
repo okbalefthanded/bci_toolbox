@@ -1,4 +1,4 @@
-function [results, output, model] = run_analysis_SSVEP(set, approach)
+function [results, output, model] = run_analysis_SSVEP(set, approach, report)
 %RUN_ANALYSIS_SSVEP Summary of this function goes here
 %   Detailed explanation goes here
 %operations:
@@ -82,12 +82,13 @@ function [results, output, model] = run_analysis_SSVEP(set, approach)
 % created 03-21-2018
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
 %% load  train data
 trainEEG = dataio_read_SSVEP(set,'train');
 testEEG = dataio_read_SSVEP(set, 'test');
 nSubj = length(trainEEG);
 interSubject_results = zeros(2, nSubj);
+%%
+results = zeros(2, nSubj);
 for subj = 1:nSubj
     disp(['Analyising data from subject:' ' ' trainEEG{subj}.subject.id]);
     %% Train & Test
@@ -113,8 +114,18 @@ for subj = 1:nSubj
     disp(['Accuracy on Test set: ' num2str(output_test.accuracy)]);
     disp( ['Accuracy on Total data: ' num2str(mean(interSubject_results(:, subj)))]);
     disp(repmat('-',1,50))
-    results = [];
     output ={output_train, output_test};
+    %     accuracy, kappa, alg
+    results(1,subj) = output_train.accuracy;
+    results(2,subj) = output_test.accuracy;
 end
 disp(['Average accuracy on ' set ' ' num2str(mean(interSubject_results(2,:)))]);
+%% Reports
+if(report)
+    set.name = set;
+    samples = size(trainEEG{subj}.epochs.signal, 1);
+    windowLength = num2str(samples/trainEEG{subj}.fs);
+    set.windowLength = windowLength;
+    report_analysis_SSVEP(set, approach, results);
+end
 end
