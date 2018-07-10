@@ -28,6 +28,10 @@ function [model] = ml_trainSVM(features, alg, cv)
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
 % Train SVM
+if(isempty(alg.options))
+    alg.options.kernel = 'LIN';
+    alg.normalization = 'ZSCORE';
+end
 if (cv.nfolds == 0)
     if (isfield(alg,'normalization'))
         norml = utils_estimate_normalize(features.x, alg.normalization);
