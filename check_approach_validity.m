@@ -33,7 +33,9 @@ end
 %% classifiers
 if(isfield(approach,'classifier'))
     if(isfield(approach.classifier, 'normalization'))
-        assert(approach.classifier.normalization, normalizations);
+        assert(...
+        utils_check_field_validity(approach.classifier.normalization, normalizations),...
+            'Incorrect norm');
     end
     assert(utils_check_field_validity(approach.classifier.learner, classifiers),...
         'Incorrect classifiers');

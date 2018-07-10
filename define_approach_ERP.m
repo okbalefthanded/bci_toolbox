@@ -20,16 +20,16 @@ approach.features.options.decimation_factor = 12;
 % approach.classifier.options.regularizer = 'OAS';
 % approach.classifier.learner = 'LDA';
 %  
-approach.classifier.learner = 'SWLDA';
-approach.classifier.options.penter = 0.1;
-approach.classifier.options.premove = 0.15;
+% approach.classifier.learner = 'SWLDA';
+% approach.classifier.options.penter = 0.1;
+% approach.classifier.options.premove = 0.15;
 
 % approach.classifier.learner = 'BLDA';
 
 %% SVM approach
-% approach.classifier.normalization = 'ZSCORE';
-% approach.classifier.learner = 'SVM';
-% approach.classifier.options.kernel = 'LIN';
+approach.classifier.normalization = 'ZSCORE';
+approach.classifier.learner = 'SVM';
+approach.classifier.options.kernel = 'LIN';
 %% Logistic Regression approach
 % approach.classifier.learner = 'LR';
 % approach.classifier.options.regularizer = 'L1';
