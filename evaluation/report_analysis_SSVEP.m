@@ -17,9 +17,9 @@ current_day_time = strjoin(current_day_time,'_');
 
 reportFolder = strcat('reports\SSVEP', current_day_time);
 mkdir(reportFolder);
-reportFileName = strcat(reportFolder,'\',set.name,'_',approach_title,'_',current_day_time);
+reportFileName = strcat(reportFolder,'\',set.title,'_',approach_title,'_',current_day_time);
 fid = fopen(reportFileName, 'w');
-fprintf(fid,'SSVEP analysis results on dataset:\n\n%s using: %s\n\n', set.name, approach_title);
+fprintf(fid,'SSVEP analysis results on dataset:\n\n%s using: %s\n\n', set.title, approach_title);
 fprintf(fid, 'Window Length %s seconds\n\n', set.windowLength);
 fprintf(fid, 'Subject | Accuracy \n');
 

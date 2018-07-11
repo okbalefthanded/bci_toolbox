@@ -1,4 +1,4 @@
-function [data] = dataio_read_SSVEP(set, datatype)
+function [EEGdata] = dataio_read_SSVEP(set, datatype)
 %DATAIO_READ_SSVEP : dispatcher function to read epoched data called
 %                    from run_analysis_SSVEP functions
 %  Arguments:
@@ -45,53 +45,19 @@ function [data] = dataio_read_SSVEP(set, datatype)
 % created 03-21-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-disp(['EVALUATING: dataio_read_SSVEP -- ARGUMNETS: ' set]);
+disp(['EVALUATING: dataio_read_SSVEP -- ARGUMNETS: ' set.title]);
 
-path = 'datasets\epochs\';
-switch upper(set)
-    
-    case 'SSVEP_EXOSKELETON'
-        ssvep_exoskeleton = [path 'ssvep_exoskeleton\'];
-        if (strcmp(datatype,'train'))
-            data = load([ssvep_exoskeleton 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([ssvep_exoskeleton 'testEEG.mat']);
-            data = data.testEEG;
-        end
-        
-    case 'SSVEP_DEMO'
-        ssvep_demo = [path 'demo_ssvep\'];
-        if (strcmp(datatype,'train'))
-            data = load([ssvep_demo 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([ssvep_demo 'testEEG.mat']);
-            data = data.testEEG;
-        end
-        
-    case 'SSVEP_TSINGHUA'
-        ssvep_tsinghua = [path 'tsinghua_jfpm\'];
-        if (strcmp(datatype,'train'))
-            data = load([ssvep_tsinghua 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([ssvep_tsinghua 'testEEG.mat']);
-            data = data.testEEG;
-        end
-        
-    case 'SSVEP_SANDIEGO'
-        ssvep_sandiego = [path 'sandiego_ssvep\'];
-        if (strcmp(datatype,'train'))
-            data = load([ssvep_sandiego 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([ssvep_sandiego 'testEEG.mat']);
-            data = data.testEEG;
-        end      
-                
+if(~isfield(set, 'mode'))
+    set.mode = 'SM';
+end
+
+switch upper(set.mode)
+    case 'BM'
+        EEGdata = dataio_read_SSVEP_Batch(set.title, datatype);
+    case 'SM'
+        EEGdata = dataio_read_SSVEP_Single(set, datatype);
     otherwise
-        error('Incorrect SSVEP Dataset');        
+        error('Incorrect Data read mode');
 end
 end
 

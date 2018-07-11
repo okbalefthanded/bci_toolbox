@@ -1,4 +1,4 @@
-function [data] = dataio_read_ERP(set, datatype)
+function [EEGdata] = dataio_read_ERP(set, datatype)
 %DATAIO_READ_ERP  : dispatcher function to read epoched data called
 %                    from run_analysis_ERP functions
 % Arguments:
@@ -10,7 +10,7 @@ function [data] = dataio_read_ERP(set, datatype)
 %     Returns:
 %         data : cell{1xN} N subjects in dataset of STRUCT
 %                  data.epochs 1x1 STRUCT
-%                       data.epochs.signal DOUBLE 4D-matrix [NxMxLxP] 
+%                       data.epochs.signal DOUBLE 4D-matrix [NxMxLxP]
 %                          [sample channels epochs trials] of total epochs.
 %                       data.epochs.events DOUBLE [LxP] [epochs trials]
 %                           a matrix of events description.
@@ -24,11 +24,11 @@ function [data] = dataio_read_ERP(set, datatype)
 %                       target , non_target
 %                  data.paradigm STRUCT 1x1 experimental protocol.
 %                       data.paradigm.title STR paradigm description.
-%                       data.paradigm.stimulation DOUBLE stimulation 
+%                       data.paradigm.stimulation DOUBLE stimulation
 %                                       duration in msec
 %                       data.paradigm.isi DOUBLE ISI in msec.
 %                       data.paradigm.repetition DOUBLE stimuli repetition.
-%                       data.paradigm.stimuli_count DOUBLE number of 
+%                       data.paradigm.stimuli_count DOUBLE number of
 %                                       stimuli in paradigm experiement.
 %                       data.paradigm.type STR
 %                  data.subject STRUCT 1X1
@@ -43,67 +43,22 @@ function [data] = dataio_read_ERP(set, datatype)
 %
 
 
-
 % created 10-30-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-disp(['EVALUATING: dataio_read_ERP -- ARGUMNETS: ' set]);
+disp(['EVALUATING: dataio_read_ERP -- ARGUMNETS: ' set.title]);
 
-path = 'BCI_TOOLBOX\datasets\epochs\';
-switch upper(set)
-    
-    case 'LARESI_FACE_SPELLER_120'
-        laresi_set_path = [path 'LARESI_FACE_SPELLER_120\'];
-        if (strcmp(datatype,'train'))
-            data = load([laresi_set_path 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([laresi_set_path 'testEEG.mat']);
-            data = data.testEEG;
-        end
-    case 'LARESI_FACE_SPELLER_150'
-        laresi_set_path = [path 'LARESI_FACE_SPELLER_150\'];
-        if (strcmp(datatype,'train'))
-            data = load([laresi_set_path 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([laresi_set_path 'testEEG.mat']);
-            data = data.testEEG;
-        end
-        
-    case 'P300_ALS'
-        p300_als_set_path = [path 'P300-ALS\'];
-        if (strcmp(datatype,'train'))
-            data = load([p300_als_set_path 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([p300_als_set_path 'testEEG.mat']);
-            data = data.testEEG;
-        end
-        
-    case 'III_CH'
-        ch_III_set_path = [path 'Comp_III_ch_2004\Comp_config\'];
-        if (strcmp(datatype,'train'))
-            data = load([ch_III_set_path 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([ch_III_set_path 'testEEG.mat']);
-            data = data.testEEG;
-        end
-        
-    case 'EPFL_IMAGE_SPELLER'
-        epfl_set_path = [path 'EPFL\'];
-        if (strcmp(datatype,'train'))
-            data = load([epfl_set_path 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([epfl_set_path 'testEEG.mat']);
-            data = data.testEEG;
-        end
-        
+if(~isfield(set, 'mode'))
+    set.mode = 'SM';
+end
+
+switch upper(set.mode)
+    case 'BM'
+        EEGdata = dataio_read_ERP_Batch(set.title, datatype);
+    case 'SM'
+        EEGdata = dataio_read_ERP_Single(set, datatype);
     otherwise
-        error('Incorrect Dataset');
-        
+        error('Incorrect Data read mode');
 end
 end
 
