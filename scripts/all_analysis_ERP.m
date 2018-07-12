@@ -4,7 +4,7 @@
 % ERP
 tic
 
-sets = {'LARESI_FACE_SPELLER_120', 'LARESI_FACE_SPELLER_150', 'P300_ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
+sets = { 'LARESI_FACE_SPELLER_150', 'P300-ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
 features.algs = {'DOWNSAMPLE'};
 learners = {'LDA','RLDA', 'SWLDA', 'SVM', 'LR', 'RF', 'GBOOST'};
 
@@ -16,11 +16,13 @@ approach.cv.nfolds = 0;
 report = 1;
 
 for set = 1:length(sets)
+    s.title = sets{set};
+    s.mode = 'SM';
     for feature = 1:length(features.algs)
         approach.features.alg = features.algs{feature};
         for learner = 1:length(learners)                        
             approach.classifier.learner = learners{learner};            
-            [results, output, model] = run_analysis_ERP(sets{set}, approach, report);
+            [results, output, model] = run_analysis_ERP(s, approach, report);
         end
     end
 end

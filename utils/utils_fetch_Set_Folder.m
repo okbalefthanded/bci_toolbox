@@ -14,7 +14,7 @@ set_in_folder = datasets(set_idx);
 set_path = strcat(path, set_in_folder{:});
 dataSetFiles = dir([set_path '\*.mat']);
 flag = 1;
-p = [];
+p = '';
 ppth = set_path;
 if(isempty(dataSetFiles))
     while(flag)
@@ -22,14 +22,13 @@ if(isempty(dataSetFiles))
         drs = {drs(3:end).name};
         id = strcmp(drs, 'SM');
         if(sum(id)==0 && ~isempty(id))
-            ppth = drs{:};
-            p = strcat(p,drs);
+            ppth = drs{:};          
+            p = strcat(p,drs{:});
         else
-            p ={};
             flag = 0;
         end
     end
-    set_path = strcat(set_path,'\', p{:});
+    set_path = strcat(set_path,'\', p);
     dataSetFiles = dir([set_path '\SM\*.mat']);
 else
     dataSetFiles = {dataSetFiles.name};
