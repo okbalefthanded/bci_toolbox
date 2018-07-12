@@ -29,7 +29,7 @@ switch upper(set)
         end
         
     case 'SSVEP_TSINGHUA'
-        ssvep_tsinghua = [path 'tsinghua_jfpm\BM\'];
+        ssvep_tsinghua = [path 'ssvep_tsinghua_jfpm\BM\'];
         if (strcmp(datatype,'train'))
             data = load([ssvep_tsinghua 'trainEEG.mat']);
             data = data.trainEEG;
@@ -39,7 +39,7 @@ switch upper(set)
         end
         
     case 'SSVEP_SANDIEGO'
-        ssvep_sandiego = [path 'sandiego_ssvep\BM\'];
+        ssvep_sandiego = [path 'ssvep_sandiego\BM\'];
         if (strcmp(datatype,'train'))
             data = load([ssvep_sandiego 'trainEEG.mat']);
             data = data.trainEEG;
