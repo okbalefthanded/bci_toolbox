@@ -22,18 +22,28 @@ fid = fopen(reportFileName, 'w');
 fprintf(fid,'SSVEP analysis results on dataset:\n\n%s using: %s\n\n', set.title, approach_title);
 fprintf(fid, 'Window Length %s seconds\n\n', set.windowLength);
 fprintf(fid, 'Subject | Accuracy \n');
+fprintf(fid, 'Subject | Train Accuracy | Test Accuray | ITR \n');
 
-for i=1:2
-    if (i==1)
-        fprintf(fid, 'Results on Training set\n');
-    else
-        fprintf(fid, 'Results on Test set\n');
-    end
-    for subj = 1:length(results)
-        fprintf(fid, 'S0%d  %f\n', subj, results(i, subj));
-    end
-    fprintf(fid, 'mean accuracy %f std: %f\n\n', mean(results(i, :)), std(results(i, :)));
+for subj = 1:length(results)
+    fprintf(fid, 'S0%d  %f  %f  %f   \n\n', subj,... 
+            results(subj).train_acc, results(subj).test_acc,...
+            results(subj).itr);
 end
+fprintf(fid, 'mean Train accuracy %f std: %f\n\n', mean([results(:).train_acc]), std([results(:).train_acc]));
+fprintf(fid, 'mean Test accuracy %f std: %f\n\n', mean([results(:).test_acc]), std([results(:).test_acc]));
+fprintf(fid, 'mean ITR %f std: %f\n\n', mean([results(:).itr]), std([results(:).itr]));
 fclose(fid);
+% for i=1:2
+%     if (i==1)
+%         fprintf(fid, 'Results on Training set\n');
+%     else
+%         fprintf(fid, 'Results on Test set\n');
+%     end
+%     for subj = 1:length(results)
+%         fprintf(fid, 'S0%d  %f\n', subj, results(i, subj));
+%     end
+%     fprintf(fid, 'mean accuracy %f std: %f\n\n', mean(results(i, :)), std(results(i, :)));
+% end
+
 end
 

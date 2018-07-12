@@ -7,8 +7,8 @@ tic
 % set.title = 'P300-ALS';      
 % set.title = 'LARESI_FACE_SPELLER_150';
 % set.title = 'LARESI_FACE_SPELLER_120';
-set.title = 'III_CH';
-% set.title = 'EPFL_IMAGE_SPELLER';
+% set.title = 'III_CH';
+set.title = 'EPFL_IMAGE_SPELLER';
 % set.mode = 'BM';
 set.mode = 'SM';
 report = 1;

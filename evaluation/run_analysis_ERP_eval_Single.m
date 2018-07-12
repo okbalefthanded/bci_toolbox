@@ -8,10 +8,13 @@ function [results, output, model] = run_analysis_ERP_eval_Single(set, approach)
 nSubj = utils_fetch_Set_Folder(set);
 interSubject_results = zeros(1, nSubj);
 min_best_sequence = zeros(2, nSubj);
+eval_duration = 1; % 1 second time for evaluation
 
 for subj = 1:nSubj
     set.subj = subj;
-    trainEEG = dataio_read_ERP(set,'train');   
+    trainEEG = dataio_read_ERP(set,'train');
+    paradigm = trainEEG.paradigm;
+    trial_dur = ((paradigm.isi+paradigm.stimulation)*0.001)*paradigm.stimuli_count*paradigm.repetition;
     disp(['Analyising data from subject:' ' ' trainEEG.subject.id]);
     disp(['Approach: ' approach.features.alg ' ' approach.classifier.learner]);    
     %% Train
@@ -51,7 +54,14 @@ for subj = 1:nSubj
     output = {output_train, output_test};
     results(subj).train_acc = output_train.accuracy;
     results(subj).test_acc = output_test.accuracy;
-    results(subj).min_subject_sequence = min_best_sequence(:,subj);    
+    results(subj).min_subject_sequence = min_best_sequence(:,subj); 
+    max_evaluation_time = eval_duration + trial_dur;
+    p1 = min_best_sequence(1,subj);
+    p2 = res.correct(end);
+    n_targets = paradigm.stimuli_count;
+    min_evaluation_time = eval_duration + ((paradigm.isi+paradigm.stimulation)*0.001)*paradigm.stimuli_count*min_best_sequence(2,subj);
+    results(subj).max_itr = evaluation_ITR(n_targets, p1, min_evaluation_time);
+    results(subj).min_itr = evaluation_ITR(n_targets, p2, max_evaluation_time);
 end
 % plot_results_minSequenceERP(min_best_sequence, set.title);
 disp(['Average accuracy on ' set.title ' ' num2str(mean(interSubject_results))]);

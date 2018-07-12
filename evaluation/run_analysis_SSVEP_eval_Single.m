@@ -6,7 +6,9 @@ function [results, output, model] = run_analysis_SSVEP_eval_Single(set, approach
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 nSubj = utils_fetch_Set_Folder(set);
 interSubject_results = zeros(2, nSubj);
-results = zeros(2, nSubj);
+% results = zeros(2, nSubj);
+eval_duration = 1; % 1 second time for evaluation
+
 for subj = 1:nSubj
     set.subj = subj;
     trainEEG = dataio_read_SSVEP(set,'train');
@@ -42,8 +44,13 @@ for subj = 1:nSubj
     disp(repmat('-',1,50))
     output ={output_train, output_test, windowLength};
     %     accuracy, kappa, alg
-    results(1,subj) = output_train.accuracy;
-    results(2,subj) = output_test.accuracy;
+    results(subj).train_acc = output_train.accuracy;
+    results(subj).test_acc = output_test.accuracy;
+    % ITR
+    n_targets = length(unique(output_train.y));
+    evaluation_time = eval_duration + windowLength;
+    results(subj).itr = evaluation_ITR(n_targets, output_test.accuracy, evaluation_time);   
+    
 end
 disp(['Average accuracy on ' set.title ' ' num2str(mean(interSubject_results(2,:)))]);
 end

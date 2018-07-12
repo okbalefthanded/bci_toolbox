@@ -2,10 +2,10 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-set.title = 'SSVEP_EXOSKELETON';
+% set.title = 'SSVEP_EXOSKELETON';
 % set = 'SSVEP_DEMO'; 
-% set = 'SSVEP_TSINGHUA';
-% set = 'SSVEP_SANDIEGO';
+set.title = 'SSVEP_TSINGHUA';
+% set.title = 'SSVEP_SANDIEGO';
 set.mode = 'SM';
 report = 1;
 %% vanilla CCA
