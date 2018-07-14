@@ -9,8 +9,8 @@ set.title = 'SSVEP_TSINGHUA';
 set.mode = 'SM';
 report = 1;
 %% vanilla CCA
-approach.classifier.learner = 'CCA';
-approach.classifier.options.harmonics = 2;
+% approach.classifier.learner = 'CCA';
+% approach.classifier.options.harmonics = 2;
 %% L1 Multiway CCA
 % approach.classifier.learner = 'L1MCCA';
 % approach.classifier.options.harmonics = 2;
@@ -27,9 +27,9 @@ approach.classifier.options.harmonics = 2;
 % approach.classifier.learner = 'SVM';
 % approach.classifier.options.kernel = 'LIN';
 %% TRCA
-% approach.classifier.learner = 'TRCA';
-% approach.classifier.options.num_fbs = 5;
-% approach.classifier.options.is_ensemble = 1;
+approach.classifier.learner = 'TRCA';
+approach.classifier.options.num_fbs = 5;
+approach.classifier.options.is_ensemble = 1;
 %% FBCCA
 % approach.classifier.learner = 'FBCCA';
 % approach.classifier.options.harmonics = 5;

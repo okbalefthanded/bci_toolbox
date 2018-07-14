@@ -13,7 +13,7 @@ for subj = 1:nSubj
     set.subj = subj;
     trainEEG = dataio_read_SSVEP(set,'train');
     testEEG = dataio_read_SSVEP(set, 'test');
-    samples = size(trainEEG.epochs,1);
+    samples = size(trainEEG.epochs.signal,1);
     windowLength = samples/trainEEG.fs;
     disp(['Analyising data from subject:' ' ' trainEEG.subject.id]);
     %% Train & Test
