@@ -31,22 +31,32 @@ for subj = 1:nSubj
     results(subj).correct = res.correct;
     %% Display & plot results
     interSubject_results(subj) = output_test.accuracy;
-    [min_best_sequence(1,subj), min_best_sequence(2,subj)]= max(results(subj).correct);
-    disp(['Correct classification rate: ' num2str(output_test.accuracy)]);
-    disp(['Desired Phrase: ' testEEG{subj}.phrase]);
-    disp(['Characters output: ' results(subj).phrase(end,:)]);
-    disp(['Characters detection rate: ' num2str(results(subj).correct(end))]);
-    %     disp(['Failed detection: ' results.incorrect_characters]);
-    disp(repmat('-',1,50))
-    plot_results_sequenceERP(results(subj), ...
-        set.title, ...
-        test_features.paradigm, ...
-        testEEG{subj}.subject.id);
+    [min_best_sequence(1,subj), min_best_sequence(2,subj)]= max(results(subj).correct);  
+%     plot_results_sequenceERP(results(subj), ...
+%         set.title, ...
+%         test_features.paradigm, ...
+%         testEEG{subj}.subject.id);
     testEEG{subj} = [];
     output = {output_train, output_test};
     results(subj).train_acc = output_train.accuracy;
     results(subj).test_acc = output_test.accuracy;
     results(subj).min_subject_sequence = min_best_sequence(:,subj);
+    max_evaluation_time = eval_duration + trial_dur;
+    p1 = min_best_sequence(1,subj);
+    p2 = res.correct(end);
+    n_targets = paradigm.stimuli_count;
+    raw_evaluation_time = ((paradigm.isi+paradigm.stimulation)*0.001)*paradigm.stimuli_count*min_best_sequence(2,subj); % no feedback/evaluation time
+    min_evaluation_time = eval_duration + raw_evaluation_time;
+    results(subj).raw_itr = evaluation_ITR(n_targets, p1, raw_evaluation_time);
+    results(subj).max_itr = evaluation_ITR(n_targets, p1, min_evaluation_time);
+    results(subj).min_itr = evaluation_ITR(n_targets, p2, max_evaluation_time);  
+    disp(['Correct classification rate: ' num2str(output_test.accuracy)]);
+    disp(['Desired Phrase: ' phrase]);
+    disp(['Characters output: ' results(subj).phrase(end,:)]);
+    disp(['Characters detection rate: ' num2str(results(subj).correct(end))]);
+    % disp(['Failed detection: ' results.incorrect_characters]);
+    disp(['ITR : ' num2str(results(subj).max_itr)]);
+    disp(repmat('-',1,50))
 end
 plot_results_minSequenceERP(min_best_sequence, set.title);
 disp(['Average accuracy on ' set.title ' ' num2str(mean(interSubject_results))]);

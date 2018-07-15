@@ -11,7 +11,7 @@ samples = size(trainEEG{1}.epochs,1);
 windowLength = samples / trainEEG{1}.fs;
 nSubj = length(trainEEG);
 interSubject_results = zeros(2, nSubj);
-results = zeros(2, nSubj);
+
 for subj = 1:nSubj
     disp(['Analyising data from subject:' ' ' trainEEG{subj}.subject.id]);
     %% Train & Test
@@ -37,14 +37,18 @@ for subj = 1:nSubj
     %% Display & plot results
     interSubject_results(1, subj) = output_train.accuracy;
     interSubject_results(2, subj) = output_test.accuracy;
+    output ={output_train, output_test, windowLength};
+    %     accuracy, kappa, alg
+    results(subj).train_acc = output_train.accuracy;
+    results(subj).test_acc = output_test.accuracy;
+    n_targets = length(unique(output_train.y));
+    evaluation_time = eval_duration + windowLength;
+    results(subj).itr = evaluation_ITR(n_targets, output_test.accuracy, evaluation_time); 
     disp(['Accuracy on Train set: ' num2str(output_train.accuracy)]);
     disp(['Accuracy on Test set: ' num2str(output_test.accuracy)]);
     disp( ['Accuracy on Total data: ' num2str(mean(interSubject_results(:, subj)))]);
+    disp(['ITR : ' num2str(results(subj).itr)]);
     disp(repmat('-',1,50))
-    output ={output_train, output_test, windowLength};
-    %     accuracy, kappa, alg
-    results(1,subj) = output_train.accuracy;
-    results(2,subj) = output_test.accuracy;
 end
 disp(['Average accuracy on ' set ' ' num2str(mean(interSubject_results(2,:)))]);
 end
