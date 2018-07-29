@@ -27,7 +27,7 @@ switch lower(cv.method)
     case 'kfold'
         N = floor(setsize / cv.nfolds) + 1;
         folds = bsxfun(@times, repmat(ones(1,N),1,cv.nfolds), ... ,
-            repmat([1:cv.nfolds],1,N));
+                               repmat([1:cv.nfolds],1,N));
         folds = sort(folds(1:setsize));
         
     case 'stratifiedkfold'
