@@ -4,14 +4,14 @@
 
 % sets = {'LARESI_FACE_SPELLER', 'P300_ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
 tic
-set.title = 'P300-ALS';      
-% set.title = 'LARESI_FACE_SPELLER_150';
+% set.title = 'P300-ALS';      
+set.title = 'LARESI_FACE_SPELLER_150';
 % set.title = 'LARESI_FACE_SPELLER_120';
 % set.title = 'III_CH';
 % set.title = 'EPFL_IMAGE_SPELLER';
 % set.mode = 'BM';
 set.mode = 'SM';
-report = 1;
+report = 0;
 %% Downsample
 approach.features.alg = 'DOWNSAMPLE';
 approach.features.options.decimation_factor = 12;
@@ -28,16 +28,17 @@ approach.features.options.decimation_factor = 12;
 % approach.classifier.learner = 'BLDA';
 
 %% SVM approach
-approach.classifier.normalization = 'ZSCORE';
-approach.classifier.learner = 'SVM';
-approach.classifier.options.kernel.type = 'LIN';
+% approach.classifier.normalization = 'ZSCORE';
+% approach.classifier.learner = 'SVM';
+% approach.classifier.options.kernel.type = 'LIN';
 % approach.classifier.options.kernel.type = 'RBF';
-approach.classifier.options.C = 2;
+% approach.classifier.options.C = 2;
 % approach.classifier.options.C = [-2,2];
 %% Logistic Regression approach
-% approach.classifier.learner = 'LR';
-% approach.classifier.options.regularizer = 'L1';
+approach.classifier.learner = 'LR';
+approach.classifier.options.regularizer = 'L1';
 % approach.classifier.options.regularizer = 'L2';
+approach.classifier.options.C = [0.1, 1];
 %% Random forests approach
 % approach.classifier.learner = 'RF';
 % approach.classifier.options.ntress ='';
@@ -61,6 +62,7 @@ approach.classifier.options.C = 2;
 %% Cross-validation
 approach.cv.method = 'KFOLD';
 % approach.cv.nfolds = 0;
+% approach.cv.nfolds = 10;
 approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;

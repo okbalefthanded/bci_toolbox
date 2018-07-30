@@ -1,8 +1,9 @@
-function [output] = applyLR(features, model)
+function [output] = ml_applyLR(features, model)
 %APPLYLR Summary of this function goes here
 %   Detailed explanation goes here
 % created: 05-10-2017
 % last modified: -- -- --
+% Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>git
 % disp('EVALUATING APPLY LR');
 nSamples = size(features.x,1);
 output.accuracy = 0;

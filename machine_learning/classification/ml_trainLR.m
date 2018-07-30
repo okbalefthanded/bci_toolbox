@@ -1,18 +1,25 @@
 function [model] = ml_trainLR(features, alg, cv)
 %ML_TRAINLR Summary of this function goes here
 %   Detailed explanation goes here
-
 % created : 05-10-2017
 % last modified : -- -- --
+% Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
+% recover struct fields, works for Guesemha
+if(isfield(alg,'o') || isfield(alg, 'n') || isfield(cv, 'n'))
+    [alg, cv] = recoverStructs(alg, cv);
+end
 if(isempty(alg.options))
     alg.options.regularizer = 'L1';
 end
 trainData = sparse(features.x);
 trainLabel = features.y;
-% -s -c -p -e -B -wi -v -C -q
 if(cv.nfolds == 0)
     if (isfield(alg,'options'))
-        %     lroptions = ml_parse_options(alg);
+        if(isfield(alg.options,'C'))
+            C = alg.options.C;
+        else 
+            C = 1;
+        end
         switch(alg.options.regularizer)
             case 'L1'
                 lroptions = '-s 6';
@@ -21,7 +28,7 @@ if(cv.nfolds == 0)
             otherwise
                 error('Incorrect Regularizer for Logistic Regression');
         end
-        lroptions = [lroptions,' ','-e 0.001',' ','-w1 5 -w-1 1'];
+        lroptions = [lroptions,' -c ',sprintf('%d',C),' -e 0.001',' ','-w1 1 -w-1 1'];
         classifier = liblintrain(trainLabel, trainData, lroptions);
     else
         classifier = liblintrain(trainLabel, trainData, '-s 0 -q 1');
@@ -29,81 +36,85 @@ if(cv.nfolds == 0)
     model.classifier = classifier;
     model.alg.learner = 'LR';
 else
-    acc_cv = 0;
-    accuracy_folds = zeros(1,cv.nfolds);
-    cv_models = cell(1,cv.nfolds);
-    folds = ml_crossValidation(cv, size(features.x, 1));
-    %     TODO RANDOM SEARCH HYPERPARAMETER TUNING
-    Cs = [0.001, 0.01, 0.1, 1, 10, 100];
-    for c = Cs
-        for fold = 1:cv.nfolds
-            idx = folds==fold;
-            train = ~idx;
-            test = idx;
-            x_train = utils_get_split(features, train);
-            x_test = utils_get_split(features, test);
-            cv_fold.c = c;
-            cv_fold.nfolds = 0;
-            cv_models{fold} =  ml_trainLR(x_train, alg, cv_fold);
-            output = applyLR(x_test, cv_models{fold});
-            accuracy_folds(fold) = output.accuracy;
+    % parallel settings
+    settings.isWorker = cv.parallel.isWorker;
+    settings.nWorkers = cv.parallel.nWorkers;
+    datacell.data.x = features.x;
+    datacell.data.y = features.y;
+    %     cv split, kfold
+    datacell.fold = ml_crossValidation(cv, size(features.x, 1));
+    %     Train & Predict functions
+    %     SharedMatrix bug, fieldnames should have same length
+    fHandle.tr = 'ml_trainLR';
+    fHandle.pr = 'ml_applyLR';
+    %     generate param cell
+    paramcell = genParams(alg, settings);
+    %     start parallel CV
+    [res, resKeys] = startMaster(fHandle, datacell, paramcell, settings);
+    %     select_best_hyperparam
+    [best_worker, best_evaluation] = getBestParamIdx(res, paramcell);
+    best_param = paramcell{best_worker}{best_evaluation}{1};
+    %     detach Memory
+    SharedMemory('detach', resKeys, res);
+    %     kill slaves processes
+    terminateSlaves;
+    alg = best_param;
+    cv.nfolds = 0;
+    cv = fRMField(cv, 'parallel');
+    model = ml_trainLR(features, alg, cv);
+end
+end
+%%
+function [alg, cv] = recoverStructs(alg, cv)
+if(isfield(alg,'o'))
+    [alg.('options')] = alg.('o');
+    [alg.('options').('regularizer')] = alg.('o').('r');
+    fields = {'o'};
+end
+if(isfield(alg, 'n'))
+    [alg.('normalization')] = alg.('n');
+    fields = {fields{:}, 'n'};
+end
+if(isfield(cv, 'n'))
+    [cv.('nfolds')] = cv.('n');
+end
+alg = fRMField(alg, fields);
+cv = fRMField(cv, 'n');
+end
+%%
+function paramcell = genParams(alg, settings)
+if(size(alg.options.C,2)==2)
+    Cs = alg.options.C(1):0.1:alg.options.C(2);
+    Cs(Cs==0) = [];
+else if(numel(alg.options.C) > 2)
+        Cs = alg.options.C;
+    else
+        % default range
+        Cs = [0.001, 0.01, 0.1, 1, 10, 50];
+    end
+end
+searchSpace = length(Cs);
+[nWorkers, paramsplit, offset] = getRessources(settings, searchSpace);
+paramcell = cell(1, settings.nWorkers);
+cv.n = 0;
+alg.o.r = alg.options.regularizer;
+if(isfield(alg, 'normalizarion'))
+    alg.n = alg.normalization;
+end
+m = 1;
+off = 0;
+for i=1:nWorkers
+    tmp = cell(1, paramsplit+off);
+    for k=1:(paramsplit+off)
+        alg.o.C = Cs(m);
+        tmp{k} = {alg, cv};
+        if(m < length(Cs))
+            m = m+1;
         end
-        if(mean(accuracy_folds) >= acc_cv)
-            acc_cv = mean(accuracy_folds);
-            best_c = c;
-        end
-        disp(['//CV values ',num2str(c)]);
-        disp(['//Best values for C ',num2str(best_c)]);
-        %             disp(['Cross-Validation: ' cv.method]);
-        %             disp(['Cross-Validation On N-Folds: ' num2str(cv.nfolds)]);
-        %             disp(['Cross-Validation results: ' 'Accuracy: ' num2str(accuracy_folds)]);
-        %             disp(['                          Mean: ' num2str(mean(accuracy_folds))]);
-        %             disp(['                          Std: ' num2str(std(accuracy_folds))]);
-        %             disp(['Best values for SVM linear kernel: C ',num2str(best_c)]);
-        cv.nfolds = 0;
-        cv.c = best_c;
-        model = ml_trainLR(features, alg, cv);
+    end
+    paramcell{i} = tmp;
+    if(i == offset)
+        off = 1;
     end
 end
 end
-%% helpers LIBLINEAR options
-% Usage: model = train(training_label_vector, training_instance_matrix, 'liblinear_options', 'col');
-% liblinear_options:
-% -s type : set type of solver (default 1)
-%   for multi-class classification
-% 	 0 -- L2-regularized logistic regression (primal)
-% 	 1 -- L2-regularized L2-loss support vector classification (dual)
-% 	 2 -- L2-regularized L2-loss support vector classification (primal)
-% 	 3 -- L2-regularized L1-loss support vector classification (dual)
-% 	 4 -- support vector classification by Crammer and Singer
-% 	 5 -- L1-regularized L2-loss support vector classification
-% 	 6 -- L1-regularized logistic regression
-% 	 7 -- L2-regularized logistic regression (dual)
-%   for regression
-% 	11 -- L2-regularized L2-loss support vector regression (primal)
-% 	12 -- L2-regularized L2-loss support vector regression (dual)
-% 	13 -- L2-regularized L1-loss support vector regression (dual)
-% -c cost : set the parameter C (default 1)
-% -p epsilon : set the epsilon in loss function of SVR (default 0.1)
-% -e epsilon : set tolerance of termination criterion
-% 	-s 0 and 2
-% 		|f'(w)|_2 <= eps*min(pos,neg)/l*|f'(w0)|_2,
-% 		where f is the primal function and pos/neg are # of
-% 		positive/negative data (default 0.01)
-% 	-s 11
-% 		|f'(w)|_2 <= eps*|f'(w0)|_2 (default 0.001)
-% 	-s 1, 3, 4 and 7
-% 		Dual maximal violation <= eps; similar to libsvm (default 0.1)
-% 	-s 5 and 6
-% 		|f'(w)|_1 <= eps*min(pos,neg)/l*|f'(w0)|_1,
-% 		where f is the primal function (default 0.01)
-% 	-s 12 and 13
-% 		|f'(alpha)|_1 <= eps |f'(alpha0)|,
-% 		where f is the dual function (default 0.1)
-% -B bias : if bias >= 0, instance x becomes [x; bias]; if < 0, no bias term added (default -1)
-% -wi weight: weights adjust the parameter C of different classes (see README for details)
-% -v n: n-fold cross validation mode
-% -C : find parameter C (only for -s 0 and 2)
-% -q : quiet mode (no outputs)
-% col:
-% 	if 'col' is setted, training_instance_matrix is parsed in column format, otherwise is in row format
