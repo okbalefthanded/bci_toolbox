@@ -1,4 +1,4 @@
-function [model] = ml_trainLogitBoost(features, cv, opts)
+function [model] = ml_trainLogitBoost(features, opts, cv)
 %ML_TRAINLOGITBOOST Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -24,118 +24,108 @@ function [model] = ml_trainLogitBoost(features, cv, opts)
 % Copyright: Ulrich Hoffmann - EPFL
 % -------------------------------------------------------------------------
 %
+% recover struct fields, works for Guesemha
+if(isfield(opts,'n') || isfield(opts, 's') || isfield(cv, 'n'))
+    [opts, cv] = recoverStructs(opts, cv);
+end
 if(isempty(opts))
     opts.n_steps = 300;
     opts.stepsize = 0.05;
     opts.display = 1;
 end
 
-
 if (cv.nfolds==0)
-    %     if(~isfield(cv,'n_steps'))
-    %         n_steps = opts.n_steps;
-    %     else
-    %     end
-    model.regressors = [];                   % weights for the classifier
-    % model.n_channels = 0;                    % number of electrodes used
-    % model.indices = [];                      % indices of selected features
-    % model.n_features = 0;                    % number of features
-    x = features.x';
-    y = features.y';
-    y(y==-1)=0;
-    n_channels = features.n_channels;
-    model.stepsize = opts.stepsize;
-    model.n_channels =  n_channels;              % number of electrodes
-    model.n_features = size(x, 1);               % number of features
-    n_epochs = size(x, 2);                   % number of feature vectors
-    p = ones(1, n_epochs)*0.5;               % p(y_i = 1 | x)
-    f = zeros(1, n_epochs);                  % values of f at feature vectors
-    options = optimset('GradObj','on','Display','off');  % options for fminunc
-    
-    for i = 1:opts.n_steps
-        % compute gradient
-        g = 2*(y-p);
-        % find the best timepoint in epoch and corresponding weights
-        min_err = inf;
-        best_feat = 0;
-        for j = 1:model.n_features/n_channels
-            % append a feature that is 1 everywhere to allow for a bias
-            x_1 = x((j-1)*n_channels+1:j*n_channels,:);
-            x_1 = [x_1; ones(1,size(x_1,2))];
-            % regress features to gradient and check goodness of fit
-            C = x_1*x_1';
-            if rcond(C) > eps
-                reg = C  \ x_1*g';
-                resp = x_1'*reg;
-                err = sum((g'-resp).^2);
-                % if fit is better than previous ones update best fit
-                if (err < min_err)
-                    min_err = err;
-                    best_feat = j;
-                    best_reg = reg;
-                    best_resp = resp;
-                end
+    if(~isfield(opts,'n_steps'))
+        opts.n_steps = 300;
+    else
+        if(~isfield(opts,'stepsize'))
+            opts.stepsize = 0.05;
+        else
+            if(~isfield(opts,'display'))
+                opts.display = 1;
+                %
             end
         end
-        % compute the stepsize that minimizes the loss function
-        best_reg = best_reg/norm(best_resp);
-        best_resp = best_resp/norm(best_resp);
-        best_step = fminunc(@(step) lossfunc(y, f, best_resp', step), 0, options);
-        % multiply regressors by stepsize and update f
-        best_reg = best_reg*best_step;
-        model.indices(i) = best_feat;
-        model.regressors = [model.regressors best_reg];
-        for j = 1:n_epochs
-            f(j) = f(j) + model.stepsize*[x((best_feat-1)*n_channels+1: ...
-                best_feat*n_channels,j);1]'*best_reg;
-        end
-        % update probabilities + output
-        p = exp(f)./(exp(f)+exp(-f));
-        if (opts.display)
-            fprintf('iteration %2.0f, average absolute error %2.2f, feature %4.0f \n', ...
-                i,mean(abs((y-p))), best_feat);
-        end
     end
-    
+    model = trainLogitBoost(features, opts);
 else
-    acc_cv = 0;
-    accuracy_folds = zeros(1,cv.nfolds);
-    cv_models = cell(1,cv.nfolds);
-    folds = ml_crossValidation(cv, size(features.x, 1));
-    M = 2:500;
-    %     TODO RANDOM SEARCH HYPERPARAMETER TUNING
-    for m=M
-        for fold = 1:cv.nfolds
-            idx = folds==fold;
-            train = ~idx;
-            test = idx;
-            x_train = utils_get_split(features, train);
-            x_test = utils_get_split(features, test);
-            opts.n_steps = m;
-            cv_fold.nfolds = 0;
-            cv_models{fold} = ml_trainLogitBoost(x_train, cv_fold, opts);
-            output = ml_applyLogitBoost(x_test, cv_models{fold});
-            accuracy_folds(fold) = output.accuracy;
-        end
-        if(mean(accuracy_folds) > acc_cv)
-            acc_cv = mean(accuracy_folds);
-            best_m = m;            
-        end
-        disp(['//CV values M: ',num2str(m)]);
-        disp(['//Best values for OLS LogitBoost: M ',num2str(best_m)]);
-    end
+    % parallel settings
+    settings.isWorker = cv.parallel.isWorker;
+    settings.nWorkers = cv.parallel.nWorkers;
+    datacell.data.x = features.x;
+    datacell.data.y = features.y;
+    datacell.data.n_channels = features.n_channels;
+    %     cv split, kfold
+    datacell.fold = ml_crossValidation(cv, size(features.x, 1));
+    %     Train & Predict functions
+    %     SharedMatrix bug, fieldnames should have same length
+    fHandle.tr = 'ml_trainLogitBoost';
+    fHandle.pr = 'ml_applyLogitBoost';
+    %     generate param cell
+    paramcell = genParams(opts, settings);
+    %     start parallel CV
+    [res, resKeys] = startMaster(fHandle, datacell, paramcell, settings);
+    %     select_best_hyperparam
+    [best_worker, best_evaluation] = getBestParamIdx(res, paramcell);
+    best_param = paramcell{best_worker}{best_evaluation}{1};
+    %     detach Memory
+    SharedMemory('detach', resKeys, res);
+    %     kill slaves processes
+    terminateSlaves;
+    opts = best_param;
     cv.nfolds = 0;
-    opts.n_steps = best_m;
-    model = ml_trainLogitBoost(features, cv, opts);
+    cv = fRMField(cv, 'parallel');
+    model = ml_trainLogitBoost(features, opts, cv);
 end
 model.alg.learner = 'GBOOST';
 end
-%% helper function for optimization with fminunc
-%% returns value and gradient of the loss function for stepsize s
-function [fval,fgrad] = lossfunc(y, f, resp, s)
-
-fval = -sum(2*y.*(f+s*resp)-log(1+exp(2*(f+s*resp))));
-fgrad = -sum( 2*y.*resp - ...
-    ((2*resp.*exp(2*(f+s*resp)))./(1+exp(2*(f+s*resp))) ));
-
+%%
+function [opts, cv] = recoverStructs(opts, cv)
+if(isfield(opts,'n'))
+    [opts.('n_steps')] = opts.('n');
+    fields = {'n'};
+end
+if(isfield(opts,'s'))
+    [opts.('stepsize')] = opts.('s');
+    fields = {fields{:}, 's'};
+end
+if(isfield(opts,'d'))
+    [opts.('display')] = opts.('d');
+    fields = {fields{:}, 'd'};
+end
+if(isfield(cv, 'n'))
+    [cv.('nfolds')] = cv.('n');
+end
+opts = fRMField(opts, fields);
+cv = fRMField(cv, 'n');
+end
+%%
+function paramcell = genParams(opts, settings)
+M = 2:opts.n_steps;
+searchSpace = length(M);
+[nWorkers, paramsplit, offset] = getRessources(settings, searchSpace);
+paramcell = cell(1, settings.nWorkers);
+cv.n = 0;
+opts.n = opts.n_steps;
+opts.s = opts.stepsize;
+opts.d = opts.display;
+if(isfield(opts, 'normalizarion'))
+    opts.n = opts.normalization;
+end
+m = 1;
+off = 0;
+for i=1:nWorkers
+    tmp = cell(1, paramsplit+off);
+    for k=1:(paramsplit+off)
+        opts.n = M(m);
+        tmp{k} = {opts, cv};
+        if(m < length(M))
+            m = m+1;
+        end
+    end
+    paramcell{i} = tmp;
+    if(i == offset)
+        off = 1;
+    end
+end
 end

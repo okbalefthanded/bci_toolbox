@@ -77,11 +77,9 @@ nSamples = size(features.x, 1);
 output.accuracy = 0;
 output.y = zeros(1,nSamples);
 output.score = zeros(1,nSamples);
-output.trueClasses = features.y';
+output.trueClasses = features.y;
 
 x = features.x';
-model.n_channels
-size(model.regressors)
 for i = 1:size(x,2)
     f = 0;
     for j = 1:length(model.indices)
@@ -99,6 +97,7 @@ y1 = output.score > 0.5;
 y0 = output.score <=0.5;
 output.y(y1) = 1;
 output.y(y0) = -1;
+output.y = output.y';
 % est_y = zeros(size(p));
 % est_y(y0) = 0;
 % est_y(y1) = 1;
