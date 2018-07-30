@@ -95,7 +95,7 @@ else if(numel(alg.options.C) > 2)
 end
 searchSpace = length(Cs);
 [nWorkers, paramsplit, offset] = getRessources(settings, searchSpace);
-paramcell = cell(1, settings.nWorkers);
+paramcell = cell(1, nWorkers);
 cv.n = 0;
 alg.o.r = alg.options.regularizer;
 if(isfield(alg, 'normalizarion'))

@@ -5,79 +5,138 @@ function [model] = ml_trainRF(features, alg, cv)
 % created 06-14-2016
 % last revised -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
+% recover struct fields, works for Guesemha
+if(isfield(alg,'o') || isfield(alg, 'n') || isfield(cv, 'n'))
+    [alg, cv] = recoverStructs(alg, cv);
+end
 if (cv.nfolds == 0)
     trainData = features.x;
     trainLabel = features.y;
     nFeatures = size(trainData,2);
     
-    if (~isfield(cv,'ntrees') && ~isfield(cv,'mtry') && ~isfield(cv,'replace'))
+    if (~isfield(alg.options,'ntrees') && ~isfield(alg.options,'mtry') && ~isfield(alg.options,'replace'))
         nTrees = 500;
         mtry = round(sqrt(nFeatures));
         opts.replace = 1;
     else
-        nTrees = cv.ntrees;
-        mtry = cv.mtry;
-        opts = cv.replace;
-    end
+        nTrees = alg.options.ntrees;
+        mtry = alg.options.mtry;
+        opts = alg.options.replace;
+    end    
     
-    % cross-validation
-    % nTrees (n_estimators), mtry (max_features), replace (bootstrap)
-    
+    % nTrees (n_estimators), mtry (max_features), replace (bootstrap)    
     model = classRF_train(trainData, trainLabel, nTrees, mtry, opts);
-    model.alg.learner = 'RF';
-    
+    model.alg.learner = 'RF';    
 else
-    %     TODO: crossval
-    acc_cv = 0;
-    accuracy_folds = zeros(1, cv.nfolds);
-    cv_models = cell(1, cv.nfolds);
-    folds = ml_crossValidation(cv, size(features.x, 1));
-    %     TODO RANDOM SEARCH HYPERPARAMETER TUNING
-    ntress = 500:100:5000;
-    nFeatures = floor(sqrt(size(features.x,2)));
-    mtry = nFeatures:nFeatures+100;
-    for n=ntress
-        for m=mtry
-            for replace = [0,1]
-                for fold = 1:cv.nfolds
-                    idx = folds==fold;
-                    train = ~idx;
-                    test = idx;
-                    x_train = utils_get_split(features, train);
-                    x_test = utils_get_split(features, test);
-                    cv_fold.ntrees = n;
-                    cv_fold.mtry = m;
-                    cv_fold.replace = replace;
-                    cv_fold.nfolds = 0;
-                    cv_models{fold} = ml_trainRF(x_train, alg, cv_fold);
-                    output = applyRF(x_test, cv_models{fold});
-                    accuracy_folds(fold) = output.accuracy;
-                end
-                if(mean(accuracy_folds) > acc_cv)
-                    acc_cv = mean(accuracy_folds);
-                    best_n = n;
-                    best_m = m;
-                    best_replace = replace;
-                end
-            end         
-            
-            disp(['//CV values ',num2str(n),' mtry: ',num2str(m)]);
-            disp(['//Best values for RandomForests: ntress ',num2str(best_n),' mtry: ',num2str(best_m)]);
-            %                 disp(['Cross-Validation: ' cv.method]);
-            %                 disp(['Cross-Validation On N-Folds: ' num2str(cv.nfolds)]);
-            %                 disp(['Cross-Validation results: ' 'Accuracy: ' num2str(accuracy_folds)]);
-            %                 disp(['                          Mean: ' num2str(mean(accuracy_folds))]);
-            %                 disp(['                          Std: ' num2str(std(accuracy_folds))]);
-            %                 disp(['Best values for SVM RBF kernel: C ',num2str(best_c),' Gamma: ',num2str(best_g)]);
+    % parallel settings
+    settings.isWorker = cv.parallel.isWorker;
+    settings.nWorkers = cv.parallel.nWorkers;
+    datacell.data.x = features.x;
+    datacell.data.y = features.y;
+    %     cv split, kfold
+    datacell.fold = ml_crossValidation(cv, size(features.x, 1));
+    %     Train & Predict functions
+    %     SharedMatrix bug, fieldnames should have same length
+    fHandle.tr = 'ml_trainRF';
+    fHandle.pr = 'ml_applyRF';
+    alg.nFeatures = floor(sqrt(size(features.x,2)));
+    %     generate param cell
+    paramcell = genParams(alg, settings);
+    %     start parallel CV
+    [res, resKeys] = startMaster(fHandle, datacell, paramcell, settings);
+    %     select_best_hyperparam
+    [best_worker, best_evaluation] = getBestParamIdx(res, paramcell);
+    best_param = paramcell{best_worker}{best_evaluation}{1};
+    %     detach Memory
+    SharedMemory('detach', resKeys, res);
+    %     kill slaves processes
+    terminateSlaves;
+    alg = best_param;
+    cv.nfolds = 0;
+    cv = fRMField(cv, 'parallel');
+    model = ml_trainRF(features, alg, cv);
+end
+end
+%%
+function [alg, cv] = recoverStructs(alg, cv)
+if(isfield(alg,'o'))
+    [alg.('options').('ntrees')] = alg.('o').('n');
+    [alg.('options').('mtry')] = alg.('o').('m');
+    [alg.('options').('replace')] = alg.('o').('r');
+    [alg.('options')] = alg.('o');
+    fields = {'o'};
+end
+if(isfield(alg, 'n'))
+    [alg.('normalization')] = alg.('n');
+    fields = {fields{:}, 'n'};
+end
+if(isfield(cv, 'n'))
+    [cv.('nfolds')] = cv.('n');
+end
+alg = fRMField(alg, fields);
+cv = fRMField(cv, 'n');
+end
+%%
+function paramcell = genParams(alg, settings)
+% ntrees
+if(size(alg.options.ntrees,2)==2)
+    ntrees = alg.options.ntrees:50:alg.options.ntrees(2);
+else if(numel(alg.options.ntrees) > 2)
+        ntrees = alg.options.ntrees;
+    else
+        % default range
+        ntrees = 100:100:500;
+    end
+end
+% mtry
+if(size(alg.options.mtry,2)==2)
+    mtry = alg.options.mtry:10:alg.options.mtry(2);
+else if(numel(alg.options.mtry) > 2)
+        mtry = alg.options.mtry;
+    else
+        % default range
+        mtry = alg.nFeatures:alg.nFeatures+50;
+    end
+end
+% replace
+if(numel(alg.options.replace)==2)
+    replace = alg.options.replace;
+else
+    replace = 1;
+end
+%
+searchSpace = length(ntrees)*length(mtry)*length(replace);
+[nWorkers, paramsplit, offset] = getRessources(settings, searchSpace);
+paramcell = cell(1, nWorkers);
+cv.n = 0;
+alg.o.r = alg.options.replace;
+if(isfield(alg, 'normalization'))
+    alg.n = alg.normalization;
+end
+m = 1;
+n = 1;
+% p = 1;
+off = 0;
+alg = fRMField(alg, {'options', 'nFeatures','learner'});
+for i=1:nWorkers
+    tmp = cell(1, paramsplit+off);
+    for k=1:(paramsplit+off)
+        alg.o.n = ntrees(m);       
+        alg.o.m = mtry(n);        
+%         if(isfield(alg.o,'r'))
+%             alg.o.r = replace;
+%         end
+        tmp{k} = {alg, cv};
+        n = n + 1;
+        if(n > length(mtry) && m < length(ntrees))
+            n = 1;
+            m = m+1;
         end
     end
-
-    cv.nfolds = 0;
-    cv.ntress = best_n;
-    cv.mtrey = best_m;
-    cv.replace = best_replace;
-    model = ml_trainRF(x_train, alg, cv_fold);
+    paramcell{i} = tmp;
+    if((nWorkers - i) == offset)
+        off = 1;
+    end
 end
 
 end

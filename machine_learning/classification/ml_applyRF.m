@@ -19,5 +19,6 @@ nMisClassified = sum(output.trueClasses' ~= output.y);
 output.accuracy = ((nSamples - nMisClassified)/nSamples) * 100;
 % results.confusion = flip(confusionmat(results.trueClasses, results.y));
 output = ml_get_performance(output);
+
 end
 

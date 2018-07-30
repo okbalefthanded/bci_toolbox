@@ -57,7 +57,7 @@ if (cv.nfolds == 0)
         case 'RBF'
             classifier = svmtrain(trainLabel, trainData, ['-t 2 -g ',num2str(g),' ','-c ',num2str(c),' ','-w1 2 -w-1 1']);
         case 'LIN'
-            classifier = svmtrain(trainLabel, trainData, ['-t 0 -c ',num2str(c),' ','-w1 2 -w-1 1']);
+          classifier = svmtrain(trainLabel, trainData, ['-t 0 -c ',num2str(c),' ','-w1 2 -w-1 1']);
         otherwise
             error('Incorrect Kernel for training SVM');
     end
@@ -135,7 +135,7 @@ else
 end
 searchSpace = length(Cs)*length(gammas);
 [nWorkers, paramsplit, offset] = getRessources(settings, searchSpace);
-paramcell = cell(1, settings.nWorkers);
+paramcell = cell(1, nWorkers);
 cv.n = 0;
 alg.o.k.t = alg.options.kernel.type;
 alg.o.k.g = [];
@@ -158,7 +158,7 @@ for i=1:nWorkers
         end
     end
     paramcell{i} = tmp;
-    if(i == offset)
+    if((nWorkers -i) == offset)
         off = 1;
     end
 end

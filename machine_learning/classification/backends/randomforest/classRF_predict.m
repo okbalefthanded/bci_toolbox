@@ -77,7 +77,7 @@ function [Y_new, votes, prediction_per_tree,proximity_ts,nodes] = classRF_predic
 	%keyboard
     votes = votes';
     
-    clear mexClassRF_predict
+%     clear mexClassRF_predict
     
     Y_new = double(Y_hat);
     new_labels = model.new_labels;

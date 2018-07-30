@@ -104,9 +104,8 @@ function paramcell = genParams(opts, settings)
 M = 2:opts.n_steps;
 searchSpace = length(M);
 [nWorkers, paramsplit, offset] = getRessources(settings, searchSpace);
-paramcell = cell(1, settings.nWorkers);
+paramcell = cell(1, nWorkers);
 cv.n = 0;
-opts.n = opts.n_steps;
 opts.s = opts.stepsize;
 opts.d = opts.display;
 if(isfield(opts, 'normalizarion'))

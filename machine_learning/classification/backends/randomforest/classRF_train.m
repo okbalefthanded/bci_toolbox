@@ -461,7 +461,7 @@ function model=classRF_train(X,Y,ntree,mtry, extra_options,Xtst,Ytst)
     model.inbag = inbag;
     model.votes = counttr';
     model.oob_times = sum(counttr)';
- 	clear mexClassRF_train
+%  	clear mexClassRF_train
     %keyboard
     1;
 
