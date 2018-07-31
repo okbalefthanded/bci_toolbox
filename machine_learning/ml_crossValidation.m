@@ -22,18 +22,34 @@ function [folds] = ml_crossValidation(cv, setsize)
 % created : 10-07-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
+N = floor(setsize / cv.nfolds) + 1;
 switch lower(cv.method)
     case 'kfold'
-        N = floor(setsize / cv.nfolds) + 1;
         folds = bsxfun(@times, repmat(ones(1,N),1,cv.nfolds), ... ,
                                repmat([1:cv.nfolds],1,N));
         folds = sort(folds(1:setsize));
         
     case 'stratifiedkfold'
-        % TODO
-        % Implement
-        
+        Classes = unique(cv.y);
+        nClasses = length(Classes);
+        syIdx = bsxfun(@eq, cv.y, Classes');
+        nSamplesCl = sum(syIdx, 2);
+        folds = zeros(1, setsize);        
+        for j=1:nClasses
+            split = round(nSamplesCl / nClasses);
+            off = mod(nSamplesCl, cv.nfolds);
+            [~, idx] = sort(syIdx(j,:), 'descend');
+            k = 1;
+            offset = 0;
+            for f = 1:cv.nfolds                
+                if(f > off)
+                    offset = 1;
+                end
+                folds(idx(k:k+1))= f;
+                k = k+split-offset;
+            end
+        end
+%         folds = folds(1:setsize);        
     case 'shufflesplit'
         % TODO
         % Implement
