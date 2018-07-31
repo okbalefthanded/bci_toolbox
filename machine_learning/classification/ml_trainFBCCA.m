@@ -43,27 +43,20 @@ if(cv.nfolds == 0)
     model.nrFbs = alg.options.nrFbs;
 else
        % parallel settings
-    settings.isWorker = cv.parallel.isWorker;
-    settings.nWorkers = cv.parallel.nWorkers;
-    datacell.data = features;
-    %     cv split, kfold
-    datacell.fold = ml_crossValidation(cv, size(features.signal, 3));
-    %     Train & Predict functions
-    %     SharedMatrix bug, fieldnames should have same length
-    fHandle.tr = 'ml_trainFBCCA';
-    fHandle.pr = 'ml_applyFBCCA';
+    [settings, datacell, fHandle] = parallel_getInputs(cv,...
+                                                       features,...
+                                                       alg.learner...
+                                                       );
     %     generate param cell
     paramcell = genParams(alg, settings);
     %     start parallel CV
     [res, resKeys] = startMaster(fHandle, datacell, paramcell, settings);
     %     select_best_hyperparam
-    [best_worker, best_evaluation] = getBestParamIdx(res, paramcell);
-    best_param = paramcell{best_worker}{best_evaluation}{1};
+    alg = parallel_getBestParam(res, paramcell);
     %     detach Memory
     SharedMemory('detach', resKeys, res);
     %     kill slaves processes
     terminateSlaves;
-    alg = best_param;
     cv.nfolds = 0;
     cv = fRMField(cv, 'parallel');
     model = ml_trainFBCCA(features, alg, cv);

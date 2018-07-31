@@ -1,4 +1,4 @@
-function [model] = ml_trainLogitBoost(features, opts, cv)
+function [model] = ml_trainLogitBoost(features, alg, cv)
 %ML_TRAINLOGITBOOST Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -25,99 +25,95 @@ function [model] = ml_trainLogitBoost(features, opts, cv)
 % -------------------------------------------------------------------------
 %
 % recover struct fields, works for Guesemha
-if(isfield(opts,'n') || isfield(opts, 's') || isfield(cv, 'n'))
-    [opts, cv] = recoverStructs(opts, cv);
+if(isfield(alg,'o') || isfield(alg, 's') || isfield(cv, 'n'))
+    [alg, cv] = recoverStructs(alg, cv);
 end
-if(isempty(opts))
-    opts.n_steps = 300;
-    opts.stepsize = 0.05;
-    opts.display = 1;
+if(isempty(alg))
+    alg.options.n_steps = 300;
+    alg.options.stepsize = 0.05;
+    alg.options.display = 1;
 end
 
 if (cv.nfolds==0)
-    if(~isfield(opts,'n_steps'))
-        opts.n_steps = 300;
+    if(~isfield(alg.options,'n_steps'))
+        alg.options.n_steps = 300;
     else
-        if(~isfield(opts,'stepsize'))
-            opts.stepsize = 0.05;
+        if(~isfield(alg.options,'stepsize'))
+            alg.options.stepsize = 0.05;
         else
-            if(~isfield(opts,'display'))
-                opts.display = 1;
+            if(~isfield(alg.options,'display'))
+                alg.options.display = 1;
                 %
             end
         end
     end
-    model = trainLogitBoost(features, opts);
+    model = trainLogitBoost(features, alg.options);
 else
-    % parallel settings
-    settings.isWorker = cv.parallel.isWorker;
-    settings.nWorkers = cv.parallel.nWorkers;
-    datacell.data.x = features.x;
-    datacell.data.y = features.y;
+     % parallel settings
+    [settings, datacell, fHandle] = parallel_getInputs(cv,...
+                                                       features,...
+                                                       alg.learner...
+                                                       );
     datacell.data.n_channels = features.n_channels;
-    %     cv split, kfold
-    datacell.fold = ml_crossValidation(cv, size(features.x, 1));
-    %     Train & Predict functions
-    %     SharedMatrix bug, fieldnames should have same length
-    fHandle.tr = 'ml_trainLogitBoost';
-    fHandle.pr = 'ml_applyLogitBoost';
-    %     generate param cell
-    paramcell = genParams(opts, settings);
+    % generate param cell
+    paramcell = genParams(alg, settings);
     %     start parallel CV
     [res, resKeys] = startMaster(fHandle, datacell, paramcell, settings);
     %     select_best_hyperparam
-    [best_worker, best_evaluation] = getBestParamIdx(res, paramcell);
-    best_param = paramcell{best_worker}{best_evaluation}{1};
+    alg = parallel_getBestParam(res, paramcell);
     %     detach Memory
     SharedMemory('detach', resKeys, res);
     %     kill slaves processes
     terminateSlaves;
-    opts = best_param;
     cv.nfolds = 0;
     cv = fRMField(cv, 'parallel');
-    model = ml_trainLogitBoost(features, opts, cv);
+    model = ml_trainLogitBoost(features, alg, cv);
 end
 model.alg.learner = 'GBOOST';
 end
 %%
-function [opts, cv] = recoverStructs(opts, cv)
-if(isfield(opts,'n'))
-    [opts.('n_steps')] = opts.('n');
-    fields = {'n'};
-end
-if(isfield(opts,'s'))
-    [opts.('stepsize')] = opts.('s');
-    fields = {fields{:}, 's'};
-end
-if(isfield(opts,'d'))
-    [opts.('display')] = opts.('d');
-    fields = {fields{:}, 'd'};
+function [alg, cv] = recoverStructs(alg, cv)
+if(isfield(alg, 'o'))
+    if(isfield(alg.o,'n'))
+        [alg.options.('n_steps')] = alg.o.('n');
+%         fields = {'n'};
+    end
+    if(isfield(alg.o,'s'))
+        [alg.options.('stepsize')] = alg.o.('s');
+%         fields = {fields{:}, 's'};
+    end
+    if(isfield(alg.o,'d'))
+        [alg.options.('display')] = alg.o.('d');
+%         fields = {fields{:}, 'd'};
+    end
+    fields = {'o'};
 end
 if(isfield(cv, 'n'))
     [cv.('nfolds')] = cv.('n');
 end
-opts = fRMField(opts, fields);
+alg = fRMField(alg, fields);
 cv = fRMField(cv, 'n');
 end
 %%
-function paramcell = genParams(opts, settings)
-M = 2:opts.n_steps;
+function paramcell = genParams(alg, settings)
+M = 2:alg.options.n_steps;
 searchSpace = length(M);
 [nWorkers, paramsplit, offset] = getRessources(settings, searchSpace);
 paramcell = cell(1, nWorkers);
 cv.n = 0;
-opts.s = opts.stepsize;
-opts.d = opts.display;
-if(isfield(opts, 'normalizarion'))
-    opts.n = opts.normalization;
+alg.o.s = alg.options.stepsize;
+alg.o.d = alg.options.display;
+if(isfield(alg, 'normalizarion'))
+    alg.n = alg.normalization;
 end
+alg = fRMField(alg, {'options','learner'});
 m = 1;
 off = 0;
 for i=1:nWorkers
     tmp = cell(1, paramsplit+off);
     for k=1:(paramsplit+off)
-        opts.n = M(m);
-        tmp{k} = {opts, cv};
+        alg.o.n = M(m);
+        tmp{k} = {alg, cv};
         if(m < length(M))
             m = m+1;
         end

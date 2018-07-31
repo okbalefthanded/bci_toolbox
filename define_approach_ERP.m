@@ -28,12 +28,12 @@ approach.features.options.decimation_factor = 12;
 % approach.classifier.learner = 'BLDA';
 
 %% SVM approach
-% approach.classifier.normalization = 'ZSCORE';
-% approach.classifier.learner = 'SVM';
-% approach.classifier.options.kernel.type = 'LIN';
+approach.classifier.normalization = 'ZSCORE';
+approach.classifier.learner = 'SVM';
+approach.classifier.options.kernel.type = 'LIN';
 % approach.classifier.options.kernel.type = 'RBF';
 % approach.classifier.options.C = 2;
-% approach.classifier.options.C = [0,2];
+approach.classifier.options.C = [0,2];
 % approach.classifier.options.kernel.g = [0,2];
 %% Logistic Regression approach
 % approach.classifier.learner = 'LR';
@@ -41,10 +41,10 @@ approach.features.options.decimation_factor = 12;
 % % approach.classifier.options.regularizer = 'L2';
 % approach.classifier.options.C = [0.1, 1];
 %% Random forests approach
-approach.classifier.learner = 'RF';
-approach.classifier.options.ntrees = [100, 200];
-approach.classifier.options.mtry = [20, 40];
-approach.classifier.options.replace = 1;
+% approach.classifier.learner = 'RF';
+% approach.classifier.options.ntrees = [100, 200];
+% approach.classifier.options.mtry = [20, 40];
+% approach.classifier.options.replace = 1;
 %% LogitBoost OLS approach
 % approach.classifier.learner = 'GBOOST';
 % approach.classifier.options.n_steps = 100;

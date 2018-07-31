@@ -28,30 +28,22 @@ if (cv.nfolds == 0)
     model = classRF_train(trainData, trainLabel, nTrees, mtry, opts);
     model.alg.learner = 'RF';    
 else
-    % parallel settings
-    settings.isWorker = cv.parallel.isWorker;
-    settings.nWorkers = cv.parallel.nWorkers;
-    datacell.data.x = features.x;
-    datacell.data.y = features.y;
-    %     cv split, kfold
-    datacell.fold = ml_crossValidation(cv, size(features.x, 1));
-    %     Train & Predict functions
-    %     SharedMatrix bug, fieldnames should have same length
-    fHandle.tr = 'ml_trainRF';
-    fHandle.pr = 'ml_applyRF';
     alg.nFeatures = floor(sqrt(size(features.x,2)));
-    %     generate param cell
+     % parallel settings
+    [settings, datacell, fHandle] = parallel_getInputs(cv,...
+                                                       features,...
+                                                       alg.learner...
+                                                       );
+    % generate param cell
     paramcell = genParams(alg, settings);
     %     start parallel CV
     [res, resKeys] = startMaster(fHandle, datacell, paramcell, settings);
     %     select_best_hyperparam
-    [best_worker, best_evaluation] = getBestParamIdx(res, paramcell);
-    best_param = paramcell{best_worker}{best_evaluation}{1};
+    alg = parallel_getBestParam(res, paramcell);
     %     detach Memory
     SharedMemory('detach', resKeys, res);
     %     kill slaves processes
     terminateSlaves;
-    alg = best_param;
     cv.nfolds = 0;
     cv = fRMField(cv, 'parallel');
     model = ml_trainRF(features, alg, cv);
