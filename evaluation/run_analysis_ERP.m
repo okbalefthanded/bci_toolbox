@@ -90,7 +90,6 @@ switch(set.mode)
     case 'BM'
         [results, output, model] = run_analysis_ERP_eval_Batch(set, approach);       
     case 'SM'
-        % TODO
         [results, output, model] = run_analysis_ERP_eval_Single(set, approach);        
     otherwise
         error('Incorrect Data evaluation mode');

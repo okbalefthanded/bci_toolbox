@@ -38,7 +38,7 @@ function [ output ] = ml_get_performance(output)
 % created 11-08-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-num_classes = unique(output.trueClasses);
+num_classes = numel(unique(output.trueClasses));
 output.confusion = flip(confusionmat(output.trueClasses, output.y));
 % output.confusion = confusionmat(output.trueClasses, output.y);
 p0 = sum(dot(output.confusion,output.confusion')) / length(output.y)^2;

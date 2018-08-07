@@ -21,28 +21,37 @@ report = 0;
 %% Mset CCA
 % approach.classifier.learner = 'MSETCCA';
 % approach.classifier.options.n_comp = 1;
-%% MLR
+%% MLR-SVM
 % approach.features.alg = 'MLR';
 % approach.features.options = [];
 % approach.classifier.normalization = 'ZSCORE';
 % approach.classifier.learner = 'SVM';
 % approach.classifier.options.kernel = 'LIN';
+%% MLR-HKL
+approach.features.alg = 'MLR';
+approach.classifier.learner = 'HKL';
+% approach.classifier.options.lambda = 10.^[1:-.5:-8];
+approach.classifier.options.lambda = 0.02;
+approach.classifier.options.kernel.type = 'hermite';
+approach.classifier.options.kernel.params = [0.5,3,0.1,4];
+approach.classifier.options.memcache = 2e8;
+approach.classifier.options.maxactive = 400;
 %% TRCA
 % approach.classifier.learner = 'TRCA';
 % approach.classifier.options.num_fbs = 5;
 % approach.classifier.options.is_ensemble = 1;
 %% FBCCA
-approach.classifier.learner = 'FBCCA';
-approach.classifier.options.harmonics = 5;
-approach.classifier.options.nrFbs = 5;
-approach.classifier.options.a = [0, 2.5];
-approach.classifier.options.b = [0, 1.5];
+% approach.classifier.learner = 'FBCCA';
+% approach.classifier.options.harmonics = 5;
+% approach.classifier.options.nrFbs = 5;
+% approach.classifier.options.a = [0, 2.5];
+% approach.classifier.options.b = [0, 1.5];
 %% ITCCA
 % approach.classifier.learner = 'ITCCA';
 %%
 approach.cv.method = 'KFOLD';
-% approach.cv.nfolds = 0;
-approach.cv.nfolds = 5;
+approach.cv.nfolds = 0;
+% approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %%

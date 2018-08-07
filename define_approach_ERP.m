@@ -28,12 +28,12 @@ approach.features.options.decimation_factor = 12;
 % approach.classifier.learner = 'BLDA';
 
 %% SVM approach
-approach.classifier.normalization = 'ZSCORE';
-approach.classifier.learner = 'SVM';
-approach.classifier.options.kernel.type = 'LIN';
+% approach.classifier.normalization = 'ZSCORE';
+% approach.classifier.learner = 'SVM';
+% approach.classifier.options.kernel.type = 'LIN';
 % approach.classifier.options.kernel.type = 'RBF';
 % approach.classifier.options.C = 2;
-approach.classifier.options.C = [0,2];
+% approach.classifier.options.C = [0,2];
 % approach.classifier.options.kernel.g = [0,2];
 %% Logistic Regression approach
 % approach.classifier.learner = 'LR';
@@ -60,12 +60,19 @@ approach.classifier.options.C = [0,2];
 % approach.classifier.options.svm_kernel = 'RBF';
 % approach.classifier.options.svm_kernel = 'LIN';
 % approach.classifier.options.svm_plus_kernel = 'LIN';
-
+%% Hierarchical Multiple Kernel Learning
+approach.classifier.learner = 'HKL';
+approach.classifier.options.lambda = 10.^[1:-.5:-8];
+% approach.classifier.options.lambda = 0.02;
+approach.classifier.options.kernel.type = 'hermite';
+approach.classifier.options.kernel.params = [0.5,3,0.1,4];
+approach.classifier.options.memcache = 2e8;
+approach.classifier.options.maxactive = 400;
 %% Cross-validation
 approach.cv.method = 'KFOLD';
-% approach.cv.nfolds = 0;
+approach.cv.nfolds = 0;
 % approach.cv.nfolds = 10;
-approach.cv.nfolds = 5;
+% approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %% Check approach validity
