@@ -72,7 +72,7 @@ approach.classifier.options.maxactive = 400;
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;
 % approach.cv.nfolds = 10;
-% approach.cv.nfolds = 5;
+approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %% Check approach validity

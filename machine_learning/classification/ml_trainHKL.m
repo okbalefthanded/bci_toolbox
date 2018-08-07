@@ -41,7 +41,6 @@ if (cv.nfolds == 0)
                                );
     else        
         for m =1:nModels 
-            m
             ft = features;
             if(strcmp(classMode,'OvO'))
                 idTrain = ft.y==classPart(m,1) | ft.y==classPart(m,2);
@@ -134,7 +133,7 @@ alg = fRMField(alg, {'options', 'learner'});
 for i=1:nWorkers
     tmp = cell(1, paramsplit+off);
     for k=1:(paramsplit+off)
-        alg.o.l = lambdas(m);
+        alg.o.l = lambdas(n);
         tmp{k} = {alg, cv};
         n = n + 1;
         if(n > length(lambdas))

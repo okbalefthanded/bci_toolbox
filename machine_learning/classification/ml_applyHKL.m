@@ -19,8 +19,6 @@ if(nModels == 1)
     decision_values = preds.predtest;
     predicted_label = sign(preds.predtest-.5);
 else
-%     preds = cell(1, nModels);
-%     nModels = nClasses;
     probs = zeros(nSamples, nModels);
     decision_values = zeros(nSamples, nModels);
     for m=1:nModels
@@ -31,7 +29,16 @@ else
     if(strcmp(classMode,'OvA'))
         [~,predicted_label] = max(probs, [], 2);
     else
-        [~,predicted_label] = max(probs, [], 2);
+        binLabels = sign(decision_values-0.5);
+        onesId = binLabels==1;
+        predicted_label = zeros(nSamples, 1);
+        for i=1:size(binLabels, 1)
+            binLabels(i,onesId(i,:)) = classPart(onesId(i,:),1);
+            binLabels(i,~onesId(i,:)) = classPart(~onesId(i,:),2);
+            [occurence, value] = hist(binLabels(i,:), unique(binLabels(i,:)));
+            [~, ii] = max(occurence);
+            predicted_label(i) = value(ii);
+        end
     end
 end
 
