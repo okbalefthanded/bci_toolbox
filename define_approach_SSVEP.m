@@ -2,10 +2,10 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-% set.title = 'SSVEP_EXOSKELETON';
+set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
 % set.title = 'SSVEP_TSINGHUA';
-set.title = 'SSVEP_SANDIEGO';
+% set.title = 'SSVEP_SANDIEGO';
 set.mode = 'SM';
 report = 0;
 %% vanilla CCA
@@ -28,14 +28,24 @@ report = 0;
 % approach.classifier.learner = 'SVM';
 % approach.classifier.options.kernel = 'LIN';
 %% MLR-HKL
+% approach.features.alg = 'MLR';
+% approach.classifier.learner = 'HKL';
+% % approach.classifier.options.lambda = 10.^[1:-.5:-8];
+% approach.classifier.options.lambda = 0.02;
+% approach.classifier.options.kernel.type = 'hermite';
+% approach.classifier.options.kernel.params = [0.5,3,0.1,4];
+% approach.classifier.options.memcache = 2e8;
+% approach.classifier.options.maxactive = 400;
+%% MLR-RBMKL 
 approach.features.alg = 'MLR';
-approach.classifier.learner = 'HKL';
-% approach.classifier.options.lambda = 10.^[1:-.5:-8];
-approach.classifier.options.lambda = 0.02;
-approach.classifier.options.kernel.type = 'hermite';
-approach.classifier.options.kernel.params = [0.5,3,0.1,4];
-approach.classifier.options.memcache = 2e8;
-approach.classifier.options.maxactive = 400;
+approach.classifier.learner = 'RBMKL';
+approach.classifier.options.parameters = rbmksvm_parameter();
+approach.classifier.options.parameters.C = 10;
+approach.classifier.options.parameters.ker = {'l', 'g0.5'};
+approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+approach.classifier.options.parameters.opt = 'libsvm';
+approach.classifier.options.parameters.rul = 'mean';
 %% TRCA
 % approach.classifier.learner = 'TRCA';
 % approach.classifier.options.num_fbs = 5;
@@ -50,8 +60,8 @@ approach.classifier.options.maxactive = 400;
 % approach.classifier.learner = 'ITCCA';
 %%
 approach.cv.method = 'KFOLD';
-approach.cv.nfolds = 0;
-% approach.cv.nfolds = 5;
+% approach.cv.nfolds = 0;
+approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %%

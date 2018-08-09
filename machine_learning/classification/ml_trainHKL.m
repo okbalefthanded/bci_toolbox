@@ -87,7 +87,7 @@ else
     terminateSlaves;
     cv.nfolds = 0;
     cv = fRMField(cv, 'parallel');
-    models = ml_trainHKL(features, alg, cv);
+    model = ml_trainHKL(features, alg, cv);
 end
 end
 %%

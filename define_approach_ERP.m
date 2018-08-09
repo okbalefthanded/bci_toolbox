@@ -61,18 +61,26 @@ approach.features.options.decimation_factor = 12;
 % approach.classifier.options.svm_kernel = 'LIN';
 % approach.classifier.options.svm_plus_kernel = 'LIN';
 %% Hierarchical Multiple Kernel Learning
-approach.classifier.learner = 'HKL';
-approach.classifier.options.lambda = 10.^[1:-.5:-8];
-% approach.classifier.options.lambda = 0.02;
-approach.classifier.options.kernel.type = 'hermite';
-approach.classifier.options.kernel.params = [0.5,3,0.1,4];
-approach.classifier.options.memcache = 2e8;
-approach.classifier.options.maxactive = 400;
+% approach.classifier.learner = 'HKL';
+% approach.classifier.options.lambda = 10.^[1:-.5:-8];
+% % approach.classifier.options.lambda = 0.02;
+% approach.classifier.options.kernel.type = 'hermite';
+% approach.classifier.options.kernel.params = [0.5,3,0.1,4];
+% approach.classifier.options.memcache = 2e8;
+% approach.classifier.options.maxactive = 400;
+%% MKL : RBMKL
+approach.classifier.learner = 'RBMKL';
+approach.classifier.options.parameters = rbmksvm_parameter();
+approach.classifier.options.parameters.C = 10;
+approach.classifier.options.parameters.ker = {'l', 'g0.5'};
+approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+approach.classifier.options.parameters.opt = 'libsvm';
+approach.classifier.options.parameters.rul = 'mean';
 %% Cross-validation
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;
-% approach.cv.nfolds = 10;
-approach.cv.nfolds = 5;
+% approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %% Check approach validity

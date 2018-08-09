@@ -75,8 +75,6 @@ switch upper(alg.learner)
         model = ml_trainRF(features,alg,cv);
     case 'SVM+'
         model = ml_trainSVMPlus(features, alg, cv);
-        % MKL
-        % TODO
     case 'HKL'
         model = ml_trainHKL(features, alg, cv);
     case 'RBMKL'

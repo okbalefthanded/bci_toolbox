@@ -80,11 +80,10 @@ switch upper(model.alg.learner)
     case 'SVM+'
         % TODO
         output = ml_applySVMPlus(features, model);
-%         'MKL'
-        % TODO
-        % Implement classifier
     case 'HKL'
         output = ml_applyHKL(features, model);
+    case 'RBMKL'
+        output = ml_applyRBMKL(features, model);
     case 'RVM'
         % TODO
         % Implement classifier
