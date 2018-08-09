@@ -69,7 +69,7 @@ approach.classifier.options.parameters.com = 'ratio'; % convex | ratio
 % approach.classifier.options.parameters.opt = 'libsvm';
 % approach.classifier.options.parameters.com = 'convex'; % linear | convex 
 %%
-%% MKL : CABMKL
+%% MKL : SIMPLEMKL
 approach.features.alg = 'MLR';
 approach.classifier.learner = 'SIMPLEMKL';
 approach.classifier.options.parameters = smksvm_parameter();
@@ -78,6 +78,16 @@ approach.classifier.options.parameters.ker = {'l', 'g1'};
 approach.classifier.options.parameters.nor.dat = {'true', 'true'};
 approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 approach.classifier.options.parameters.opt = 'libsvm';
+%% MKL : GMKL
+approach.features.alg = 'MLR';
+approach.classifier.learner = 'GMKL';
+approach.classifier.options.parameters = gmksvm_parameter();
+approach.classifier.options.parameters.C = 10;
+approach.classifier.options.parameters.ker = {'l', 'p2'};
+approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+approach.classifier.options.parameters.opt = 'libsvm';
+approach.classifier.options.parameters.sig = 1; 
 %% TRCA
 % approach.classifier.learner = 'TRCA';
 % approach.classifier.options.num_fbs = 5;

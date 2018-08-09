@@ -89,6 +89,7 @@ switch upper(alg.learner)
         model = ml_trainSIMPLEMKL(features, alg, cv);
     case 'GMKL'
         % TODO
+        model = ml_trainGMKL(features, alg, cv);
     case 'GLMKL'
         % TODO
     case 'NLMKL'
