@@ -15,8 +15,7 @@ else if(nClasses <=3)
         classMode = 'OvO';
         nModels = (nClasses * (nClasses-1)) / 2;
         classPart = nchoosek(1:nClasses, 2);
-    end
-    
+    end    
 end
 end
 

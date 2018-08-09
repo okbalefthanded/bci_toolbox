@@ -46,6 +46,17 @@ approach.classifier.options.parameters.nor.dat = {'true', 'true'};
 approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 approach.classifier.options.parameters.opt = 'libsvm';
 approach.classifier.options.parameters.rul = 'mean';
+%%
+%% MLR-RBMKL 
+approach.features.alg = 'MLR';
+approach.classifier.learner = 'ABMKL';
+approach.classifier.options.parameters = abmksvm_parameter();
+approach.classifier.options.parameters.C = 10;
+approach.classifier.options.parameters.ker = {'l', 'p2'};
+approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+approach.classifier.options.parameters.opt = 'libsvm';
+approach.classifier.options.parameters.com = 'ratio'; % convex | ratio 
 %% TRCA
 % approach.classifier.learner = 'TRCA';
 % approach.classifier.options.num_fbs = 5;
@@ -60,8 +71,8 @@ approach.classifier.options.parameters.rul = 'mean';
 % approach.classifier.learner = 'ITCCA';
 %%
 approach.cv.method = 'KFOLD';
-% approach.cv.nfolds = 0;
-approach.cv.nfolds = 5;
+approach.cv.nfolds = 0;
+% approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %%

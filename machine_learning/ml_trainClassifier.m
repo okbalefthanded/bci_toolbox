@@ -78,10 +78,10 @@ switch upper(alg.learner)
     case 'HKL'
         model = ml_trainHKL(features, alg, cv);
     case 'RBMKL'
-        % TODO
         model = ml_trainRBMKL(features, alg, cv);
     case 'ABMKL'
         % TODO
+        model = ml_trainABMKL(features, alg, cv);
     case 'CABMKL'
         % TODO
     case 'MKL'
