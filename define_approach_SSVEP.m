@@ -99,6 +99,17 @@ approach.classifier.options.parameters.nor.dat = {'true', 'true'};
 approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 approach.classifier.options.parameters.opt = 'libsvm';
 approach.classifier.options.parameters.p = 2; 
+%% MKL : NLMKL
+approach.features.alg = 'MLR';
+approach.classifier.learner = 'NLMKL';
+approach.classifier.options.parameters = nlmksvm_parameter();
+approach.classifier.options.parameters.C = 10;
+approach.classifier.options.parameters.ker = {'l', 'g10'};
+approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+approach.classifier.options.parameters.opt = 'libsvm';
+approach.classifier.options.parameters.p = 1; 
+approach.classifier.options.parameters.lam = 1;
 %% TRCA
 % approach.classifier.learner = 'TRCA';
 % approach.classifier.options.num_fbs = 5;
