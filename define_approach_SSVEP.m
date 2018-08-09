@@ -110,6 +110,19 @@ approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 approach.classifier.options.parameters.opt = 'libsvm';
 approach.classifier.options.parameters.p = 1; 
 approach.classifier.options.parameters.lam = 1;
+%% MKL : LMKL
+approach.features.alg = 'MLR';
+approach.classifier.learner = 'LMKL';
+approach.classifier.options.parameters = lmksvm_parameter();
+approach.classifier.options.parameters.C = 10;
+approach.classifier.options.parameters.ker = {'l', 'g10'};
+approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+approach.classifier.options.parameters.opt = 'libsvm';
+approach.classifier.options.parameters.gat.typ = 'linear_sigmoid'; % gating model function [linear_softmax, linear_sigmoid, rbf_softmax]  
+approach.classifier.options.parameters.loc.typ = 'linear'; % gating model complexity [linear, quadratic]   
+approach.classifier.options.parameters.nor.loc = 'true'; 
+approach.classifier.options.parameters.see = 7332; % seed
 %% TRCA
 % approach.classifier.learner = 'TRCA';
 % approach.classifier.options.num_fbs = 5;

@@ -92,10 +92,9 @@ switch upper(alg.learner)
     case 'GLMKL'
         model = ml_trainGLMKL(features, alg, cv);
     case 'NLMKL'
-        % TODO
         model = ml_trainNLMKL(features, alg, cv);
     case 'LMKL'
-        % TODO
+        model = ml_trainLMKL(features, alg, cv);
     case 'RVM'
         % TODO
         % Implement classifier
