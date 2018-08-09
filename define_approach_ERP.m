@@ -113,10 +113,19 @@ approach.classifier.options.parameters.nor.dat = {'true', 'true'};
 approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 approach.classifier.options.parameters.opt = 'libsvm';
 approach.classifier.options.parameters.sig = 1; 
+%% MKL : GLMKL
+approach.classifier.learner = 'GLMKL';
+approach.classifier.options.parameters = glmksvm_parameter();
+approach.classifier.options.parameters.C = 10;
+approach.classifier.options.parameters.ker = {'l', 'g0.1'};
+approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+approach.classifier.options.parameters.opt = 'libsvm';
+approach.classifier.options.parameters.p = 1; 
 %% Cross-validation
 approach.cv.method = 'KFOLD';
-% approach.cv.nfolds = 0;
-approach.cv.nfolds = 5;
+approach.cv.nfolds = 0;
+% approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %% Check approach validity
