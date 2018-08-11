@@ -29,9 +29,9 @@ function [] = dataio_create_epochs_SM_SanDiego(epoch_length, filter_band)
 %   Detecting Steady-State Visual Evoked Potentials,"
 % PLoS One, vol.10, no.10, e140703, 2015.
 
-disp('Creating epochs for Tsinghua lab JPFM SSVEP dataset');
+disp('Creating epochs for San Diego lab JPFM SSVEP dataset');
 
-set_path = 'datasets\sandiego_ssvep';
+set_path = 'datasets\ssvep_sandiego';
 dataSetFiles = dir([set_path '\s*.mat']);
 dataSetFiles = {dataSetFiles.name};
 % EEG montage
@@ -64,7 +64,7 @@ classes = 1:12;
 stimulation_onset = 39;
 
 % save
-Config_path_SM = 'datasets\epochs\sandiego_ssvep\SM';
+Config_path_SM = 'datasets\epochs\ssvep_sandiego\SM';
 
 if(~exist(Config_path_SM,'dir'))
     mkdir(Config_path_SM);

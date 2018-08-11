@@ -35,7 +35,7 @@ function [] = dataio_create_epochs_SM_Tsinghua(epoch_length, filter_band)
 tic
 disp('Creating epochs for Tsinghua lab JPFM SSVEP dataset');
 
-set_path = 'datasets\tsinghua_jfpm';
+set_path = 'datasets\ssvep_tsinghua_jfpm';
 dataSetFiles = dir([set_path '\S*.mat']);
 dataSetFiles = {dataSetFiles.name};
 % EEG montage
@@ -74,7 +74,7 @@ classes = 1:40;
 %
 % save
 
-Config_path_SM = 'datasets\epochs\tsinghua_jfpm\SM';
+Config_path_SM = 'datasets\epochs\ssvep_tsinghua_jfpm\SM';
 
 if(~exist(Config_path_SM,'dir'))
     mkdir(Config_path_SM);
