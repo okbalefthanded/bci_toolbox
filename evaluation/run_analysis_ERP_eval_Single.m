@@ -19,12 +19,17 @@ for subj = 1:nSubj
     disp(['Approach: ' approach.features.alg ' ' approach.classifier.learner]);
     %% Train
     %     spatial filters (optional)
+    approach.features.options.mode = 'estimate';
     features = extractERP_features(trainEEG, approach);
+    
     clear trainEEG
+    
     model = ml_trainClassifier(features, approach.classifier, approach.cv);
     output_train = ml_applyClassifier(features, model);
     %% Test
     testEEG = dataio_read_ERP(set, 'test');
+    approach = utils_augment_approach(approach, features.af);
+    approach.features.mode = 'transform';
     test_features = extractERP_features(testEEG, approach);
     phrase = testEEG.phrase;
     subject_id = testEEG.subject.id;

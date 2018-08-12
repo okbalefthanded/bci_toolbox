@@ -98,6 +98,9 @@ switch upper(method)
     case 'TSA'
         % Reimannian Geometry on tangent space
         %         TODO
+    case 'STDA'
+        %         TODO
+        features = extractERP_STDA(EEG, approach.features.options);
     otherwise
         error('Incorrect feature extraction method');
 end
