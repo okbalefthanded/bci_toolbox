@@ -4,8 +4,8 @@
 
 % sets = {'LARESI_FACE_SPELLER', 'P300_ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
 tic
-% set.title = 'P300-ALS';      
-set.title = 'LARESI_FACE_SPELLER_150';
+set.title = 'P300-ALS';      
+% set.title = 'LARESI_FACE_SPELLER_150';
 % set.title = 'LARESI_FACE_SPELLER_120';
 % set.title = 'III_CH';
 % set.title = 'EPFL_IMAGE_SPELLER';
@@ -15,13 +15,14 @@ report = 0;
 %% Downsample
 approach.features.alg = 'DOWNSAMPLE';
 approach.features.options.decimation_factor = 12;
+approach.features.options.moving_average = 12;
 %% STDA 
 % approach.features.alg = 'STDA';
 % approach.features.options.itrmax = 200;
 %% Regularized LDA approach
 % 
-% approach.classifier.learner = 'RLDA';
-% approach.classifier.options.regularizer = 'OAS';
+approach.classifier.learner = 'RLDA';
+approach.classifier.options.regularizer = 'OAS';
 % approach.classifier.learner = 'LDA';
 %  
 % approach.classifier.learner = 'SWLDA';
@@ -54,16 +55,16 @@ approach.features.options.decimation_factor = 12;
 % approach.classifier.options.stepsize = 0.05;
 % approach.classifier.options.display = 1;
 %% SVM+ approach
-approach.privileged.features.alg = 'DOWNSAMPLE';
-approach.privileged.features.options.decimation_factor = 12;
-approach.classifier.learner = 'SVMPlus';
-approach.classifier.normalization = 'ZSCORE';
-approach.classifier.options.kernel.type = 'LIN'; % LIN | RBF 
-approach.classifier.options.kernel_plus.type = 'LIN';% LIN | RBF 
-approach.classifier.options.C = [0,2];
-approach.classifier.options.T = [0,2];
-approach.classifier.options.kernel.g = [0,2];
-approach.classifier.options.kernel_plus.g = [0,2];
+% approach.privileged.features.alg = 'DOWNSAMPLE';
+% approach.privileged.features.options.decimation_factor = 12;
+% approach.classifier.learner = 'SVMPlus';
+% approach.classifier.normalization = 'ZSCORE';
+% approach.classifier.options.kernel.type = 'LIN'; % LIN | RBF 
+% approach.classifier.options.kernel_plus.type = 'LIN';% LIN | RBF 
+% approach.classifier.options.C = [0,2];
+% approach.classifier.options.T = [0,2];
+% approach.classifier.options.kernel.g = [0,2];
+% approach.classifier.options.kernel_plus.g = [0,2];
 %% Hierarchical Multiple Kernel Learning
 % approach.classifier.learner = 'HKL';
 % approach.classifier.options.lambda = 10.^[1:-.5:-8];
@@ -150,8 +151,8 @@ approach.classifier.options.kernel_plus.g = [0,2];
 % approach.classifier.options.parameters.see = 7332; % seed
 %% Cross-validation
 approach.cv.method = 'KFOLD';
-% approach.cv.nfolds = 0; 
-approach.cv.nfolds = 5;
+approach.cv.nfolds = 0; 
+% approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %% Check approach validity

@@ -68,8 +68,10 @@ for subj = 1:nSubj
     
     load(dataSetFiles{subj});
     disp(['Loading data for subject: ' data.subject]);
-    % processing parameters
-    wnd = (epoch_length * data.fs) / 10^3;
+    % processing parameters    
+    wnd_epoch = (epoch_length * data.fs) / 10^3;
+    correctionInterval = round([-100 0] * data.fs) / 10^3;
+    wnd = [correctionInterval(1) wnd_epoch(2)];
     phrase_train = data.desired_phrase(train_trials);
     phrase_test = data.desired_phrase(test_trials);
     s = eeg_filter(data.signal, data.fs, filter_band(1), filter_band(2), filter_order);
@@ -92,6 +94,7 @@ for subj = 1:nSubj
     for trial = 1:trials_train_count
         disp(['Segmenting Train data for subject:' data.subject]);
         eeg_epochs = dataio_getERPEpochs(wnd, events_train.pos(trial, :), s);
+        eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
         trainEEG.epochs.signal(:,:,:,trial) = eeg_epochs;
         trainEEG.epochs.events(:,trial) = events_train.desc(trial, :);
         trainEEG.epochs.y(:,trial) = y_train(trial,:);
@@ -113,6 +116,7 @@ for subj = 1:nSubj
     for trial = 1:trials_test_count
         disp(['Segmenting Test data for subject: ' data.subject]);
         eeg_epochs = dataio_getERPEpochs(wnd, events_test.pos(trial, :), s);
+        eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
         testEEG.epochs.signal(:,:,:,trial) = eeg_epochs;
         testEEG.epochs.events(:,trial) = events_test.desc(trial, :);
         testEEG.epochs.y(:,trial) = y_test(trial,:);

@@ -62,16 +62,29 @@ function [features] = extractERP_downsample(EEG, opt)
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 if(isempty(opt))
     decimation = 12;
+    moving_average = 12;
 else
     decimation = opt.decimation_factor;
+    moving_average = opt.moving_average;
 end
-x = EEG.epochs.signal(1:decimation:end,:,:,:);
-[nSamples, nChannels, nEpochs, nTrials] = size(x);
-features.x = permute(reshape(x,[nSamples*nChannels nEpochs*nTrials]), [2 1]);
-% features.y =  reshape(EEG.epochs.y,[1 nEpochs*nTrials]);
-% features.events = reshape(EEG.epochs.events,[1 nEpochs*nTrials]);
+[nSamples, nChannels, nEpochs, nTrials] = size(EEG.epochs.signal);
+x = reshape(EEG.epochs.signal, [nSamples nChannels nEpochs*nTrials]);
+% moving average
+
+for tr=1:nTrials
+    for ch = 1:nChannels
+        x(:,ch,tr) = conv(x(:,ch,tr), ones(1, moving_average),'same')  / moving_average;
+    end
+end
+%
+% x = EEG.epochs.signal(1:decimation:end,:,:,:);
+x = x(1:decimation:end,:,:,:);
 features.y =  reshape(EEG.epochs.y,[nEpochs*nTrials 1]);
 features.events = reshape(EEG.epochs.events,[nEpochs*nTrials 1]);
+[nSamples, nChannels, nTrials] = size(x);
+features.x = permute(reshape(x,[nSamples*nChannels nTrials]), [2 1]);
+% features.y =  reshape(EEG.epochs.y,[1 nEpochs*nTrials]);
+% features.events = reshape(EEG.epochs.events,[1 nEpochs*nTrials]);
 features.paradigm = EEG.paradigm;
 features.n_channels = nChannels;
 end

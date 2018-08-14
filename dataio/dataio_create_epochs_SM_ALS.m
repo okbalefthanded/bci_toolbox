@@ -69,6 +69,7 @@ stimDuration = ( (stimulation + isi) / 10^3 ) * fs;
 
 % processing parameters
 wnd_epoch = (epoch_length * fs) / 10^3;
+%
 correctionInterval = round([-100 0] * fs) / 10^3;
 wnd = [correctionInterval(1) wnd_epoch(2)];
 filter_order = 2;
@@ -131,6 +132,7 @@ for subj= 1:nSubj
     for trial = 1:trials_test_count
         disp(['Segmenting Test data for subject: ' subject ' Trial: ' num2str(trial)]);
         eeg_epochs = dataio_getERPEpochs(wnd, events_test.pos(trial, :), s);
+        eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
         testEEG.epochs.signal(:,:,:,trial) = eeg_epochs;
         testEEG.epochs.events(:,trial) = events_test.desc(trial, :);
         testEEG.epochs.y(:,trial) = dataio_getlabelERP(events_test.desc(trial, :), phrase_test(trial), 'RC');

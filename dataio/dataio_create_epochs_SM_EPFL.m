@@ -76,8 +76,9 @@ downsample = 512;
 decimation = fs / downsample;
 filter_order = 2;
 
-wnd = (epoch_length * downsample) / 10^3;
-
+wnd_epoch = (epoch_length * downsample) / 10^3;
+correctionInterval = round([-100 0] * fs) / 10^3;
+wnd = [correctionInterval(1) wnd_epoch(2)];
 % save
 Config_path_SM = 'datasets\epochs\EPFL_image_speller\SM';
 
@@ -113,6 +114,7 @@ for subj=1:nSubj
             disp(['Segmenting Train data for subject: subj' num2str(subj)]);
             pos = round(etime(d.events(1:n_trials,:), repmat(d.events(1,:), n_trials,1)) .* (downsample) + 1 + 0.4*downsample);
             eeg_epochs = dataio_getERPEpochs(wnd, pos, s);
+            eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
             trainEEG.epochs.signal(:,:,:,tr_trial) = eeg_epochs;
             trainEEG.epochs.events(:,tr_trial) = d.stimuli(1:n_trials);
             trainEEG.epochs.y(d.stimuli(1:n_trials) == d.target, tr_trial) = 1;
@@ -159,6 +161,7 @@ for subj=1:nSubj
         disp(['Segmenting Test data for subject: subj' num2str(subj)]);
         pos = round(etime(d.events(1:n_trials,:), repmat(d.events(1,:), n_trials,1)) .* (downsample) + 1 + 0.4*downsample);
         eeg_epochs = dataio_getERPEpochs(wnd, pos, s);
+        eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
         testEEG.epochs.signal(:,:,:,run) = eeg_epochs;
         testEEG.epochs.events(:,run) = d.stimuli(1:n_trials);
         testEEG.epochs.y(d.stimuli(1:n_trials) == d.target, run) = 1;

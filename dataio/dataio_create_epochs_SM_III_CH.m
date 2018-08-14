@@ -67,6 +67,8 @@ stimDuration = ( (stimulation + isi) / 10^3 ) * 240;
 % processing parameters
 filter_order = 2;
 wnd = (epoch_length * fs) / 10^3;
+% correctionInterval = round([-100 0] * fs) / 10^3;
+% wnd = [correctionInterval(1) wnd_epoch(2)];
 subj = 1;
 compConfig_path_SM = 'datasets\epochs\Comp_III_ch_2004\';
 if isempty(filter_band)
@@ -97,6 +99,7 @@ for file_index=1:2:length(dataSetFiles)
         disp(['Segmenting Train data for subject: ' subject ' Trial: ' num2str(tr)]);
         events = dataio_getevents_BCI2000(train_set.StimulusCode(tr, :), stimDuration);
         eeg_epochs = dataio_getERPEpochs(wnd, events.pos, s(:,:,tr));
+%         eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
         trainEEG.epochs.signal(:,:,:,tr) = eeg_epochs;
         trainEEG.epochs.events(:,tr) = events.desc;
         trainEEG.epochs.y(:,tr) = dataio_getlabelERP(events.desc, train_set.TargetChar(tr), 'RC');
@@ -138,6 +141,7 @@ for file_index=1:2:length(dataSetFiles)
         disp(['Segmentation of Test data for subject: ' subject ' Trial:' num2str(tr)]);
         events = dataio_getevents_BCI2000(test_set.StimulusCode(tr, :), stimDuration);
         eeg_epochs = dataio_getERPEpochs(wnd, events.pos, s(:,:,tr));
+%         eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
         testEEG.epochs.signal(:,:,:,tr) = eeg_epochs;
         testEEG.epochs.events(:,tr) = events.desc;
         testEEG.epochs.y(:,tr) = dataio_getlabelERP(events.desc, test_set.TargetChar(tr), 'RC');

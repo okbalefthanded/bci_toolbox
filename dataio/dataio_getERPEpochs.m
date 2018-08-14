@@ -32,10 +32,13 @@ if(size(pos, 2)== 1)
 end
 
 channels = size(signal, 2);
-dur = [0:diff(wnd)]'*ones(1, length(pos));
+% dur = [0:diff(wnd)]'*ones(1, length(pos));
+wnd = round(wnd);
+dur = [wnd(1):wnd(2)]'*ones(1, length(pos));
 tDur = size(dur,1);
 
 epoch_idx = bsxfun(@plus, dur, pos);
+% epoch_idx(epoch_idx ==0) = 1;
 eeg_epochs = reshape(signal(epoch_idx, :),[tDur length(pos) channels]);
 eeg_epochs = permute(eeg_epochs, [1 3 2]);
 end
