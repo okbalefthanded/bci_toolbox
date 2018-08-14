@@ -1,0 +1,18 @@
+function [nWorkers, param] = getRessources(settings)
+%GETRESSOURCES Summary of this function goes here
+%   Detailed explanation goes here
+nWorkers = settings.nWorkers + settings.isWorker;
+searchSpace = length(Cs)*length(gammas);
+offset = 0;
+if(searchSpace <= nWorkers)
+    nWorkers = searchSpace;
+    paramsplit = 1;
+else if(mod(searchSpace, nWorkers)==0)
+        paramsplit = searchSpace / nWorkers;
+    else
+        paramsplit = floor(searchSpace / nWorkers);
+        offset = mod(searchSpace, nWorkers);
+    end
+end
+end
+

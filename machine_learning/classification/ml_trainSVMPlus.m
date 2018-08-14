@@ -1,11 +1,22 @@
-function [model] = ml_trainSVMPlus(features, alg, cv)
+function [model] = ml_trainSVMPLUS(features, alg, cv)
 %ML_TRAINSVMPLUS Summary of this function goes here
 %   Detailed explanation goes here
 
 % created 03-16-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
+if(isfield(alg,'o') || isfield(alg, 'n') || isfield(cv, 'n'))
+    [alg, cv] = recoverStructs(alg, cv);
+end
+if(isfield(features,'p'))
+    features.privileged = features.p;
+    features = fRMField(features, {'p'});
+end
+if(isempty(alg.options))
+    alg.options.kernel.type = 'LIN';
+    alg.options.kernel_plus.type = 'LIN';
+    alg.normalization = 'ZSCORE';
+end
 if (cv.nfolds == 0)
     if (isfield(alg,'normalization'))
         norml = utils_estimate_normalize(features.x, alg.normalization);
@@ -17,162 +28,181 @@ if (cv.nfolds == 0)
         trainData_plus = features.privileged;
     end
     trainLabel = features.y;
-    if(~isfield(cv,'c') || ~isfield(cv,'g'))
+    
+    if(~isfield(alg.options,'C') && ~isfield(alg.options.kernel,'g'))
         c = 1;
         g = 1 / size(trainData, 2);
-        cplus = 1;
-        gplus = 1 / size(trainData_plus, 2);
     else
-        c = cv.c;
-        g = cv.g;
-        cplus = cv.cplus;
-        gplus = cv.gplus;
+        c = alg.options.C;
+        if(isfield(alg.options.kernel,'g'))
+            g = alg.options.kernel.g;
+        end
     end
-        
+     if(~isfield(alg.options,'T') && ~isfield(alg.options.kernel_plus,'g'))
+        cplus = 1;
+        gpls = 1 / size(trainData_plus, 2);
+    else
+        cplus = alg.options.T;
+        if(isfield(alg.options.kernel_plus,'g'))
+            gpls = alg.options.kernel_plus.g;
+        end
+     end    
     aSMO_opt = ['-s 5 -a 1',' '];
-    switch upper(alg.options.svm_kernel)
+    switch upper(alg.options.kernel.type)
         case 'RBF'
-            aSMO_opt = [aSMO_opt,'-t 2',' ','-g',' ',num2str(g),' '];
+            aSMO_opt = [aSMO_opt,'-t 2',' ','-g',' ',sprintf('%d',g),' '];
         case 'LIN'
             aSMO_opt = [aSMO_opt,'-t 0',' '];
         otherwise
             error('Incorrect Kernel for training SVM');
     end
-    switch upper(alg.options.svm_plus_kernel)
+    switch upper(alg.options.kernel_plus.type)
         case 'RBF'
-            aSMO_opt = [aSMO_opt,'-T 2',' ','-G',' ',num2str(gplus),' '];
+            aSMO_opt = [aSMO_opt,'-T 2',' ','-G',' ',sprintf('%d',gpls),' '];
         case 'LIN'
             aSMO_opt = [aSMO_opt,'-T 0',' '];
         otherwise
             error('Incorrect Kernel for training SVM');
     end
     
-    aSMO_opt = [aSMO_opt, '-c',' ',num2str(c),' ','-C',' ',num2str(cplus),' ','-w1 5 -w-1 1'];
+    aSMO_opt = [aSMO_opt, '-c',' ',sprintf('%d',c),' ','-C',' ',sprintf('%d',cplus),' ','-w1 5 -w-1 1'];
     
-    switch alg.lupi_learner
-        case 'gSMO'
-            %  TODO
-%             g_SMO_train = 'svm-train-plus.exe ';
-%             
-%             data_plus = 'svm_plus_data\current_dplus';
-%             train_data = 'svm_plus_data\train_data ';
-%             libsvmwrite(train_data, trainLabel, sparse(trainData));
-%             libsvmwrite(data_plus, trainLabel, sparse(trainData_plus));
-%             % Linear Kernel
-%             % aSMO_opt = ['-s 5 -t 0 -T 0 -f ' data_plus ' -C 0.01 '];
-%             % Gaussian Kernel
-%             %         aSMO_opt = ['-s 5 -t 2 -T 2 -f ' data_plus ' -C 0.01 -g 13 '];
-%             model_plus = 'svm_plus_models\currentplus_model';
-%             aSMO_opt = [aSMO_opt,' ','-f',' ',data_plus,' ','-w1 5 -w-1 1',' '];
-%             gSMO_cmd = [g_SMO_train aSMO_opt train_data model_plus];
-%             system(gSMO_cmd);
-            classifier = svm_train_plus(trainLabel, trainData, trainData_plus, aSMO_opt);
-            model.normalization = norml;
-            model.normalization_plus = norml_plus;
-%             model.classifier = model_plus;
-            model.classifier = classifier;
-            model.lupi_learner = 'gSMO';
-            
-        case 'L2_SVM+'
-            %         TODO
-            %         only Kernel SVM+
-            % calculate kernels
-            kparam = struct();
-            kparam.kernel_type = 'gaussian';
-            [K, train_kparam] = getKernel(trainData', kparam);
-            
-            kparam = struct();
-            kparam.kernel_type = 'gaussian';
-            tK = getKernel(trainData_plus', kparam);
-            %
-            svmplus_param.svm_C = 1;
-            svmplus_param.gamma = 1;
-            svmplus_param.svm_C = 1;
-            svmplus_param.gamma = 1;
-            train_labels = features.y;
-            model.classifier = solve_l2svmplus_kernel(train_labels, K, tK, svmplus_param.svm_C, svmplus_param.gamma);
-            model.train_labels = train_labels;
-            model.train_kparam = train_kparam;
-            model.train_features = trainData;
-            model.lupi_learner = 'L2_SVM+';
-            
-        case 'MATLAB_SVM+'
-            %     TODO
-        otherwise
-            error('Incorrect SVM+ learner');
-    end
-    model.alg.learner = 'SVM+';
+    classifier = svm_train_plus(trainLabel, trainData, trainData_plus, aSMO_opt);
+    model.normalization = norml;
+    model.normalization_plus = norml_plus;
+    model.classifier = classifier;
+    model.alg.learner = 'SVMPLUS';
 else
-    %     TODO: cross-val
-    
-    acc_cv = 0;
-    accuracy_folds = zeros(1,cv.nfolds);
-    cv_models = cell(1,cv.nfolds);
-    folds = ml_crossValidation(cv, size(features.x, 1));
-    %     TODO RANDOM SEARCH HYPERPARAMETER TUNING
-    Cs = [0.001, 0.01, 0.1, 1, 10, 100];
-    Csplus = Cs;
-    gammas = [0.001, 0.01, 0.1, 1, 10, 100];
-    gammas_plus = gammas;
-    if(strcmp(alg.options.svm_kernel,'RBF'))
-        for c=Cs
-            for cp = Csplus
-                for g=gammas
-                    for gp = gammas_plus
-                        for fold = 1:cv.nfolds
-                            idx = folds==fold;
-                            train = ~idx;
-                            test = idx;
-                            x_train = utils_get_split(features, train);
-                            x_test = utils_get_split(features, test);
-                            cv_fold.c = c;
-                            cv_fold.g = g;
-                            cv_fold.cplus = cp;
-                            cv_fold.gplus = gp;
-                            cv_fold.nfolds = 0;
-                            cv_models{fold} = ml_trainSVMPlus(x_train, alg, cv_fold);
-                            output = ml_applySVMPlus(x_test, cv_models{fold});
-                            accuracy_folds(fold) = output.accuracy;
-                        end
-                        if(mean(accuracy_folds) > acc_cv)
-                            acc_cv = mean(accuracy_folds);
-                            best_c = c;
-                            best_g = g;
-                            best_cplus = cp;
-                            best_gplus = gp;
-                        end
-                        disp(['//CV values C:',num2str(c),' G: ',num2str(g),'C plus: ', num2str(cp),' Gplus: ',num2str(gp)]);
-                        disp(['//Best values for SVM RBF kernel: C ',num2str(best_c),' Gamma: ',num2str(best_g),'C plus: ', num2str(best_cplus),' Gplus: ',num2str(best_gplus)]);
-                    end
-                end
-            end
-        end
+    % parallel settings
+    [settings, datacell, fHandle] = parallel_getInputs(cv,...
+                                                       features,...
+                                                       alg.learner...
+                                                       );
+    % generate param cell
+    paramcell = genParams(alg, settings);
+    %     start parallel CV
+    [res, resKeys] = startMaster(fHandle, datacell, paramcell, settings);
+    %     select_best_hyperparam
+    alg = parallel_getBestParam(res, paramcell);
+    %     detach Memory
+    SharedMemory('detach', resKeys, res);
+    %     kill slaves processes
+    terminateSlaves;
+    cv.nfolds = 0;
+    cv = fRMField(cv, 'parallel');
+    model = ml_trainSVMPLUS(features, alg, cv);
+end
+end
+%%
+function [alg, cv] = recoverStructs(alg, cv)
+if(isfield(alg.o,'k'))
+    [alg.o.('kernel')] = alg.o.('k');
+    [alg.o.('kernel').('type')] = alg.o.('k').('t');
+    [alg.o.('kernel_plus')] = alg.o.('s');
+    [alg.o.('kernel_plus').('type')] = alg.o.('s').('t');
+    [alg.('options')] = alg.('o');
+    [alg.('normalization')] = alg.('n');
+end
+if(isfield(cv, 'n'))
+    [cv.('nfolds')] = cv.('n');
+end
+alg = fRMField(alg, {'o','n'});
+cv = fRMField(cv, 'n');
+end
+%%
+function paramcell = genParams(alg, settings)
+if(size(alg.options.C,2)==2)
+    Cs = alg.options.C(1):0.1:alg.options.C(2);
+    Cs(Cs==0) = [];
+else if(numel(alg.options.C) > 2)
+        Cs = alg.options.C;
     else
-        for c = 0.001:0.01:100
-            for fold = 1:cv.nfolds
-                idx = folds==fold;
-                train = ~idx;
-                test = idx;
-                x_train = utils_get_split(features, train);
-                x_test = utils_get_split(features, test);
-                cv_fold.c = c;
-                cv_fold.nfolds = 0;
-                cv_models{fold} =  ml_trainSvm(x_train, alg, cv_fold);
-                output = applySvm(x_test, cv_models{fold});
-                accuracy_folds(fold) = output.accuracy;
-            end
-            if(mean(accuracy_folds) > acc_cv)
-                acc_cv = mean(accuracy_folds);
-                best_c = c;
-            end
+        % default range
+        Cs = [0.001, 0.01, 0.1, 1, 10, 100];
+    end
+end
+if(strcmp(alg.options.kernel.type,'RBF'))
+    if(size(alg.options.kernel.g,2)==2)
+        gammas = alg.options.kernel.g(1):0.1:alg.options.kernel.g(2);
+    else
+        if(isvector(alg.options.kernel.g))
+            gammas = alg.options.kernel.g;
+        else
+            gammas = [0.001, 0.01, 0.1, 1, 10, 100];
         end
     end
-    cv.nfolds = 0;
-    cv.c = best_c;
-    cv.g = best_g;
-    cv.cplus = best_cplus;
-    cv.gplus = best_gplus;
-    model = ml_trainSVMPlus(features, alg, cv);
+else
+    gammas = 1;
+end
+if(size(alg.options.T,2)==2)
+    Ts = alg.options.T(1):0.1:alg.options.T(2);
+    Ts(Ts==0) = [];
+else if(numel(alg.options.T) > 2)
+        Ts = alg.options.T;
+    else
+        % default range
+        Ts = [0.001, 0.01, 0.1, 1, 10, 100];
+    end
+end
+if(strcmp(alg.options.kernel_plus.type,'RBF'))
+    if(size(alg.options.kernel_plus.g,2)==2)
+        gpls = alg.options.kernel_plus.g(1):0.1:alg.options.kernel_plus.g(2);
+    else
+        if(isvector(alg.options.kernel_plus.g))
+            gpls = alg.options.kernel_plus.g;
+        else
+            gpls = [0.001, 0.01, 0.1, 1, 10, 100];
+        end
+    end
+else
+    gpls = 1;
+end
+searchSpace = length(Cs)*length(gammas)*length(Ts)*length(gpls);
+[nWorkers, paramsplit, offset] = getRessources(settings, searchSpace);
+paramcell = cell(1, nWorkers);
+cv.n = 0;
+alg.o.k.t = alg.options.kernel.type;
+alg.o.k.g = [];
+alg.o.s.t = alg.options.kernel_plus.type;
+alg.o.s.g = [];
+alg.n = alg.normalization;
+m = 1;
+n = 1;
+l = 1;
+p = 1;
+off = 0;
+for i=1:nWorkers
+    tmp = cell(1, paramsplit+off);
+    for k=1:(paramsplit+off)
+        alg.o.C = Cs(m);
+        if(isfield(alg.o.k,'g'))
+            alg.o.k.g = gammas(n);
+        end
+        alg.o.T = Ts(l);
+        if(isfield(alg.o.s,'g'))
+            alg.o.s.g = gpls(p);
+        end
+        tmp{k} = {alg, cv};
+        p = p + 1;
+        if(p > length(gpls) && l < length(Ts))
+            p = 1;
+            l = l+1;
+        end
+        if(p > length(gpls) && l >= length(Ts))
+            p = 1;
+            l = 1;
+            n = n + 1;          
+        end
+        if(n > length(gammas) && m < length(Cs))
+            n = 1;
+            m = m+1;
+        end
+    end
+    paramcell{i} = tmp;
+    if((nWorkers -i) == offset)
+        off = 1;
+    end
+end
 end
 %%
 % Usage: svm-train [options] training_set_file [model_file]

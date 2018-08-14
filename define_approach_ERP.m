@@ -13,15 +13,15 @@ set.title = 'LARESI_FACE_SPELLER_150';
 set.mode = 'SM';
 report = 0;
 %% Downsample
-% approach.features.alg = 'DOWNSAMPLE';
-% approach.features.options.decimation_factor = 12;
+approach.features.alg = 'DOWNSAMPLE';
+approach.features.options.decimation_factor = 12;
 %% STDA 
-approach.features.alg = 'STDA';
-approach.features.options.itrmax = 200;
+% approach.features.alg = 'STDA';
+% approach.features.options.itrmax = 200;
 %% Regularized LDA approach
 % 
-approach.classifier.learner = 'RLDA';
-approach.classifier.options.regularizer = 'OAS';
+% approach.classifier.learner = 'RLDA';
+% approach.classifier.options.regularizer = 'OAS';
 % approach.classifier.learner = 'LDA';
 %  
 % approach.classifier.learner = 'SWLDA';
@@ -54,15 +54,16 @@ approach.classifier.options.regularizer = 'OAS';
 % approach.classifier.options.stepsize = 0.05;
 % approach.classifier.options.display = 1;
 %% SVM+ approach
-% approach.privileged.features.alg = 'DOWNSAMPLE';
-% approach.privileged.features.options.decimation_factor = 4;
-% approach.classifier.learner = 'SVM+';
-% approach.classifier.lupi_learner = 'gSMO';
-% % approach.classifier.lupi_learner = 'L2_SVM+';
-% approach.classifier.normalization = 'ZSCORE';
-% approach.classifier.options.svm_kernel = 'RBF';
-% approach.classifier.options.svm_kernel = 'LIN';
-% approach.classifier.options.svm_plus_kernel = 'LIN';
+approach.privileged.features.alg = 'DOWNSAMPLE';
+approach.privileged.features.options.decimation_factor = 12;
+approach.classifier.learner = 'SVMPlus';
+approach.classifier.normalization = 'ZSCORE';
+approach.classifier.options.kernel.type = 'LIN'; % LIN | RBF 
+approach.classifier.options.kernel_plus.type = 'LIN';% LIN | RBF 
+approach.classifier.options.C = [0,2];
+approach.classifier.options.T = [0,2];
+approach.classifier.options.kernel.g = [0,2];
+approach.classifier.options.kernel_plus.g = [0,2];
 %% Hierarchical Multiple Kernel Learning
 % approach.classifier.learner = 'HKL';
 % approach.classifier.options.lambda = 10.^[1:-.5:-8];
@@ -149,8 +150,8 @@ approach.classifier.options.regularizer = 'OAS';
 % approach.classifier.options.parameters.see = 7332; % seed
 %% Cross-validation
 approach.cv.method = 'KFOLD';
-approach.cv.nfolds = 0;
-% approach.cv.nfolds = 5;
+% approach.cv.nfolds = 0; 
+approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %% Check approach validity

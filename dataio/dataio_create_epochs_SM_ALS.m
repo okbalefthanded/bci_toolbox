@@ -68,7 +68,9 @@ fs = 256; % in Hz
 stimDuration = ( (stimulation + isi) / 10^3 ) * fs;
 
 % processing parameters
-wnd = (epoch_length * fs) / 10^3;
+wnd_epoch = (epoch_length * fs) / 10^3;
+correctionInterval = round([-100 0] * fs) / 10^3;
+wnd = [correctionInterval(1) wnd_epoch(2)];
 filter_order = 2;
 
 % save data
@@ -93,7 +95,7 @@ for subj= 1:nSubj
     load(dataSetFiles{subj});
     clab = data.channels;
     
-    s = eeg_filter(data.X, fs, filter_band(1), filter_band(2), filter_order);
+    s = eeg_filter(data.X, fs, filter_band(1), filter_band(2), filter_order);      
     events = dataio_geteventsALS(data.y_stim, data.trial, stimDuration);
     events_train.pos = events.pos(train_trials, :);
     events_train.desc = events.desc(train_trials, :);
@@ -105,6 +107,8 @@ for subj= 1:nSubj
     for trial = 1:trials_train_count
         disp(['Segmenting Train data for subject: ' subject ' Trial: ' num2str(trial)]);
         eeg_epochs = dataio_getERPEpochs(wnd, events_train.pos(trial, :), s);
+        % baseline correction
+        eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
         trainEEG.epochs.signal(:,:,:,trial) = eeg_epochs;
         trainEEG.epochs.events(:,trial) = events_train.desc(trial, :);
         trainEEG.epochs.y(:,trial) = dataio_getlabelERP(events_train.desc(trial, :), phrase_train(trial), 'RC');

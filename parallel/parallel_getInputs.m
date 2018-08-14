@@ -15,6 +15,9 @@ if(isfield(features, 'x'))
 else
     datacell.data = features;
 end
+if(isfield(features, 'privileged'))
+    datacell.data.p = features.privileged;
+end
 datacell.fold = ml_crossValidation(cv, length(features.y));
 
 %     Train & Predict functions
