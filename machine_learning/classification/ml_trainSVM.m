@@ -43,7 +43,7 @@ if (cv.nfolds == 0)
         trainData = features.x;
     end
     trainLabel = features.y;
-    
+    [N,~] = size(trainData);
     if(~isfield(alg.options,'C') && ~isfield(alg.options.kernel,'g'))
         c = 1;
         g = 1 / size(trainData, 2);
@@ -53,13 +53,24 @@ if (cv.nfolds == 0)
             g = alg.options.kernel.g;
         end
     end
+    n_min = sum(trainLabel==-1);
+    n_maj = sum(trainLabel==1);
+    w_min = n_min / n_maj;    
     switch upper(alg.options.kernel.type)
         case 'RBF'
-            classifier = svmtrain(trainLabel, trainData, ['-t 2 -g ',num2str(g),' ','-c ',num2str(c),' ','-w1 2 -w-1 1']);
+            classifier = svmtrain(trainLabel, trainData, ['-t 2 -g ',num2str(g),' ','-c ',num2str(c),' ','-w1 ',num2str(w_min),'-w-1 1']);
         case 'LIN'
-          classifier = svmtrain(trainLabel, trainData, ['-t 0 -c ',num2str(c),' ','-w1 2 -w-1 1']);
-        otherwise
-            error('Incorrect Kernel for training SVM');
+            classifier = svmtrain(trainLabel, trainData, ['-t 0 -c ',num2str(c),' ','-w1 ',num2str(w_min),'-w-1 1']);
+        case 'ARCCOS'
+            classifier = svmtrain(trainLabel, trainData, ['-t 5 -c ',num2str(c),' ','-N 1 2','-w1 ',num2str(w_min),'-w-1 1']);
+        otherwise % PRECOMPUTED KERNEL
+            K = utils_compute_kernel(trainData, trainData, alg.options);
+            % classifier = svmtrain(trainLabel, [(1:N)' (trainLabel*trainLabel').*K],['-t 4 -c ',num2str(c),' -w1 ',num2str(w_min),'-w-1 1']);
+            classifier = svmtrain(trainLabel, [(1:N)' K],['-t 4 -c ',num2str(c),' -w1 ',num2str(w_min),'-w-1 1']);
+            % classifier.SVs = sparse(trainData(classifier.sv_indices,:));
+            classifier.opts = alg.options;
+            classifier.trainData = trainData;
+            % error('Incorrect Kernel for training SVM');
     end
     model.normalization = norml;
     model.classifier = classifier;
@@ -68,9 +79,9 @@ if (cv.nfolds == 0)
 else
     % parallel settings
     [settings, datacell, fHandle] = parallel_getInputs(cv,...
-                                                       features,...
-                                                       alg.learner...
-                                                       );
+        features,...
+        alg.learner...
+        );
     % generate param cell
     paramcell = genParams(alg, settings);
     %     start parallel CV
