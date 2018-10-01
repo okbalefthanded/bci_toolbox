@@ -39,7 +39,12 @@ function [ output ] = ml_get_performance(output)
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 num_classes = numel(unique(output.trueClasses));
-output.confusion = flip(confusionmat(output.trueClasses, output.y));
+y_true = output.trueClasses;
+y_true(y_true==-1) = 2;
+y = output.y;
+y(y==-1) = 2;
+output.confusion = confusionmat(y_true, y);
+% output.confusion = flip(confusionmat(output.trueClasses, output.y));
 % output.confusion = confusionmat(output.trueClasses, output.y);
 p0 = sum(dot(output.confusion,output.confusion')) / length(output.y)^2;
 if(num_classes == 2)
@@ -56,7 +61,7 @@ if(num_classes == 2)
     output.precision = 1 - output.false_detection; % PPV (positive predictive value)
     output.hf_difference = output.sensitivity - output.false_detection; % H-F
     %     output.f1 = 2*(output.precision * output.sensitivity) / (output.precision + output.sensitivity);
-
+    [~,~,~,output.auc] = perfcurve(output.trueClasses', output.score, 1);
 else
     % multi-class
     acc = output.accuracy / 100;

@@ -3,7 +3,7 @@
 % Create epochs for all datasets available
 tic
 %% ERP
-epoch_length = [0 800]; filter_band = [1 10];
+epoch_length = [0 700]; filter_band = [1 10];
 dataio_create_epochs_SM_ALS(epoch_length, filter_band);
 dataio_create_epochs_SM_EPFL(epoch_length, filter_band);
 dataio_create_epochs_SM_III_CH(epoch_length, filter_band);

@@ -59,21 +59,24 @@ if (cv.nfolds == 0)
     switch upper(alg.options.kernel.type)
         case 'RBF'
             classifier = svmtrain(trainLabel, trainData, ['-t 2 -g ',num2str(g),' ','-c ',num2str(c),' ','-w1 ',num2str(w_min),'-w-1 1']);
+            model.alg.params.g = g;
         case 'LIN'
             classifier = svmtrain(trainLabel, trainData, ['-t 0 -c ',num2str(c),' ','-w1 ',num2str(w_min),'-w-1 1']);
         case 'ARCCOS'
             classifier = svmtrain(trainLabel, trainData, ['-t 5 -c ',num2str(c),' ','-N 1 2','-w1 ',num2str(w_min),'-w-1 1']);
+            model.alg.params.N = [];
         otherwise % PRECOMPUTED KERNEL
             K = utils_compute_kernel(trainData, trainData, alg.options);
             % classifier = svmtrain(trainLabel, [(1:N)' (trainLabel*trainLabel').*K],['-t 4 -c ',num2str(c),' -w1 ',num2str(w_min),'-w-1 1']);
             classifier = svmtrain(trainLabel, [(1:N)' K],['-t 4 -c ',num2str(c),' -w1 ',num2str(w_min),'-w-1 1']);
-            % classifier.SVs = sparse(trainData(classifier.sv_indices,:));
             classifier.opts = alg.options;
             classifier.trainData = trainData;
             % error('Incorrect Kernel for training SVM');
     end
     model.normalization = norml;
     model.classifier = classifier;
+    model.alg.params.c = c;
+    
     model.alg.learner = 'SVM';
     
 else
@@ -95,6 +98,7 @@ else
     cv.nfolds = 0;
     cv = fRMField(cv, 'parallel');
     model = ml_trainSVM(features, alg, cv);
+    model.alg.cv_perf = alg.cv_perf;
 end
 end
 %%

@@ -159,6 +159,8 @@ approach.cv.parallel.nWorkers = 3;
 % approach = check_approach_validity(set, approach);
 %%
 [results, output, model] = run_analysis_ERP(set, approach, report);
+plot_roc_curve(output{1})
+plot_roc_curve(output{2})
 % toc
 %% Reimann Geometry Based Analysis
 % approach.features.alg = 'REIMANN';
