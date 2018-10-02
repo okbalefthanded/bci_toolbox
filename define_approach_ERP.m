@@ -4,8 +4,8 @@
 
 % sets = {'LARESI_FACE_SPELLER', 'P300_ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
 tic
-set.title = 'P300-ALS';      
-% set.title = 'LARESI_FACE_SPELLER_150';
+% set.title = 'P300-ALS';      
+set.title = 'LARESI_FACE_SPELLER_150';
 % set.title = 'LARESI_FACE_SPELLER_120';
 % set.title = 'III_CH';
 % set.title = 'EPFL_IMAGE_SPELLER';
@@ -21,8 +21,8 @@ approach.features.options.moving_average = 12;
 % approach.features.options.itrmax = 200;
 %% Regularized LDA approach
 % 
-% approach.classifier.learner = 'RLDA';
-% approach.classifier.options.regularizer = 'OAS';
+approach.classifier.learner = 'RLDA';
+approach.classifier.options.regularizer = 'OAS';
 % approach.classifier.learner = 'LDA';
 %  
 % approach.classifier.learner = 'SWLDA';
@@ -32,13 +32,13 @@ approach.features.options.moving_average = 12;
 % approach.classifier.learner = 'BLDA';
 
 %% SVM approach
-approach.classifier.normalization = 'ZSCORE';
-approach.classifier.learner = 'SVM';
+% approach.classifier.normalization = 'ZSCORE';
+% approach.classifier.learner = 'SVM';
 % approach.classifier.options.kernel.type = 'LIN';
-approach.classifier.options.kernel.type = 'RBF';
+% approach.classifier.options.kernel.type = 'RBF';
 % approach.classifier.options.C = 2;
-approach.classifier.options.C = 2.^[0:5];
-approach.classifier.options.kernel.g = 2.^[-5:5];
+% approach.classifier.options.C = 2.^[0:5];
+% approach.classifier.options.kernel.g = 2.^[-5:5];
 %% One class SVM approach
 % approach.classifier.normalization = 'ZSCORE';
 % approach.classifier.learner = 'ONESVM';
@@ -159,16 +159,16 @@ approach.classifier.options.kernel.g = 2.^[-5:5];
 % approach.classifier.options.parameters.see = 7332; % seed
 %% Cross-validation
 approach.cv.method = 'KFOLD';
-% approach.cv.nfolds = 0; 
-approach.cv.nfolds = 5;
+approach.cv.nfolds = 0; 
+% approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %% Check approach validity
 % approach = check_approach_validity(set, approach);
 %%
 [results, output, model] = run_analysis_ERP(set, approach, report);
-plot_roc_curve(output{1})
-plot_roc_curve(output{2})
+% plot_roc_curve(output{1})
+% plot_roc_curve(output{2})
 % toc
 %% Reimann Geometry Based Analysis
 % approach.features.alg = 'REIMANN';

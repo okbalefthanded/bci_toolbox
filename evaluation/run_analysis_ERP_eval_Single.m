@@ -9,7 +9,8 @@ nSubj = utils_fetch_Set_Folder(set);
 interSubject_results = zeros(1, nSubj);
 min_best_sequence = zeros(2, nSubj);
 eval_duration = 1; % 1 second time for evaluation
-
+model = cell(1, nSubj);
+output = cell(1, nSubj);
 for subj = 1:nSubj
     set.subj = subj;
     trainEEG = dataio_read_ERP(set,'train');
@@ -22,8 +23,8 @@ for subj = 1:nSubj
     approach.features.options.mode = 'estimate';
     features = extractERP_features(trainEEG, approach);    
     clear trainEEG    
-    model = ml_trainClassifier(features, approach.classifier, approach.cv);
-    output_train = ml_applyClassifier(features, model);
+    model{subj} = ml_trainClassifier(features, approach.classifier, approach.cv);
+    output_train = ml_applyClassifier(features, model{subj});
     %% Test
     testEEG = dataio_read_ERP(set, 'test');
     if(isfield(features, 'af'))
@@ -34,7 +35,7 @@ for subj = 1:nSubj
     phrase = testEEG.phrase;
     subject_id = testEEG.subject.id;
     clear testEEG
-    output_test = ml_applyClassifier(test_features, model);
+    output_test = ml_applyClassifier(test_features, model{subj});
     res = evaluation_ERP(output_test, ...
                          test_features.paradigm, ...
                          phrase...
@@ -48,7 +49,7 @@ for subj = 1:nSubj
 %                               subject_id...
 %                                  );
     %     clear testEEG
-    output = {output_train, output_test};
+    output{subj} = {output_train, output_test};
     interSubject_results(subj) = output_test.accuracy;
     [min_best_sequence(1,subj), min_best_sequence(2,subj)]= max(results(subj).correct);
     results(subj).train_acc = output_train.accuracy;
