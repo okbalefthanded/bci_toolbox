@@ -66,7 +66,7 @@ switch upper(model.alg.learner)
     case 'STDA'
        % TODO
         output = ml_applySTDA(features, model);
-    case 'SVM'
+    case {'SVM', 'ONESVM'}
         output = ml_applySVM(features, model);
     case 'LR'
         output = ml_applyLR(features,model);

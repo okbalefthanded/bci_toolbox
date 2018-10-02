@@ -1,4 +1,4 @@
-    function [output] = ml_applySVM(features, model)
+function [output] = ml_applySVM(features, model)
 %ML_APPLYSVM Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -16,7 +16,7 @@ if (isfield(model, 'normalization'))
 else
     testData = features.x;
 end
-nClasses = length(unique(output.trueClasses));
+% nClasses = length(unique(output.trueClasses));
 %  precomputed kernel
 if(model.classifier.Parameters(2)==4)
     K = utils_compute_kernel(testData, model.classifier.trainData, model.classifier.opts);

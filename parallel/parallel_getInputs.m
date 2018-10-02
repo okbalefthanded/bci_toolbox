@@ -22,7 +22,11 @@ datacell.fold = ml_crossValidation(cv, length(features.y));
 
 %     Train & Predict functions
 %     SharedMatrix bug, fieldnames should have same length
-fHandle.tr = ['ml_train', upper(learner)];
+if(isempty(which(['ml_train',upper(learner)])))
+    fHandle.tr = ['ml_train',upper(learner(end-2:end))];
+else
+    fHandle.tr = ['ml_train',upper(learner)];
+end
 if(isempty(which(['ml_apply',upper(learner)])))
     fHandle.pr = ['ml_apply',upper(learner(end-2:end))];
 else

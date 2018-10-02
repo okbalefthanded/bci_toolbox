@@ -55,20 +55,30 @@ if (cv.nfolds == 0)
     end
     n_min = sum(trainLabel==-1);
     n_maj = sum(trainLabel==1);
-    w_min = n_min / n_maj;    
+    w_min = n_min / n_maj;
+    if(strcmp(alg.learner, 'SVM'))
+        svm_type = '0'; %C-SVC
+        model.alg.learner = 'SVM';
+    else
+        svm_type = '2'; %One-class SVM
+        positive_instances = trainLabel == 1;
+        trainData = trainData(positive_instances, :);
+        trainLabel = trainLabel(positive_instances, :);
+        model.alg.learner = 'ONESVM';
+    end
     switch upper(alg.options.kernel.type)
         case 'RBF'
-            classifier = svmtrain(trainLabel, trainData, ['-t 2 -g ',num2str(g),' ','-c ',num2str(c),' ','-w1 ',num2str(w_min),'-w-1 1']);
+            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 2 -g ',num2str(g),' ','-c ',num2str(c),' ','-n ','0.3 ','-w1 ',num2str(w_min),'-w-1 1']);
             model.alg.params.g = g;
         case 'LIN'
-            classifier = svmtrain(trainLabel, trainData, ['-t 0 -c ',num2str(c),' ','-w1 ',num2str(w_min),'-w-1 1']);
+            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 0 -c ',num2str(c),' ','-n ','0.1 ','-w1 ',num2str(w_min),'-w-1 1']);
         case 'ARCCOS'
-            classifier = svmtrain(trainLabel, trainData, ['-t 5 -c ',num2str(c),' ','-N 1 2','-w1 ',num2str(w_min),'-w-1 1']);
+            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 5 -c ',num2str(c),' ','-N 1 2','-n ','0.1 ','-w1 ',num2str(w_min),'-w-1 1']);
             model.alg.params.N = [];
         otherwise % PRECOMPUTED KERNEL
             K = utils_compute_kernel(trainData, trainData, alg.options);
             % classifier = svmtrain(trainLabel, [(1:N)' (trainLabel*trainLabel').*K],['-t 4 -c ',num2str(c),' -w1 ',num2str(w_min),'-w-1 1']);
-            classifier = svmtrain(trainLabel, [(1:N)' K],['-t 4 -c ',num2str(c),' -w1 ',num2str(w_min),'-w-1 1']);
+            classifier = svmtrain(trainLabel, [(1:N)' K],['-s ',svm_type,' -t 4 -c ',num2str(c),'-n ','0.1 ',' -w1 ',num2str(w_min),'-w-1 1']);
             classifier.opts = alg.options;
             classifier.trainData = trainData;
             % error('Incorrect Kernel for training SVM');
@@ -77,14 +87,13 @@ if (cv.nfolds == 0)
     model.classifier = classifier;
     model.alg.params.c = c;
     
-    model.alg.learner = 'SVM';
     
 else
     % parallel settings
     [settings, datacell, fHandle] = parallel_getInputs(cv,...
-        features,...
-        alg.learner...
-        );
+                                                       features,...
+                                                       alg.learner...
+                                                                );
     % generate param cell
     paramcell = genParams(alg, settings);
     %     start parallel CV
