@@ -1,7 +1,7 @@
 function [] = plot_classifier_scores(output)
 %PLOT_CLASSIFIER_SCORES Summary of this function goes here
 %   Detailed explanation goes here
-% date created 10-02-2016
+% date created 10-02-2018
 % last modified -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 colors = ['y', 'm', 'c', 'r', 'g', 'b', 'k'];

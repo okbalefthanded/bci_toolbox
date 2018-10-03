@@ -73,7 +73,12 @@ if (cv.nfolds == 0)
         case 'LIN'
             classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 0 -c ',num2str(c),' ','-n ','0.1 ','-w1 ',num2str(w_min),'-w-1 1']);
         case 'ARCCOS'
-            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 5 -c ',num2str(c),' ','-N 1 2','-n ','0.1 ','-w1 ',num2str(w_min),'-w-1 1']);
+            if(~isfield(alg.options.kernel,'levels'))
+                levels = [1 1 1];
+            else
+                levels = num2str(alg.options.kernel.levels);
+            end
+            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 5 -c ',num2str(c),' ','-N ',num2str(levels),' -n ','0.1 ','-w1 ',num2str(w_min),'-w-1 1']);
             model.alg.params.N = [];
         otherwise % PRECOMPUTED KERNEL
             K = utils_compute_kernel(trainData, trainData, alg.options);
