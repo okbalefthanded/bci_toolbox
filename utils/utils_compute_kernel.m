@@ -63,6 +63,14 @@ switch(alg.kernel.type)
         K = 1 ./ (1 + d.^alg.kernel.d);
     case 'WAVELET'
         K = wavelet_kernel(X, Y, alg);
+    case 'MATERN32'
+        d = pdist2(X,Y,'euclidean');
+        K = (1 + sqrt(3)*d).*exp(-sqrt(3)*d);
+    case 'MATERN52'
+        d = pdist2(X,Y,'euclidean');
+        K = (1 + sqrt(5)*d + (5*d)/3).*exp(-sqrt(5)*d);
+    case 'BROWNIAN'
+        K = min(X,Y);
     otherwise
         error('Incorrect Kernel');
 end
