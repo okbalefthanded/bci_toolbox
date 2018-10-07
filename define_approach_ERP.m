@@ -5,9 +5,9 @@
 % sets = {'LARESI_FACE_SPELLER', 'P300_ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
 tic
 % set.title = 'P300-ALS';      
-% set.title = 'LARESI_FACE_SPELLER_150';
+set.title = 'LARESI_FACE_SPELLER_150';
 % set.title = 'LARESI_FACE_SPELLER_120';
-set.title = 'III_CH';
+% set.title = 'III_CH';
 % set.title = 'EPFL_IMAGE_SPELLER';
 % set.mode = 'BM';
 set.mode = 'SM';
@@ -28,13 +28,13 @@ approach.features.options.moving_average = 12;
 % approach.classifier.learner = 'SWLDA';
 % approach.classifier.options.penter = 0.1;
 % approach.classifier.options.premove = 0.15;
-
-% approach.classifier.learner = 'BLDA';
-
+%% BLDA 
+approach.classifier.learner = 'BLDA';
+approach.classifier.options.verbose = 1;
 %% SVM approach
-approach.classifier.normalization = 'ZSCORE';
-approach.classifier.learner = 'SVM';
-approach.classifier.options.kernel.type = 'LIN';
+% approach.classifier.normalization = 'ZSCORE';
+% approach.classifier.learner = 'SVM';
+% approach.classifier.options.kernel.type = 'LIN';
 % approach.classifier.options.kernel.type = 'RBF';
 % approach.classifier.options.C = 2;
 % approach.classifier.options.C = 2.^[0:5];

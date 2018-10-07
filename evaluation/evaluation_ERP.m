@@ -31,14 +31,14 @@ function [results] = evaluation_ERP(output, paradigm, desired_phrase)
 %                  paradigm.stimulation DOUBLE stimulation duration in msec
 %                  paradigm.isi DOUBLE ISI in msec.
 %                  paradigm.repetition DOUBLE stimuli repetition.
-%                  paradigm.stimuli_count DOUBLE number of stimuli in 
+%                  paradigm.stimuli_count DOUBLE number of stimuli in
 %                         paradigm experiement.
 %                  paradigm.type STR
 %
 %         derised_phrase : STR correct characters presented to the subject
 %                           during trials.
 %     Returns:
-%         results : STRUCT 1x1 
+%         results : STRUCT 1x1
 %                  results.phrase : CHAR [NxM] [repetition trials] matriix
 %                      of characters detected per repetition
 %                  results.correct : [Lx1] DOUBLE vector of rate of
@@ -56,15 +56,24 @@ function [results] = evaluation_ERP(output, paradigm, desired_phrase)
 step = paradigm.repetition * paradigm.stimuli_count;
 score = zeros(1, length(paradigm.stimuli_count));
 character_idx = 1;
-
+if(strcmp(output.alg.learner,'BLDA'))
+    yy = output.score;
+else
+    yy = output.y;
+end
 for idx = 1:step:length(output.y)
-    y_tmp = output.y(idx:idx+step-1);
+    %     y_tmp = output.y(idx:idx+step-1);
+    y_tmp = yy(idx:idx+step-1);
     e_tmp = output.events(idx:idx+step-1);
     for repetition = 1:paradigm.repetition
         yy_tmp = y_tmp(1:repetition*paradigm.stimuli_count);
         ee_tmp = e_tmp(1:repetition*paradigm.stimuli_count);
         for idx_event = 1:paradigm.stimuli_count
-            tmp = yy_tmp(ee_tmp==idx_event)==1;
+            if(strcmp(output.alg.learner,'BLDA'))
+                tmp = yy_tmp(ee_tmp==idx_event);
+            else
+                tmp = yy_tmp(ee_tmp==idx_event)==1;
+            end
             score(idx_event) = sum(tmp) / paradigm.stimuli_count;
         end
         results.phrase(repetition, character_idx) = utils_get_CharacterERP(score, paradigm);

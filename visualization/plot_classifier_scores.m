@@ -18,5 +18,6 @@ for c = 1:nClasses
 end
 xlabel('Trials'); ylabel('Classifier Score')
 title(['Scores for classification by ',classifier])
+legend({'Non-target', 'Target'});
 end
 

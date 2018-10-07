@@ -68,22 +68,22 @@ if (cv.nfolds == 0)
     end
     switch upper(alg.options.kernel.type)
         case 'RBF'
-            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 2 -g ',num2str(g),' ','-c ',num2str(c),' ','-n ','0.3 ','-w1 ',num2str(w_min),'-w-1 1']);
+            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 2 -g ',num2str(g),' ','-c ',num2str(c),' ','-w1 ',num2str(w_min),'-w-1 1']);
             model.alg.params.g = g;
         case 'LIN'
-            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 0 -c ',num2str(c),' ','-n ','0.1 ','-w1 ',num2str(w_min),'-w-1 1']);
+            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 0 -c ',num2str(c),' ','-w1 ',num2str(w_min),'-w-1 1']);
         case 'ARCCOS'
             if(~isfield(alg.options.kernel,'levels'))
                 levels = [1 1 1];
             else
                 levels = num2str(alg.options.kernel.levels);
             end
-            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 5 -c ',num2str(c),' ','-N ',num2str(levels),' -n ','0.1 ','-w1 ',num2str(w_min),'-w-1 1']);
+            classifier = svmtrain(trainLabel, trainData, ['-s ',svm_type,' -t 5 -c ',num2str(c),' ','-N ',num2str(levels),' -w1 ',num2str(w_min),'-w-1 1']);
             model.alg.params.N = [];
         otherwise % PRECOMPUTED KERNEL
             K = utils_compute_kernel(trainData, trainData, alg.options);
             % classifier = svmtrain(trainLabel, [(1:N)' (trainLabel*trainLabel').*K],['-t 4 -c ',num2str(c),' -w1 ',num2str(w_min),'-w-1 1']);
-            classifier = svmtrain(trainLabel, [(1:N)' K],['-s ',svm_type,' -t 4 -c ',num2str(c),'-n ','0.1 ',' -w1 ',num2str(w_min),'-w-1 1']);
+            classifier = svmtrain(trainLabel, [(1:N)' K],['-s ',svm_type,' -t 4 -c ',num2str(c),' -w1 ',num2str(w_min),'-w-1 1']);
             classifier.opts = alg.options;
             classifier.trainData = trainData;
             % error('Incorrect Kernel for training SVM');

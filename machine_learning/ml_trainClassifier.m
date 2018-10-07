@@ -57,7 +57,7 @@ switch upper(alg.learner)
         model = ml_trainSWLDA(features, cv, alg.options);
     case 'BLDA'
         % TODO
-        model = ml_trainBLDA(features, cv);
+        model = ml_trainBLDA(features, alg.options, cv);
     case 'SLDA'
         %  TODO
         model = ml_trainSLDA(features, cv, alg.options);
