@@ -3,20 +3,20 @@
 % All datasets and methods analysis
 % SSVEP
 tic
-epoch_length = [[0 500]; [0 2000]; [0 4000]];
+epoch_length = [[0 500]; [0 750];[0 1000]; [0 1500];[0 2000]; [0 4000]];
 filter_band = [5 50];
-sets = {'SSVEP_EXOSKELETON', 'SSVEP_SANDIEGO', 'SSVEP_TSINGHUA'};
+sets= {'SSVEP_EXOSKELETON', 'SSVEP_SANDIEGO', 'SSVEP_TSINGHUA'};
 approaches = {'CCA', 'L1MCCA', 'MSETCCA','FBCCA', 'ITCCA','TRCA', 'MLR'};
 report = 1;
 for set = 1:length(sets)
     for len = 1:length(epoch_length)
         switch(sets{set})
             case 'SSVEP_EXOSKELETON'
-                dataio_create_epochs_Exoskeleton(epoch_length(len,:), filter_band);
+                dataio_create_epochs_SM_Exoskeleton(epoch_length(len,:), filter_band);
             case 'SSVEP_SANDIEGO'
-                dataio_create_epochs_SanDiego(epoch_length(len,:), filter_band);
+                dataio_create_epochs_SM_SanDiego(epoch_length(len,:), filter_band);
             case 'SSVEP_TSINGHUA'
-                dataio_create_epochs_Tsinghua(epoch_length(len,:), filter_band);
+                dataio_create_epochs_SM_Tsinghua(epoch_length(len,:), filter_band);
             otherwise
                 ('Incorrect dataset');
         end
@@ -26,13 +26,15 @@ for set = 1:length(sets)
                 approach.features.options = [];
                 approach.classifier.normalization = 'ZSCORE';
                 approach.classifier.learner = 'SVM';
-                approach.classifier.options.kernel = 'LIN';
+                approach.classifier.options.kernel.type = 'LIN';
             else
                 approach.classifier.learner = approaches{app};
             end
             approach.cv.method = 'KFOLD';
-            approach.cv.nfolds = 0;            
-            [results, output, model] = run_analysis_SSVEP(sets{set}, approach, report);
+            approach.cv.nfolds = 0;
+            st.title = sets{set};
+            st.mode = 'SM';
+            [results, output, model] = run_analysis_SSVEP(st, approach, report);
             clear approach
         end
     end
