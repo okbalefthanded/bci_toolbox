@@ -29,8 +29,8 @@ approach.features.options.moving_average = 12;
 % approach.classifier.options.penter = 0.1;
 % approach.classifier.options.premove = 0.15;
 %% BLDA 
-approach.classifier.learner = 'BLDA';
-approach.classifier.options.verbose = 1;
+% approach.classifier.learner = 'BLDA';
+% approach.classifier.options.verbose = 1;
 %% SVM approach
 % approach.classifier.normalization = 'ZSCORE';
 % approach.classifier.learner = 'SVM';
@@ -54,14 +54,15 @@ approach.classifier.options.verbose = 1;
 % approach.classifier.options.C = [0.1, 1];
 %% Random forests approach
 % approach.classifier.learner = 'RF';
+% approach.classifier.options = [];
 % approach.classifier.options.ntrees = [100, 200];
 % approach.classifier.options.mtry = [20, 40];
 % approach.classifier.options.replace = 1;
 %% LogitBoost OLS approach
-% approach.classifier.learner = 'GBOOST';
-% approach.classifier.options.n_steps = 100;
-% approach.classifier.options.stepsize = 0.05;
-% approach.classifier.options.display = 1;
+approach.classifier.learner = 'GBOOST';
+approach.classifier.options.n_steps = 100;
+approach.classifier.options.stepsize = 0.05;
+approach.classifier.options.display = 1;
 %% SVM+ approach
 % approach.privileged.features.alg = 'DOWNSAMPLE';
 % approach.privileged.features.options.decimation_factor = 12;
@@ -82,14 +83,14 @@ approach.classifier.options.verbose = 1;
 % approach.classifier.options.memcache = 2e8;
 % approach.classifier.options.maxactive = 400;
 %% MKL : RBMKL
-% approach.classifier.learner = 'RBMKL';
-% approach.classifier.options.parameters = rbmksvm_parameter();
-% approach.classifier.options.parameters.C = 10;
-% approach.classifier.options.parameters.ker = {'l', 'g0.5'};
-% approach.classifier.options.parameters.nor.dat = {'true', 'true'};
-% approach.classifier.options.parameters.nor.ker = {'true', 'true'};
-% approach.classifier.options.parameters.opt = 'libsvm';
-% approach.classifier.options.parameters.rul = 'mean'; % mean | product
+%     approach.classifier.learner = 'RBMKL';
+%     approach.classifier.options.parameters = rbmksvm_parameter();
+%     approach.classifier.options.parameters.C = 10;
+%     approach.classifier.options.parameters.ker = {'l', 'g0.5'};
+%     approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+%     approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+%     approach.classifier.options.parameters.opt = 'libsvm';
+%     approach.classifier.options.parameters.rul = 'mean'; % mean | product
 %% MKL : ABMKL
 % approach.classifier.learner = 'ABMKL';
 % approach.classifier.options.parameters = abmksvm_parameter();
@@ -167,6 +168,12 @@ approach.cv.parallel.nWorkers = 3;
 % approach = check_approach_validity(set, approach);
 %%
 [results, output, model] = run_analysis_ERP(set, approach, report);
+nSubj = length(model);
+for subj = 1:nSubj
+%     plot_roc_curve(output{subj}{1})
+%     plot_roc_curve(output{subj}{2})
+    plot_classifier_scores(output{subj}{2})
+end
 % plot_roc_curve(output{1})
 % plot_roc_curve(output{2})
 % toc

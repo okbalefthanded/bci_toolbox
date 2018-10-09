@@ -26,7 +26,7 @@ function [] = plot_results_sequenceERP(results, set, paradigm, subject)
 %
 % P300_ALS
 
-figure, plot(results.correct),
+figure, plot(results.correct, 'b'),
 xlabel('Number of sequences'),
 ylabel('Characters Detection Rate'),
 title(['Performance curve in set ' set ' for subject ' subject]),
