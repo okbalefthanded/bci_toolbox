@@ -10,6 +10,8 @@ end
 if(~isfield(alg, 'options'))
     alg.options.harmonics = 5;
     alg.options.nrFbs = 5;
+    alg.options.a = 2.5;
+    alg.options.b = 1.5;
 end
 
 model.fs = features.fs;
