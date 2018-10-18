@@ -47,6 +47,10 @@ approach.features.options.moving_average = 12;
 % approach.classifier.options.C = 2;
 % approach.classifier.options.C = 2.^[0:5];
 % approach.classifier.options.kernel.g = 2.^[-5:5];
+%% Primal SVM approach
+approach.classifier.normalization = 'ZSCORE';
+approach.classifier.learner = 'PSVM';
+approach.classifier.options.kernel.type = 'LIN';
 %% Logistic Regression approach
 % approach.classifier.learner = 'LR';
 % approach.classifier.options.regularizer = 'L1';
@@ -59,10 +63,10 @@ approach.features.options.moving_average = 12;
 % approach.classifier.options.mtry = [20, 40];
 % approach.classifier.options.replace = 1;
 %% LogitBoost OLS approach
-approach.classifier.learner = 'GBOOST';
-approach.classifier.options.n_steps = 100;
-approach.classifier.options.stepsize = 0.05;
-approach.classifier.options.display = 1;
+% approach.classifier.learner = 'GBOOST';
+% approach.classifier.options.n_steps = 100;
+% approach.classifier.options.stepsize = 0.05;
+% approach.classifier.options.display = 1;
 %% SVM+ approach
 % approach.privileged.features.alg = 'DOWNSAMPLE';
 % approach.privileged.features.options.decimation_factor = 12;

@@ -68,6 +68,8 @@ switch upper(model.alg.learner)
         output = ml_applySTDA(features, model);
     case {'SVM', 'ONESVM'}
         output = ml_applySVM(features, model);
+    case 'PSVM'
+        output = ml_applyPSVM(features, model);
     case 'LR'
         output = ml_applyLR(features,model);
     case 'GBOOST'

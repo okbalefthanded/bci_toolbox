@@ -71,6 +71,10 @@ switch upper(alg.learner)
         model = ml_trainLogitBoost(features, alg, cv); % OLS-GBOOST    
     case {'SVM','ONESVM'}
         model = ml_trainSVM(features, alg, cv);
+    % Primal SVM
+    case 'PSVM'
+        % TODO
+        model = ml_trainPSVM(features, alg, cv);
     case 'RF'
         model = ml_trainRF(features,alg,cv);
     case 'SVMPLUS'
