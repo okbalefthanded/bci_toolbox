@@ -1,7 +1,7 @@
-function [model] = ml_trainNLMKL(features, alg, cv)
-%ML_TRAINNLMKL Summary of this function goes here
+function [model] = ml_trainMKL(features, alg, cv)
+%ML_TRAINMKL Summary of this function goes here
 %   Detailed explanation goes here
-% created 09-08-2018
+% created 10-30-2018
 % last modified -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 if(isfield(alg,'o') || isfield(alg, 'n') || isfield(cv, 'n'))
@@ -30,7 +30,7 @@ if(cv.nfolds == 0)
             train_data{k}.y = features.y;
             train_data{k}.ind = 1:length(features.y);
         end
-        models = nlmksvm_train(train_data, alg.options.parameters);
+        models = mksvm_train(train_data, alg.options.parameters);
     else        
         for m =1:nModels
             ft = features;            
@@ -49,12 +49,12 @@ if(cv.nfolds == 0)
                 train_data{k}.y = ft.y;
                 train_data{k}.ind = 1:length(ft.y);
             end
-            models{m} = nlmksvm_train(train_data, alg.options.parameters);
+            models{m} = mksvm_train(train_data, alg.options.parameters);
             clear ft
         end
     end        
     model.model = models;
-    model.alg.learner = 'NLMKL';
+    model.alg.learner = 'MKL';
     model.nKernel = nKernel;
 else
    % parallel settings
@@ -74,7 +74,7 @@ else
     terminateSlaves;
     cv.nfolds = 0;
     cv = fRMField(cv, 'parallel');
-    model = ml_trainNLMKL(features, alg, cv);
+    model = ml_trainMKL(features, alg, cv);
 end
 end
 %%
@@ -85,8 +85,7 @@ if(isfield(alg,'o'))
     [alg.('options').('parameters').('C')] = alg.o.p.('C');
     [alg.('options').('parameters').('eps')] = alg.o.p.('e');
     [alg.('options').('parameters').('ker')] = alg.o.p.('k');
-    [alg.('options').('parameters').('opt')] = alg.o.p.('o');
-    [alg.('options').('parameters').('tau')] = alg.o.p.('t');  
+    [alg.('options').('parameters').('opt')] = alg.o.p.('o');      
     [alg.('options').('parameters').('p')] = alg.o.p.('p');
     [alg.('options').('parameters').('lam')] =  alg.o.p.('l');
     fields = {'o'};
@@ -120,7 +119,6 @@ alg.o.p.k = alg.options.parameters.ker;
 alg.o.p.n.d = alg.options.parameters.nor.dat;
 alg.o.p.n.k = alg.options.parameters.nor.ker;
 alg.o.p.o = alg.options.parameters.opt;
-alg.o.p.t = alg.options.parameters.tau;
 alg.o.p.p = alg.options.parameters.p; 
 alg.o.p.l = alg.options.parameters.lam; 
 m = 1;
@@ -147,4 +145,5 @@ for i=1:nWorkers
     end
 end
 end
+
 

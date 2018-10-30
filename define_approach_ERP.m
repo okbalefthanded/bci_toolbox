@@ -29,8 +29,8 @@ approach.features.options.moving_average = 12;
 % approach.classifier.options.penter = 0.1;
 % approach.classifier.options.premove = 0.15;
 %% BLDA 
-% approach.classifier.learner = 'BLDA';
-% approach.classifier.options.verbose = 1;
+approach.classifier.learner = 'BLDA';
+approach.classifier.options.verbose = 1;
 %% SVM approach
 % approach.classifier.normalization = 'ZSCORE';
 % approach.classifier.learner = 'SVM';
@@ -48,9 +48,9 @@ approach.features.options.moving_average = 12;
 % approach.classifier.options.C = 2.^[0:5];
 % approach.classifier.options.kernel.g = 2.^[-5:5];
 %% Primal SVM approach
-approach.classifier.normalization = 'ZSCORE';
-approach.classifier.learner = 'PSVM';
-approach.classifier.options.kernel.type = 'LIN';
+% approach.classifier.normalization = 'ZSCORE';
+% approach.classifier.learner = 'PSVM';
+% approach.classifier.options.kernel.type = 'LIN';
 %% Logistic Regression approach
 % approach.classifier.learner = 'LR';
 % approach.classifier.options.regularizer = 'L1';
@@ -162,6 +162,16 @@ approach.classifier.options.kernel.type = 'LIN';
 % approach.classifier.options.parameters.loc.typ = 'linear'; % gating model complexity [linear, quadratic]   
 % approach.classifier.options.parameters.nor.loc = 'true'; 
 % approach.classifier.options.parameters.see = 7332; % seed
+%% MKL : MKL
+approach.classifier.learner = 'MKL';
+approach.classifier.options.parameters = mksvm_parameter();
+approach.classifier.options.parameters.C = 10;
+approach.classifier.options.parameters.ker = {'l', 'g1'};
+approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+approach.classifier.options.parameters.opt = 'mosek';
+approach.classifier.options.parameters.eps = 1e-3;
+approach.classifier.options.parameters.p = 1; % regularization norm : 1:L1, 2:L2
 %% Cross-validation
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0; 
