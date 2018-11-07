@@ -102,6 +102,8 @@ switch upper(model.alg.learner)
     case 'MKL'
         % TODO
         output = ml_applyMKL(features, model);
+    case 'EASYMKL'
+        output = ml_applyEASYMKL(features, model);
     case 'RVM'
         % TODO
         % Implement classifier

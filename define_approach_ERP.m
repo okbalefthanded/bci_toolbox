@@ -29,14 +29,14 @@ approach.features.options.moving_average = 12;
 % approach.classifier.options.penter = 0.1;
 % approach.classifier.options.premove = 0.15;
 %% BLDA 
-approach.classifier.learner = 'BLDA';
-approach.classifier.options.verbose = 1;
+% approach.classifier.learner = 'BLDA';
+% approach.classifier.options.verbose = 1;
 %% SVM approach
-% approach.classifier.normalization = 'ZSCORE';
-% approach.classifier.learner = 'SVM';
-% approach.classifier.options.kernel.type = 'LIN';
+approach.classifier.normalization = 'ZSCORE';
+approach.classifier.learner = 'SVM';
+approach.classifier.options.kernel.type = 'LIN';
 % approach.classifier.options.kernel.type = 'RBF';
-% approach.classifier.options.C = 2;
+approach.classifier.options.C = 2;
 % approach.classifier.options.C = 2.^[0:5];
 % approach.classifier.options.kernel.g = 2.^[-5:5];
 %% One class SVM approach
@@ -163,15 +163,26 @@ approach.classifier.options.verbose = 1;
 % approach.classifier.options.parameters.nor.loc = 'true'; 
 % approach.classifier.options.parameters.see = 7332; % seed
 %% MKL : MKL
-approach.classifier.learner = 'MKL';
-approach.classifier.options.parameters = mksvm_parameter();
-approach.classifier.options.parameters.C = 10;
-approach.classifier.options.parameters.ker = {'l', 'g1'};
-approach.classifier.options.parameters.nor.dat = {'true', 'true'};
-approach.classifier.options.parameters.nor.ker = {'true', 'true'};
-approach.classifier.options.parameters.opt = 'mosek';
-approach.classifier.options.parameters.eps = 1e-3;
-approach.classifier.options.parameters.p = 1; % regularization norm : 1:L1, 2:L2
+% approach.classifier.learner = 'MKL';
+% approach.classifier.options.parameters = mksvm_parameter();
+% approach.classifier.options.parameters.C = 10;
+% approach.classifier.options.parameters.ker = {'l', 'g1'};
+% approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+% approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+% approach.classifier.options.parameters.opt = 'mosek';
+% approach.classifier.options.parameters.eps = 1e-3;
+% approach.classifier.options.parameters.p = 1; % regularization norm : 1:L1, 2:L2
+%% EasyMKL
+approach.classifier.learner = 'easymkl';
+approach.classifier.normalization = 'ZSCORE';
+approach.classifier.options.lambda = 0.5;
+approach.classifier.options.kernel.gamma = 0.1;
+% approach.classifier.options.lambda = [0:0.1:1];
+% approach.classifier.options.kernel.gamma = 2.^[-5:5];
+approach.classifier.options.kernel.type = 'RBF';
+approach.classifier.options.d = 500; %  number of fatures in a kernel
+approach.classifier.options.r = 500; % number of weak kernels
+approach.classifier.options.tracenorm = 1;
 %% Cross-validation
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0; 

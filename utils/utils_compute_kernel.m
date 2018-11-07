@@ -71,6 +71,8 @@ switch(alg.kernel.type)
         K = (1 + sqrt(5)*d + (5*d)/3).*exp(-sqrt(5)*d);
     case 'BROWNIAN'
         K = min(X,Y);
+    case 'RBF'
+        K = exp(-alg.kernel.gamma .* pdist2(X,Y, 'euclidean').^2);
     otherwise
         error('Incorrect Kernel');
 end
