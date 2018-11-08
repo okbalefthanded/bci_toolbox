@@ -4,8 +4,8 @@
 
 % sets = {'LARESI_FACE_SPELLER', 'P300_ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
 tic
-% set.title = 'P300-ALS';      
-set.title = 'LARESI_FACE_SPELLER_150';
+set.title = 'P300-ALS';      
+% set.title = 'LARESI_FACE_SPELLER_150';
 % set.title = 'LARESI_FACE_SPELLER_120';
 % set.title = 'III_CH';
 % set.title = 'EPFL_IMAGE_SPELLER';
@@ -29,14 +29,14 @@ approach.features.options.moving_average = 12;
 % approach.classifier.options.penter = 0.1;
 % approach.classifier.options.premove = 0.15;
 %% BLDA 
-% approach.classifier.learner = 'BLDA';
-% approach.classifier.options.verbose = 1;
+approach.classifier.learner = 'BLDA';
+approach.classifier.options.verbose = 0;
 %% SVM approach
-approach.classifier.normalization = 'ZSCORE';
-approach.classifier.learner = 'SVM';
-approach.classifier.options.kernel.type = 'LIN';
+% approach.classifier.normalization = 'ZSCORE';
+% approach.classifier.learner = 'SVM';
+% approach.classifier.options.kernel.type = 'LIN';
 % approach.classifier.options.kernel.type = 'RBF';
-approach.classifier.options.C = 2;
+% approach.classifier.options.C = 2;
 % approach.classifier.options.C = 2.^[0:5];
 % approach.classifier.options.kernel.g = 2.^[-5:5];
 %% One class SVM approach
@@ -173,16 +173,16 @@ approach.classifier.options.C = 2;
 % approach.classifier.options.parameters.eps = 1e-3;
 % approach.classifier.options.parameters.p = 1; % regularization norm : 1:L1, 2:L2
 %% EasyMKL
-approach.classifier.learner = 'easymkl';
-approach.classifier.normalization = 'ZSCORE';
-approach.classifier.options.lambda = 0.5;
-approach.classifier.options.kernel.gamma = 0.1;
+% approach.classifier.learner = 'easymkl';
+% approach.classifier.normalization = 'ZSCORE';
+% approach.classifier.options.lambda = 0.5;
+% approach.classifier.options.kernel.gamma = 0.1;
 % approach.classifier.options.lambda = [0:0.1:1];
 % approach.classifier.options.kernel.gamma = 2.^[-5:5];
-approach.classifier.options.kernel.type = 'RBF';
-approach.classifier.options.d = 500; %  number of fatures in a kernel
-approach.classifier.options.r = 500; % number of weak kernels
-approach.classifier.options.tracenorm = 1;
+% approach.classifier.options.kernel.type = 'RBF';
+% approach.classifier.options.d = 500; %  number of fatures in a kernel
+% approach.classifier.options.r = 500; % number of weak kernels
+% approach.classifier.options.tracenorm = 1;
 %% Cross-validation
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0; 
@@ -199,18 +199,4 @@ for subj = 1:nSubj
 %     plot_roc_curve(output{subj}{2})
     plot_classifier_scores(output{subj}{2})
 end
-% plot_roc_curve(output{1})
-% plot_roc_curve(output{2})
-% toc
-%% Reimann Geometry Based Analysis
-% approach.features.alg = 'REIMANN';
-% approach.features.options.decimation_factor = 4;
-% % approach.features.mean = 'riemann';
-% 
-% approach.classifier.learner = 'MDM';
-% approach.classifier.dist = 'riemann';
-% % approach.classifier.dist = 'kullback';
-% approach.classifier.mean = 'riemann';
-%  
-% [results, output, model] = run_analysis_ERP_Riemann(set, approach);
 toc

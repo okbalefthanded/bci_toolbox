@@ -7,7 +7,12 @@ function [ features ] = extractERP_Reimann(EEG, opt, mode)
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
 % downsample
-decimation = opt.decimation_factor;
+if(isempty(opt))
+    decimation = 12;
+else
+    decimation = opt.decimation_factor;
+end
+
 x = EEG.epochs.signal(1:decimation:end,:,:,:);
 
 x = permute(x, [2 1 3 4]);

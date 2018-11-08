@@ -75,5 +75,6 @@ for subj = 1:nSubj
 end
 plot_results_minSequenceERP(min_best_sequence, set.title);
 disp(['Average accuracy on ' set.title ' ' num2str(mean(interSubject_results))]);
+
 end
 
