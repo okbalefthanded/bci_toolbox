@@ -61,6 +61,7 @@ wnd = (epoch_length * fs) / 10^3;
 nTrainBlocks = 10;
 nTestBlocks = 5;
 classes = 1:12;
+classes_c = cellfun(@num2str,num2cell(1:12),'UniformOutput',0);
 stimulation_onset = 39;
 
 % save
@@ -102,7 +103,7 @@ for subj=1:nSubj
     trainEEG.epochs.y = reshape(y(1:nTrainBlocks, :), [1 nTrainBlocks*max(classes)]);
     trainEEG.fs = fs;
     trainEEG.montage.clab = clab;
-    trainEEG.classes = classes;
+    trainEEG.classes = classes_c;
     trainEEG.paradigm = paradigm;
     trainEEG.subject.id =['S' num2str(subj)];
     subj_id = trainEEG.subject.id;
@@ -114,7 +115,7 @@ for subj=1:nSubj
     testEEG.epochs.y = reshape(y(nTrainBlocks+1:end,:), [1 nTestBlocks*max(classes)]);
     testEEG.fs = fs;
     testEEG.montage.clab = clab;
-    testEEG.classes = classes;
+    testEEG.classes = classes_c;
     testEEG.paradigm = paradigm;
     testEEG.subject = subj_id;    
     save([Config_path_SM,'\','S0',num2str(subj),'testEEG.mat'],'testEEG', '-v7.3');

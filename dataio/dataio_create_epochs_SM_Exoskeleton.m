@@ -79,7 +79,9 @@ for subj = 1:nSubj
     for file = 1:files_count - 1
         [signal, header] = mexSLOAD([subject_path '\' subject_files(file).name]);
         signal = signal * gain; % amplifying the signal
-        signal = eeg_filter(signal, fs, filter_band(1), filter_band(2), filter_order);
+        if(~isempty(filter_band))
+            signal = eeg_filter(signal, fs, filter_band(1), filter_band(2), filter_order);            
+        end
         events = dataio_geteventsExoskeleton(header);
         epochs = dataio_getERPEpochs(wnd, events.pos, signal);
         epo = cat(3, epo, epochs);
@@ -106,7 +108,9 @@ for subj = 1:nSubj
     % Test data
     [signal, header] = mexSLOAD([subject_path '\' subject_files(files_count).name]);
     signal = signal * gain; % amplifying the signal
-    signal = eeg_filter(signal, fs, filter_band(1), filter_band(2), filter_order);
+    if(~isempty(filter_band))
+        signal = eeg_filter(signal, fs, filter_band(1), filter_band(2), filter_order);
+    end
     events = dataio_geteventsExoskeleton(header);
     epochs = dataio_getERPEpochs(wnd, events.pos, signal);
     testEEG.epochs.signal = epochs;
