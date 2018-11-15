@@ -47,7 +47,16 @@ switch upper(set.title)
         else
             data = load([ssvep_sandiego 'testEEG.mat']);
             data = data.testEEG;
-        end      
+        end 
+    case 'SSVEP_LARESI'
+        ssvep_laresi = [path,'ssvep_laresi\SM\' subj];
+        if(strcmp(datatype,'train'))
+            data = load([ssvep_laresi,'trainEEG.mat']);
+            data = data.trainEEG;
+        else
+            data = load([ssvep_laresi,'testEEG.mat']);
+            data = data.testEEG;
+        end
                 
     otherwise
         error('Incorrect SSVEP Dataset');        

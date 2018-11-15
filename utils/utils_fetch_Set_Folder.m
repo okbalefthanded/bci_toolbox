@@ -33,6 +33,6 @@ if(isempty(dataSetFiles))
 else
     dataSetFiles = {dataSetFiles.name};
 end
-nSubjects = sum(cellfun(@isempty,(strfind({dataSetFiles.name}, 'trainEEG'))));
+nSubjects = sum(~cellfun(@isempty,(strfind({dataSetFiles.name}, 'trainEEG'))));
 end
 

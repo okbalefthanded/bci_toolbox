@@ -2,15 +2,16 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-set.title = 'SSVEP_EXOSKELETON';
+% set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
-% set.title = 'SSVEP_TSINGHUA';
+set.title = 'SSVEP_TSINGHUA';
 % set.title = 'SSVEP_SANDIEGO';
+% set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;
 %% vanilla CCA
-% approach.classifier.learner = 'CCA';
-% approach.classifier.options.harmonics = 2;
+approach.classifier.learner = 'CCA';
+approach.classifier.options.harmonics = 2;
 %% L1 Multiway CCA
 % approach.classifier.learner = 'L1MCCA';
 % approach.classifier.options.harmonics = 2;
@@ -37,26 +38,26 @@ report = 0;
 % approach.classifier.options.memcache = 2e8;
 % approach.classifier.options.maxactive = 400;
 %% MLR-RBMKL 
-approach.features.alg = 'MLR';
-approach.classifier.learner = 'RBMKL';
-approach.classifier.options.parameters = rbmksvm_parameter();
-approach.classifier.options.parameters.C = 10;
-approach.classifier.options.parameters.ker = {'l', 'g0.5'};
-approach.classifier.options.parameters.nor.dat = {'true', 'true'};
-approach.classifier.options.parameters.nor.ker = {'true', 'true'};
-approach.classifier.options.parameters.opt = 'libsvm';
-approach.classifier.options.parameters.rul = 'mean';
+% approach.features.alg = 'MLR';
+% approach.classifier.learner = 'RBMKL';
+% approach.classifier.options.parameters = rbmksvm_parameter();
+% approach.classifier.options.parameters.C = 10;
+% approach.classifier.options.parameters.ker = {'l', 'g0.5'};
+% approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+% approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+% approach.classifier.options.parameters.opt = 'libsvm';
+% approach.classifier.options.parameters.rul = 'mean';
 %%
 %% MLR-RBMKL 
-approach.features.alg = 'MLR';
-approach.classifier.learner = 'ABMKL';
-approach.classifier.options.parameters = abmksvm_parameter();
-approach.classifier.options.parameters.C = 10;
-approach.classifier.options.parameters.ker = {'l', 'p2'};
-approach.classifier.options.parameters.nor.dat = {'true', 'true'};
-approach.classifier.options.parameters.nor.ker = {'true', 'true'};
-approach.classifier.options.parameters.opt = 'libsvm';
-approach.classifier.options.parameters.com = 'ratio'; % convex | ratio
+% approach.features.alg = 'MLR';
+% approach.classifier.learner = 'ABMKL';
+% approach.classifier.options.parameters = abmksvm_parameter();
+% approach.classifier.options.parameters.C = 10;
+% approach.classifier.options.parameters.ker = {'l', 'p2'};
+% approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+% approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+% approach.classifier.options.parameters.opt = 'libsvm';
+% approach.classifier.options.parameters.com = 'ratio'; % convex | ratio
 %%
 %% MKL : CABMKL
 % approach.features.alg = 'MLR';
@@ -70,14 +71,14 @@ approach.classifier.options.parameters.com = 'ratio'; % convex | ratio
 % approach.classifier.options.parameters.com = 'convex'; % linear | convex 
 %%
 %% MKL : SIMPLEMKL
-approach.features.alg = 'MLR';
-approach.classifier.learner = 'SIMPLEMKL';
-approach.classifier.options.parameters = smksvm_parameter();
-approach.classifier.options.parameters.C = 10;
-approach.classifier.options.parameters.ker = {'l', 'g1'};
-approach.classifier.options.parameters.nor.dat = {'true', 'true'};
-approach.classifier.options.parameters.nor.ker = {'true', 'true'};
-approach.classifier.options.parameters.opt = 'libsvm';
+% approach.features.alg = 'MLR';
+% approach.classifier.learner = 'SIMPLEMKL';
+% approach.classifier.options.parameters = smksvm_parameter();
+% approach.classifier.options.parameters.C = 10;
+% approach.classifier.options.parameters.ker = {'l', 'g1'};
+% approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+% approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+% approach.classifier.options.parameters.opt = 'libsvm';
 %% MKL : GMKL
 % approach.features.alg = 'MLR';
 % approach.classifier.learner = 'GMKL';
@@ -90,39 +91,39 @@ approach.classifier.options.parameters.opt = 'libsvm';
 % approach.classifier.options.parameters.sig = 1; 
 %%
 %% MKL : GLMKL
-approach.features.alg = 'MLR';
-approach.classifier.learner = 'GLMKL';
-approach.classifier.options.parameters = glmksvm_parameter();
-approach.classifier.options.parameters.C = 1;
-approach.classifier.options.parameters.ker = {'l', 'g0.1'};
-approach.classifier.options.parameters.nor.dat = {'true', 'true'};
-approach.classifier.options.parameters.nor.ker = {'true', 'true'};
-approach.classifier.options.parameters.opt = 'libsvm';
-approach.classifier.options.parameters.p = 2; 
+% approach.features.alg = 'MLR';
+% approach.classifier.learner = 'GLMKL';
+% approach.classifier.options.parameters = glmksvm_parameter();
+% approach.classifier.options.parameters.C = 1;
+% approach.classifier.options.parameters.ker = {'l', 'g0.1'};
+% approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+% approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+% approach.classifier.options.parameters.opt = 'libsvm';
+% approach.classifier.options.parameters.p = 2; 
 %% MKL : NLMKL
-approach.features.alg = 'MLR';
-approach.classifier.learner = 'NLMKL';
-approach.classifier.options.parameters = nlmksvm_parameter();
-approach.classifier.options.parameters.C = 10;
-approach.classifier.options.parameters.ker = {'l', 'g10'};
-approach.classifier.options.parameters.nor.dat = {'true', 'true'};
-approach.classifier.options.parameters.nor.ker = {'true', 'true'};
-approach.classifier.options.parameters.opt = 'libsvm';
-approach.classifier.options.parameters.p = 1; 
-approach.classifier.options.parameters.lam = 1;
+% approach.features.alg = 'MLR';
+% approach.classifier.learner = 'NLMKL';
+% approach.classifier.options.parameters = nlmksvm_parameter();
+% approach.classifier.options.parameters.C = 10;
+% approach.classifier.options.parameters.ker = {'l', 'g10'};
+% approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+% approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+% approach.classifier.options.parameters.opt = 'libsvm';
+% approach.classifier.options.parameters.p = 1; 
+% approach.classifier.options.parameters.lam = 1;
 %% MKL : LMKL
-approach.features.alg = 'MLR';
-approach.classifier.learner = 'LMKL';
-approach.classifier.options.parameters = lmksvm_parameter();
-approach.classifier.options.parameters.C = 10;
-approach.classifier.options.parameters.ker = {'l', 'g10'};
-approach.classifier.options.parameters.nor.dat = {'true', 'true'};
-approach.classifier.options.parameters.nor.ker = {'true', 'true'};
-approach.classifier.options.parameters.opt = 'libsvm';
-approach.classifier.options.parameters.gat.typ = 'linear_sigmoid'; % gating model function [linear_softmax, linear_sigmoid, rbf_softmax]  
-approach.classifier.options.parameters.loc.typ = 'linear'; % gating model complexity [linear, quadratic]   
-approach.classifier.options.parameters.nor.loc = 'true'; 
-approach.classifier.options.parameters.see = 7332; % seed
+% approach.features.alg = 'MLR';
+% approach.classifier.learner = 'LMKL';
+% approach.classifier.options.parameters = lmksvm_parameter();
+% approach.classifier.options.parameters.C = 10;
+% approach.classifier.options.parameters.ker = {'l', 'g10'};
+% approach.classifier.options.parameters.nor.dat = {'true', 'true'};
+% approach.classifier.options.parameters.nor.ker = {'true', 'true'};
+% approach.classifier.options.parameters.opt = 'libsvm';
+% approach.classifier.options.parameters.gat.typ = 'linear_sigmoid'; % gating model function [linear_softmax, linear_sigmoid, rbf_softmax]  
+% approach.classifier.options.parameters.loc.typ = 'linear'; % gating model complexity [linear, quadratic]   
+% approach.classifier.options.parameters.nor.loc = 'true'; 
+% approach.classifier.options.parameters.see = 7332; % seed
 %% TRCA
 % approach.classifier.learner = 'TRCA';
 % approach.classifier.options.num_fbs = 5;
