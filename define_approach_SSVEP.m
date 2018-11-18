@@ -4,9 +4,9 @@
 tic
 % set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
-set.title = 'SSVEP_TSINGHUA';
+% set.title = 'SSVEP_TSINGHUA';
 % set.title = 'SSVEP_SANDIEGO';
-% set.title = 'SSVEP_LARESI';
+set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;
 %% vanilla CCA
@@ -27,7 +27,7 @@ approach.classifier.options.harmonics = 2;
 % approach.features.options = [];
 % approach.classifier.normalization = 'ZSCORE';
 % approach.classifier.learner = 'SVM';
-% approach.classifier.options.kernel = 'LIN';
+% approach.classifier.options.kernel.type = 'LIN';
 %% MLR-HKL
 % approach.features.alg = 'MLR';
 % approach.classifier.learner = 'HKL';
