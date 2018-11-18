@@ -13,7 +13,8 @@ file_markers = dataSetFiles{2};
 % files_parts = strsplit(file_signal, '\');
 % data.subject = files_parts{4};
 folder_parts = strsplit(folder, '\');
-data.subject = folder_parts(end);
+date = folder_parts(end);
+data.subject = folder_parts(end-1);
 disp(['Creating mat files for subject: ' data.subject]);
 
 % event markers
@@ -54,7 +55,7 @@ data.events.desc = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', fa
 data.events = dataio_geteventsLARESI(data.events, data.fs);
 clear datacell datacell_stim all_str
 data.paradigm.title = 'SSVEP_OV';
-stimuli = {'6','7.5','8.57','10'};
+stimuli = {'idle', '6','7.5','8.57','10'};
 if(isscalar(unique(data.events.y)))
     data.paradigm.stimuli = stimuli{data.events.y(1)};
 else
@@ -64,7 +65,6 @@ end
 % data.paradigm.pause = 2000;
 
 data.paradigm.stimuli_count = length(data.paradigm.stimuli);
-
 data.paradigm.type = 'ON/OFF';
 
 % data.paradigm.stimuli = {'6','7.5','8.57','10'};
@@ -75,7 +75,7 @@ path = [tmp{1} 'raw_mat\'];
 if(~exist(path,'dir'))
     mkdir(path);
 end
-save([path data.subject{:} '_ssvep_ov.mat'], 'data');
+save([path data.subject{:} date{:} '_ssvep_ov.mat'], 'data');
 toc
 end
 
