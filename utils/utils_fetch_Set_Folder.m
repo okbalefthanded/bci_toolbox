@@ -30,6 +30,13 @@ if(isempty(dataSetFiles))
     end
     set_path = strcat(set_path,'\', p);
     dataSetFiles = dir([set_path '\SM\*.mat']);
+    if(isempty(dataSetFiles))
+        dataSetFiles = dir([set_path '\SM']);
+        dataSetFiles(1:2) = [];
+        dataSetFiles ={dataSetFiles.name};
+        set_path = [set_path,'SM\',dataSetFiles{end}];
+        dataSetFiles = dir([set_path '\*.mat']);        
+    end
 else
     dataSetFiles = {dataSetFiles.name};
 end

@@ -25,11 +25,24 @@ tic
 disp('Creating epochs for LARESI SSVEP dataset');
 set_path = 'datasets\LARESI_SSVEP\raw_mat';
 Config_path_SM = 'datasets\epochs\ssvep_laresi\SM';
-dataSetFiles = dir([set_path,'\*.mat']);
+% dataSetFiles = dir([set_path,'\*.mat']);
+% searching for the latest folder
+dataSet= dir(set_path);
+dirIdx = [dataSet(:).isdir];
+dataSet = dataSet(dirIdx);
+dataSet(1:2) = [];
+dataSet = {dataSet.name};
+dataSet = dataSet(1);
+dataSetFiles = dir([set_path,'\',dataSet{:},'\*.mat']);
 dataSetFiles = {dataSetFiles.name};
+set_path = [set_path,'\',dataSet{:}];
 if(~exist(Config_path_SM,'dir'))
-    mkdir(Config_path_SM);
+    mkdir(Config_path_SM);    
 end
+date_now = datestr(now);
+date_now = strrep(date_now,' ','_');
+date_now = strrep(date_now,':','_');
+Config_path_SM = [Config_path_SM,'\',date_now];
 nSubj = length(dataSetFiles);
 trainEEG = cell(1);
 testEEG = cell(1);
@@ -46,13 +59,16 @@ for subj=1:nSubj
     trainEEG.epochs.y = data.events.y';
     trainEEG.fs = data.fs;
     trainEEG.montage.clab = data.montage;
-    trainEEG.classes = {data.paradigm.stimuli};
+    trainEEG.classes = data.paradigm.stimuli;
     trainEEG.paradigm = data.paradigm;
     trainEEG.subject.id = num2str(subj);
     trainEEG.subject.gender = '';
     trainEEG.subject.age = 0;
     trainEEG.subject.condition = 'healthy';
     disp(['Processing Train data succeed for subject: ' num2str(subj)]);
+    if(~exist(Config_path_SM,'dir'))
+        mkdir(Config_path_SM);
+    end
     save([Config_path_SM,'\','S0',num2str(subj),'trainEEG.mat'],'trainEEG', '-v7.3');
     clear signal trainEEG
     if(~isscalar(data.paradigm.stimulation))

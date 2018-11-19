@@ -49,7 +49,10 @@ switch upper(set.title)
             data = data.testEEG;
         end 
     case 'SSVEP_LARESI'
-        ssvep_laresi = [path,'ssvep_laresi\SM\' subj];
+        folders = dir([path,'ssvep_laresi\SM']);
+        folders(1:2) = [];
+        folders = {folders.name};
+        ssvep_laresi = [path,'ssvep_laresi\SM\',folders{end},'\',subj];
         if(strcmp(datatype,'train'))
             data = load([ssvep_laresi,'trainEEG.mat']);
             data = data.trainEEG;

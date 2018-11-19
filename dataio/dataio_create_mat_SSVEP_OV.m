@@ -75,6 +75,10 @@ path = [tmp{1} 'raw_mat\'];
 if(~exist(path,'dir'))
     mkdir(path);
 end
+path = [path,date{:},'\'];
+if(~exist(path,'dir'))
+    mkdir(path);
+end
 save([path data.subject{:} date{:} '_ssvep_ov.mat'], 'data');
 toc
 end
