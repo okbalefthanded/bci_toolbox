@@ -17,13 +17,7 @@ end
 model.fs = features.fs;
 [samples, ~, ~] = size(features.signal);
 
-if (iscell(features.stimuli_frequencies))
-    stimFrqId = cellfun(@isstr, features.stimuli_frequencies);
-    stimFrq = features.stimuli_frequencies(~stimFrqId);
-    frqs = cell2mat(stimFrq);
-else
-    frqs = features.stimuli_frequencies;
-end
+frqs = utils_get_frequencies(features.stimuli_frequencies);
 
 stimuli_count = length(frqs);
 reference_signals = cell(1, stimuli_count);

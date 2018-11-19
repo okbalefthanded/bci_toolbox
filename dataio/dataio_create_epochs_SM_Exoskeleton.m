@@ -45,7 +45,7 @@ paradigm.stimulation = 5000;
 paradigm.pause = 3000;
 paradigm.stimuli_count = 3;
 paradigm.type = 'ON/OFF';
-paradigm.stimuli = {'idle',13,21,17};
+paradigm.stimuli = {'idle','13','21','17'};
 
 set_path = 'datasets\ssvep_exoskeleton\';
 set_subfolders = dir(set_path);

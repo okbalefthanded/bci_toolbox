@@ -21,13 +21,13 @@ for subj = 1:nSubj
         features = trainEEG.epochs;
         features.fs = trainEEG.fs;
         features.stimuli_frequencies = trainEEG.paradigm.stimuli;
-        test_features = testEEG.epochs;
+%         test_features = testEEG.epochs;
     else
         approach.features.options.mode = 'estimate';
         features = extractSSVEP_features(trainEEG, approach);
         approach = utils_augment_approach(approach, features.af);
         approach.features.mode = 'transform';
-        test_features = extractSSVEP_features(testEEG, approach);
+%         test_features = extractSSVEP_features(testEEG, approach);
     end
     clear trainEEG testEEG
     model = ml_trainClassifier(features, approach.classifier, approach.cv);    
