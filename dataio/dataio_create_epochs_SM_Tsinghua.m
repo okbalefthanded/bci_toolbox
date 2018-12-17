@@ -61,12 +61,10 @@ paradigm.phase = freqPhase.phases; %0 pi/2 pi 3pi/2
 classes_r = cellfun(@num2str,num2cell(paradigm.stimuli),'UniformOutput',0);
 %
 nSubj = 35;
-trainEEG = cell(1);
-testEEG = cell(1);
 %
 fs = 250;
 filter_order = 6;
-epoch_length = epoch_length + 500; 
+epoch_length = epoch_length + 500;
 wnd = (epoch_length * fs) / 10^3;
 nTrainBlocks = 4;
 nTestBlocks = 2;
@@ -103,32 +101,23 @@ for subj=1:nSubj
     %     split data
     disp(['Spliting data for subject S0' num2str(subj)]);
     
-    trainEEG.epochs.signal = reshape(eeg(:,:,:,1:nTrainBlocks), [samples channels nTrainBlocks*targets]);
-    trainEEG.epochs.events = repmat(paradigm.stimuli, 1, nTrainBlocks);
-    trainEEG.epochs.y = repmat(classes, 1, nTrainBlocks);
-    trainEEG.fs = fs;
-    trainEEG.montage.clab = clab;
-    trainEEG.classes = classes_r;
-    trainEEG.paradigm = paradigm;
+    data.fs = fs;
+    data.clab = clab;
+    data.classes = classes;
+    data.classes_r = classes_r;    
     subj_info = strsplit(subjects_info{subj}, ' ');
-    trainEEG.subject.id = subj_info{2};
-    trainEEG.subject.gender = subj_info{3};
-    trainEEG.subject.age = subj_info{4};
-    trainEEG.subject.handedness = subj_info{5};
-    trainEEG.subject.group = subj_info{6};
-    subject_inf = trainEEG.subject;
-    save([Config_path_SM,'\','S0',num2str(subj),'trainEEG.mat'],'trainEEG', '-v7.3');
+    
+    train_data = reshape(eeg(:,:,:,1:nTrainBlocks), [samples channels nTrainBlocks*targets]); 
+    
+    data.blocks = nTrainBlocks;
+    trainEEG = getEEGstruct(train_data, paradigm, data, subj_info);
+    dataio_save_mat(Config_path_SM, subj, 'trainEEG');
     clear trainEEG
     
-    testEEG.epochs.signal = reshape(eeg(:,:,:,nTrainBlocks+1:end), [samples channels nTestBlocks*targets]);
-    testEEG.epochs.events = repmat(paradigm.stimuli, 1, nTestBlocks);
-    testEEG.epochs.y = repmat(classes, 1, nTestBlocks);  
-    testEEG.fs = fs;
-    testEEG.montage.clab = clab;
-    testEEG.classes = classes_r;
-    testEEG.paradigm = paradigm;
-    testEEG.subject = subject_inf;
-    save([Config_path_SM,'\','S0',num2str(subj),'testEEG.mat'],'testEEG', '-v7.3');
+    test_data = reshape(eeg(:,:,:,nTrainBlocks+1:end), [samples channels nTestBlocks*targets]);
+    data.blocks = nTestBlocks;
+    testEEG = getEEGstruct(test_data, paradigm, data, subj_info);
+    dataio_save_mat(Config_path_SM, subj, 'testEEG');
     clear testEEG eeg
     
     disp('Data epoched saved in:');
@@ -136,4 +125,18 @@ for subj=1:nSubj
 end
 toc
 end
-
+%%
+function [EEG] = getEEGstruct(eeg, paradigm, data, subj_info)
+EEG.epochs.signal = eeg;
+EEG.epochs.events = repmat(paradigm.stimuli, 1, data.blocks);
+EEG.epochs.y = repmat(data.classes, 1, data.blocks);
+EEG.fs = data.fs;
+EEG.montage.clab = data.clab;
+EEG.classes = data.classes_r;
+EEG.paradigm = paradigm;
+EEG.subject.id = subj_info{2};
+EEG.subject.gender = subj_info{3};
+EEG.subject.age = subj_info{4};
+EEG.subject.handedness = subj_info{5};
+EEG.subject.group = subj_info{6};
+end

@@ -12,7 +12,7 @@ eval_duration = 1; % 1 second time for evaluation
 for subj = 1:nSubj
     set.subj = subj;
     trainEEG = dataio_read_SSVEP(set,'train');
-%     testEEG = dataio_read_SSVEP(set, 'test');
+    testEEG = dataio_read_SSVEP(set, 'test');
     samples = size(trainEEG.epochs.signal,1);
     windowLength = samples/trainEEG.fs;
     disp(['Analyising data from subject:' ' ' trainEEG.subject.id]);
@@ -21,13 +21,13 @@ for subj = 1:nSubj
         features = trainEEG.epochs;
         features.fs = trainEEG.fs;
         features.stimuli_frequencies = trainEEG.paradigm.stimuli;
-%         test_features = testEEG.epochs;
+        test_features = testEEG.epochs;
     else
         approach.features.options.mode = 'estimate';
         features = extractSSVEP_features(trainEEG, approach);
         approach = utils_augment_approach(approach, features.af);
         approach.features.mode = 'transform';
-%         test_features = extractSSVEP_features(testEEG, approach);
+        test_features = extractSSVEP_features(testEEG, approach);
     end
     clear trainEEG testEEG
     model = ml_trainClassifier(features, approach.classifier, approach.cv);    

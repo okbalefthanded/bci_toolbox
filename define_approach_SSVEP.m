@@ -4,20 +4,20 @@
 tic
 % set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
-% set.title = 'SSVEP_TSINGHUA';
+set.title = 'SSVEP_TSINGHUA';
 % set.title = 'SSVEP_SANDIEGO';
-set.title = 'SSVEP_LARESI';
+% set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;
 %% vanilla CCA
-% approach.classifier.learner = 'CCA';
-% approach.classifier.options.harmonics = 2;
-%% L1 Multiway CCA
-approach.classifier.learner = 'L1MCCA';
+approach.classifier.learner = 'CCA';
 approach.classifier.options.harmonics = 2;
-approach.classifier.options.max_iter = 200; % the maximal number of iteration for running L1MCCA
-approach.classifier.options.n_comp = 1;  % number of projection components for learning the reference signals
-approach.classifier.options.lambda = 0.02; % regularization parameter for the 3rd-way (i.e., trial-way), which can be more precisely decided by cross-validation
+%% L1 Multiway CCA
+% approach.classifier.learner = 'L1MCCA';
+% approach.classifier.options.harmonics = 2;
+% approach.classifier.options.max_iter = 200; % the maximal number of iteration for running L1MCCA
+% approach.classifier.options.n_comp = 1;  % number of projection components for learning the reference signals
+% approach.classifier.options.lambda = 0.02; % regularization parameter for the 3rd-way (i.e., trial-way), which can be more precisely decided by cross-validation
 % approach.classifier.options.lambda = [0, 0.2];
 %% Mset CCA
 % approach.classifier.learner = 'MSETCCA';

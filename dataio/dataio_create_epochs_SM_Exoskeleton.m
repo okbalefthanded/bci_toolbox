@@ -7,8 +7,6 @@ function [] = dataio_create_epochs_SM_Exoskeleton(epoch_length, filter_band)
 %         to stimulus onset marker.
 %         filter_band : DOUBLE [1x2] [low_cutoff high_cutoff] filtering
 %             frequency band in Hz
-%
-%
 %     Returns:
 %      None.
 % Epoched files are aved in the folder: datasets/epochs/SM/ssvep_exoskeleton
@@ -88,19 +86,10 @@ for subj = 1:nSubj
         ev.desc = cat(1, ev.desc, events.desc);
         ev.y = cat(1, ev.y, events.y);
     end
-    trainEEG.epochs.signal = epo;
-    trainEEG.epochs.events = ev.desc;
-    trainEEG.epochs.y = ev.y';
-    trainEEG.fs = fs;
-    trainEEG.montage.clab = header.Label;
-    trainEEG.classes = paradigm.stimuli;
-    trainEEG.paradigm = paradigm;
-    trainEEG.subject.id = num2str(subj);
-    trainEEG.subject.gender = '';
-    trainEEG.subject.age = 0;
-    trainEEG.subject.condition = 'healthy';
+    trainEEG = getEEGstruct(epo, ev, fs, header, paradigm, subj);
+    dataio_save_mat(Config_path_SM, subj, 'trainEEG');
     disp(['Processing Train data succeed for subject: ' num2str(subj)]);
-    save([Config_path_SM,'\','S0',num2str(subj),'trainEEG.mat'],'trainEEG', '-v7.3');
+
     clear signal header trainEEG
     
     
@@ -113,25 +102,29 @@ for subj = 1:nSubj
     end
     events = dataio_geteventsExoskeleton(header);
     epochs = dataio_getERPEpochs(wnd, events.pos, signal);
-    testEEG.epochs.signal = epochs;
-    testEEG.epochs.events = events.desc;
-    testEEG.epochs.y = events.y';
-    testEEG.fs = fs;
-    testEEG.montage.clab = header.Label;
-    testEEG.classes = paradigm.stimuli;
-    testEEG.paradigm = paradigm;
-    testEEG.subject.id = num2str(subj);
-    testEEG.subject.gender = '';
-    testEEG.subject.age = 0;
-    testEEG.subject.condition = 'healthy';
+    testEEG = getEEGstruct(epochs, events, fs, header, paradigm, subj);
+    dataio_save_mat(Config_path_SM, subj, 'testEEG');
     disp(['Processing Test data succeed for subject: ' num2str(subj)]);
-    save([Config_path_SM,'\','S0',num2str(subj),'testEEG.mat'],'testEEG', '-v7.3');
-    clear signal header testEEG
     
+    clear signal header testEEG    
     disp('Data epoched saved in:');
     disp(Config_path_SM);
 end
-
 toc
+end
+
+%%
+function [EEG] = getEEGstruct(epo, ev, fs, header, paradigm, subj)
+EEG.epochs.signal = epo;
+EEG.epochs.events = ev.desc;
+EEG.epochs.y = ev.y';
+EEG.fs = fs;
+EEG.montage.clab = header.Label;
+EEG.classes = paradigm.stimuli;
+EEG.paradigm = paradigm;
+EEG.subject.id = num2str(subj);
+EEG.subject.gender = '';
+EEG.subject.age = 0;
+EEG.subject.condition = 'healthy';
 end
 

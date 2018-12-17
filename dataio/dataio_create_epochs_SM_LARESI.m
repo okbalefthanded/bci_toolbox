@@ -38,14 +38,11 @@ function [] = dataio_create_epochs_SM_LARESI(epoch_length, filter_band)
 tic
 disp('Creating epochs for LARESI INVERSE FACE SPELLER dataset');
 
-
 % dataset
 set_path = 'datasets\LARESI_FACE_SPELLER\raw_mat';
 dataSetFiles = dir([set_path '\*.mat']);
 dataSetFiles = {dataSetFiles.name};
 nSubj = length(dataSetFiles);
-trainEEG = cell(1);
-testEEG = cell(1);
 train_trials = 1:5;
 test_trials = 6:9;
 %
@@ -68,7 +65,7 @@ for subj = 1:nSubj
     
     load(dataSetFiles{subj});
     disp(['Loading data for subject: ' data.subject]);
-    % processing parameters    
+    % processing parameters
     wnd_epoch = (epoch_length * data.fs) / 10^3;
     correctionInterval = round([-100 0] * data.fs) / 10^3;
     wnd = [correctionInterval(1) wnd_epoch(2)];
@@ -90,53 +87,44 @@ for subj = 1:nSubj
     events_test.desc = events.desc(epoch_id(test_trials, :));
     y_train = events.y(epoch_id(train_trials,:));
     y_test = events.y(epoch_id(test_trials, :));
+    data.correctionInterval = correctionInterval;
     
-    for trial = 1:trials_train_count
-        disp(['Segmenting Train data for subject:' data.subject]);
-        eeg_epochs = dataio_getERPEpochs(wnd, events_train.pos(trial, :), s);
-        eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
-        trainEEG.epochs.signal(:,:,:,trial) = eeg_epochs;
-        trainEEG.epochs.events(:,trial) = events_train.desc(trial, :);
-        trainEEG.epochs.y(:,trial) = y_train(trial,:);
-    end
-    trainEEG.phrase = phrase_train;
-    trainEEG.fs = data.fs;
-    trainEEG.montage.clab = data.montage;
-    trainEEG.classes = {'target', 'non_target'};
-    trainEEG.paradigm = data.paradigm;
-    trainEEG.paradigm.type = 'SC';
-    trainEEG.subject.id = data.subject;
-    trainEEG.subject.gender = 'M';
-    trainEEG.subject.age = 0;
-    trainEEG.subject.condition = 'healthy';
+    data.phrase = phrase_train;
+    data.y = y_train;
+    trainEEG = getEEGstruct(s, wnd, events_train, data, trials_train_count);
+    dataio_save_mat(Config_path_SM, subj, 'trainEEG');
+  
     disp(['Processing Train data succeed for subject: ' data.subject]);
-    save([Config_path_SM,'\','S0',num2str(subj),'trainEEG.mat'],'trainEEG', '-v7.3');
-    clear trainEEG
+    data.phrase = phrase_test;
+    data.y = y_test;
+    testEEG = getEEGstruct(s, wnd, events_test, data, trials_test_count);
+    dataio_save_mat(Config_path_SM, subj, 'testEEG');
     
-    for trial = 1:trials_test_count
-        disp(['Segmenting Test data for subject: ' data.subject]);
-        eeg_epochs = dataio_getERPEpochs(wnd, events_test.pos(trial, :), s);
-        eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
-        testEEG.epochs.signal(:,:,:,trial) = eeg_epochs;
-        testEEG.epochs.events(:,trial) = events_test.desc(trial, :);
-        testEEG.epochs.y(:,trial) = y_test(trial,:);
-    end
-    testEEG.phrase = phrase_test;
-    testEEG.fs = data.fs;
-    testEEG.montage.clab = data.montage;
-    testEEG.classes = {'target', 'non_target'};
-    testEEG.paradigm = data.paradigm;
-    testEEG.paradigm.type = 'SC';
-    testEEG.subject.id = data.subject;
-    testEEG.subject.gender = 'M';
-    testEEG.subject.age = 0;
-    testEEG.subject.condition = 'healthy';
     disp(['Processing Test data succeed for subject: ' data.subject]);
-    save([Config_path_SM,'\','S0',num2str(subj),'testEEG.mat'],'testEEG', '-v7.3');
     clear s testEEG
     disp('Data epoched saved in:');
-    disp(Config_path_SM);    
+    disp(Config_path_SM);
 end
 toc
 end
-
+%%
+function [EEG] = getEEGstruct(s, wnd, events, data, trials_count)
+for trial = 1:trials_count
+    disp(['Segmenting Train data for subject:' data.subject]);
+    eeg_epochs = dataio_getERPEpochs(wnd, events.pos(trial, :), s);
+    eeg_epochs = dataio_baselineCorrection(eeg_epochs, data.correctionInterval);
+    EEG.epochs.signal(:,:,:,trial) = eeg_epochs;
+    EEG.epochs.events(:,trial) = events.desc(trial, :);
+    EEG.epochs.y(:,trial) = data.y(trial,:);
+end
+EEG.phrase = data.phrase;
+EEG.fs = data.fs;
+EEG.montage.clab = data.montage;
+EEG.classes = {'target', 'non_target'};
+EEG.paradigm = data.paradigm;
+EEG.paradigm.type = 'SC';
+EEG.subject.id = data.subject;
+EEG.subject.gender = 'M';
+EEG.subject.age = 0;
+EEG.subject.condition = 'healthy';
+end

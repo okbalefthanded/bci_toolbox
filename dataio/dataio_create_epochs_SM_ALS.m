@@ -54,8 +54,6 @@ labels = dir([set_path '\labels.mat']);
 labels = {labels.name};
 target_phrase = load(labels{:});
 nSubj = 8;
-trainEEG = cell(1);
-testEEG = cell(1);
 train_trials = 1:15;
 test_trials = 16:35;
 phrase_train = target_phrase.labels(train_trials);
@@ -94,66 +92,56 @@ for subj= 1:nSubj
     subject = subject{1};
     disp(['Loading data for subject: ' subject]);
     load(dataSetFiles{subj});
-    clab = data.channels;
+
+    data.paradigm = paradigm;
+    data.fs = fs;
+    data.subject = subject;
     
     s = eeg_filter(data.X, fs, filter_band(1), filter_band(2), filter_order);      
+    
     events = dataio_geteventsALS(data.y_stim, data.trial, stimDuration);
     events_train.pos = events.pos(train_trials, :);
     events_train.desc = events.desc(train_trials, :);
     events_test.pos = events.pos(test_trials, :);
     events_test.desc = events.desc(test_trials, :);
+    
     trials_train_count = length(train_trials);
-    trials_test_count = length(test_trials);
+    trials_test_count = length(test_trials);   
     
-    for trial = 1:trials_train_count
-        disp(['Segmenting Train data for subject: ' subject ' Trial: ' num2str(trial)]);
-        eeg_epochs = dataio_getERPEpochs(wnd, events_train.pos(trial, :), s);
-        % baseline correction
-        eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
-        trainEEG.epochs.signal(:,:,:,trial) = eeg_epochs;
-        trainEEG.epochs.events(:,trial) = events_train.desc(trial, :);
-        trainEEG.epochs.y(:,trial) = dataio_getlabelERP(events_train.desc(trial, :), phrase_train(trial), 'RC');
-    end
-    trainEEG.phrase = phrase_train;
-    trainEEG.fs = fs;
-    trainEEG.montage.clab = clab;
-    trainEEG.classes = {'target', 'non_target'};
-    trainEEG.paradigm = paradigm;
-    trainEEG.subject.id = subject;
-    trainEEG.subject.gender = data.gender;
-    trainEEG.subject.age = data.age;
-    trainEEG.subject.condition.ALSfrs = data.ALSfrs;
-    trainEEG.subject.condition.onsetALS = data.onsetALS;
-    disp(['Processing train data succeed for subject: ' subject]);
-    save([Config_path_SM,'\','S0',num2str(subj),'trainEEG.mat'],'trainEEG', '-v7.3');
-    
+    disp(['Processing Train data succeed for subject: ' subject]);
+    trainEEG = getEEGstruct(s, data, events_train, wnd, correctionInterval, phrase_train, trials_train_count);
+    dataio_save_mat(Config_path_SM, subj, 'trainEEG');
     clear trainEEG
     
-    for trial = 1:trials_test_count
-        disp(['Segmenting Test data for subject: ' subject ' Trial: ' num2str(trial)]);
-        eeg_epochs = dataio_getERPEpochs(wnd, events_test.pos(trial, :), s);
-        eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
-        testEEG.epochs.signal(:,:,:,trial) = eeg_epochs;
-        testEEG.epochs.events(:,trial) = events_test.desc(trial, :);
-        testEEG.epochs.y(:,trial) = dataio_getlabelERP(events_test.desc(trial, :), phrase_test(trial), 'RC');
-    end
-    testEEG.phrase = phrase_test;
-    testEEG.fs = fs;
-    testEEG.montage.clab = clab;
-    testEEG.classes = {'target', 'non_target'};
-    testEEG.paradigm = paradigm;
-    testEEG.subject.id = subject;
-    testEEG.subject.gender = data.gender;
-    testEEG.subject.age = data.age;
-    testEEG.subject.condiution.ALSfrs = data.ALSfrs;
-    testEEG.subject.condition.onsetALS = data.onsetALS;
     disp(['Processing Test data succeed for subject: ' subject]);
-    
-    save([Config_path_SM,'\','S0',num2str(subj),'testEEG.mat'],'testEEG', '-v7.3');  
+    testEEG = getEEGstruct(s, data, events_test, wnd, correctionInterval, phrase_test, trials_test_count);
+    dataio_save_mat(Config_path_SM, subj, 'testEEG');
     clear testEEG s
+    
     disp('Data epoched saved in:');
     disp(Config_path_SM);    
 end
 toc
+end
+
+%%
+function [EEG] = getEEGstruct(s, data, events, wnd, correctionInterval, phrase, trials_count)
+for trial = 1:trials_count
+    eeg_epochs = dataio_getERPEpochs(wnd, events.pos(trial, :), s);
+    eeg_epochs = dataio_baselineCorrection(eeg_epochs, correctionInterval);
+    EEG.epochs.signal(:,:,:,trial) = eeg_epochs;
+    EEG.epochs.events(:,trial) = events.desc(trial, :);
+    EEG.epochs.y(:,trial) = dataio_getlabelERP(events.desc(trial, :), phrase(trial), 'RC');
+end
+EEG.phrase = phrase;
+EEG.fs = data.fs;
+EEG.montage.clab = data.channels;
+EEG.classes = {'target', 'non_target'};
+EEG.paradigm = data.paradigm;
+EEG.subject.id = data.subject;
+EEG.subject.gender = data.gender;
+EEG.subject.age = data.age;
+EEG.subject.condiution.ALSfrs = data.ALSfrs;
+EEG.subject.condition.onsetALS = data.onsetALS;
 end
 
