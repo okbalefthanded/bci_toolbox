@@ -49,7 +49,11 @@ idx = raw_events.desc >= Base_Stimulations & raw_events.desc <= Base_Stimulation
 events.desc = raw_events.desc(idx) - Base_Stimulations;
 events.pos = floor(raw_events.pos(idx) * fs);
 if (isempty(y))
-    events.y = events.desc + 1;
+    if(sum(events.desc==0))
+        events.y = events.desc + 1;
+    else
+        events.y = events.desc;
+    end
 else
     events.y = y;
 end

@@ -38,7 +38,8 @@ if(sum(stims==OVTK_StimulationId_VisualSteadyStateStimulationStart))
     
     fixation = diff(posStartStop2);
     pause = diff(posStartStop) - fixation;
-else if(sum(stims==Base_Stimulations))
+else if(sum(stims==OVTK_StimulationId_VisualStimulationStart))
+%         if(sum(stims==Base_Stimulations))
         % Using OpenVibe SSVEP demo for acquisition
         fixation = round(diff(events.pos(events.desc==OVTK_StimulationId_VisualStimulationStart | events.desc==OVTK_StimulationId_VisualStimulationStop)));
         delay = fixation(2)-fixation(1);

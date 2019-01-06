@@ -30,14 +30,14 @@ for subj = 1:nSubj
         test_features = extractSSVEP_features(testEEG, approach);
     end
     clear trainEEG testEEG
-    model = ml_trainClassifier(features, approach.classifier, approach.cv);    
+    model = ml_trainClassifier(features, approach.classifier, approach.cv);
     output_train = ml_applyClassifier(features, model);
     clear features
     output_test = ml_applyClassifier(test_features, model);
     clear test_features
     %% Display & plot results
     interSubject_results(1, subj) = output_train.accuracy;
-    interSubject_results(2, subj) = output_test.accuracy;    
+    interSubject_results(2, subj) = output_test.accuracy;
     output ={output_train, output_test, windowLength};
     %     accuracy, kappa, alg
     results(subj).train_acc = output_train.accuracy;
@@ -45,12 +45,12 @@ for subj = 1:nSubj
     % ITR
     n_targets = length(unique(output_train.y));
     evaluation_time = eval_duration + windowLength;
-    results(subj).itr = evaluation_ITR(n_targets, output_test.accuracy, evaluation_time); 
+    results(subj).itr = evaluation_ITR(n_targets, output_test.accuracy, evaluation_time);
     disp(['Accuracy on Train set: ' num2str(output_train.accuracy)]);
     disp(['Accuracy on Test set: ' num2str(output_test.accuracy)]);
     disp( ['Accuracy on Total data: ' num2str(mean(interSubject_results(:, subj)))]);
     disp(['ITR : ' num2str(results(subj).itr)]);
-    disp(repmat('-',1,50))    
+    disp(repmat('-',1,50))
 end
 disp(['Average accuracy on ' set.title ' ' num2str(mean(interSubject_results(2,:)))]);
 end

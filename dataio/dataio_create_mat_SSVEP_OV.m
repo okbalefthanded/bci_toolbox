@@ -1,9 +1,10 @@
-function [] = dataio_create_mat_SSVEP_OV(folder)
+function [] = dataio_create_mat_SSVEP_OV(folder, stimuli)
 %DATAIO_CREATE_MAT_SSVEP_OV convert CSV datafiles recorded using
 % OpenVibe (>= 2.2.0) to a mat file.
 %
 %   input: folder [1xN] path of the folder containing csv files to be
 %   converted one subject at a time
+%         stimuli cell{1xN} : paradigm stimuli
 %   output:
 %      None
 % saved EEG data format:
@@ -71,12 +72,12 @@ for file = 1:nFiles
         data.events = dataio_geteventsOV(data.events, data.fs);
     end
     clear datacell datacell_stim all_str
-% 
-    stimuli = {'idle', '6','7.5','8.57','10'};
+%     stimuli = {'idle', '6','7.5','8.57','10'};
     if(isscalar(unique(data.events.y)))
         data.paradigm.stimuli = stimuli{data.events.y(1)};
     else
-        data.paradigm.stimuli = {stimuli{1:max(data.events.y)}};
+%         data.paradigm.stimuli = {stimuli{1:max(data.events.y)}};
+         data.paradigm.stimuli = stimuli;
     end    
     data.paradigm.stimuli_count = length(data.paradigm.stimuli);
     data.paradigm.type = 'ON/OFF';
