@@ -4,8 +4,11 @@ function [] = plot_roc_curve(output)
 % date created 09-26-2016
 % last modified -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-
-pred = output.score;
+if(ndims(output.score)> 1)
+    pred = max(output.score, [], 2);
+else
+    pred = output.score;
+end
 y = output.trueClasses';
 classifier = output.alg.learner;
 [X,Y] = perfcurve(y,pred,1);

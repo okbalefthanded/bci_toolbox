@@ -4,7 +4,7 @@
 
 % sets = {'LARESI_FACE_SPELLER', 'P300_ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
 tic
-% set.title = 'P300-ALS';      
+% set.title = 'P300-ALS';
 set.title = 'LARESI_FACE_SPELLER_150';
 % set.title = 'LARESI_FACE_SPELLER_120';
 % set.title = 'III_CH';
@@ -16,21 +16,21 @@ report = 0;
 approach.features.alg = 'DOWNSAMPLE';
 approach.features.options.decimation_factor = 12;
 approach.features.options.moving_average = 12;
-%% STDA 
+%% STDA
 % approach.features.alg = 'STDA';
 % approach.features.options.itrmax = 200;
 %% Regularized LDA approach
-% 
+%
 % approach.classifier.learner = 'RLDA';
 % approach.classifier.options.regularizer = 'OAS';
 % approach.classifier.learner = 'LDA';
-%  
+%
 % approach.classifier.learner = 'SWLDA';
 % approach.classifier.options.penter = 0.1;
 % approach.classifier.options.premove = 0.15;
-%% BLDA 
-approach.classifier.learner = 'BLDA';
-approach.classifier.options.verbose = 0;
+%% BLDA
+% approach.classifier.learner = 'BLDA';
+% approach.classifier.options.verbose = 0;
 %% SVM approach
 % approach.classifier.normalization = 'ZSCORE';
 % approach.classifier.learner = 'SVM';
@@ -54,7 +54,7 @@ approach.classifier.options.verbose = 0;
 %% Logistic Regression approach
 % approach.classifier.learner = 'LR';
 % approach.classifier.options.regularizer = 'L1';
-% % approach.classifier.options.regularizer = 'L2';
+% approach.classifier.options.regularizer = 'L2';
 % approach.classifier.options.C = [0.1, 1];
 %% Random forests approach
 % approach.classifier.learner = 'RF';
@@ -72,8 +72,8 @@ approach.classifier.options.verbose = 0;
 % approach.privileged.features.options.decimation_factor = 12;
 % approach.classifier.learner = 'SVMPlus';
 % approach.classifier.normalization = 'ZSCORE';
-% approach.classifier.options.kernel.type = 'LIN'; % LIN | RBF 
-% approach.classifier.options.kernel_plus.type = 'LIN';% LIN | RBF 
+% approach.classifier.options.kernel.type = 'LIN'; % LIN | RBF
+% approach.classifier.options.kernel_plus.type = 'LIN';% LIN | RBF
 % approach.classifier.options.C = [0,2];
 % approach.classifier.options.T = [0,2];
 % approach.classifier.options.kernel.g = [0,2];
@@ -103,7 +103,7 @@ approach.classifier.options.verbose = 0;
 % approach.classifier.options.parameters.nor.dat = {'true', 'true'};
 % approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 % approach.classifier.options.parameters.opt = 'libsvm';
-% approach.classifier.options.parameters.com = 'ratio'; % convex | ratio 
+% approach.classifier.options.parameters.com = 'ratio'; % convex | ratio
 %%
 %% MKL : CABMKL
 % approach.classifier.learner = 'CABMKL';
@@ -113,7 +113,7 @@ approach.classifier.options.verbose = 0;
 % approach.classifier.options.parameters.nor.dat = {'true', 'true'};
 % approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 % approach.classifier.options.parameters.opt = 'libsvm';
-% approach.classifier.options.parameters.com = 'convex'; % linear | convex 
+% approach.classifier.options.parameters.com = 'convex'; % linear | convex
 %% MKL : SIMPLEMKL
 % approach.classifier.learner = 'SIMPLEMKL';
 % approach.classifier.options.parameters = smksvm_parameter();
@@ -130,7 +130,7 @@ approach.classifier.options.verbose = 0;
 % approach.classifier.options.parameters.nor.dat = {'true', 'true'};
 % approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 % approach.classifier.options.parameters.opt = 'libsvm';
-% approach.classifier.options.parameters.sig = 1; 
+% approach.classifier.options.parameters.sig = 1;
 %% MKL : GLMKL
 % approach.classifier.learner = 'GLMKL';
 % approach.classifier.options.parameters = glmksvm_parameter();
@@ -139,7 +139,7 @@ approach.classifier.options.verbose = 0;
 % approach.classifier.options.parameters.nor.dat = {'true', 'true'};
 % approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 % approach.classifier.options.parameters.opt = 'libsvm';
-% approach.classifier.options.parameters.p = 1; 
+% approach.classifier.options.parameters.p = 1;
 %% MKL : NLMKL
 % approach.classifier.learner = 'NLMKL';
 % approach.classifier.options.parameters = nlmksvm_parameter();
@@ -148,7 +148,7 @@ approach.classifier.options.verbose = 0;
 % approach.classifier.options.parameters.nor.dat = {'true', 'true'};
 % approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 % approach.classifier.options.parameters.opt = 'libsvm';
-% approach.classifier.options.parameters.p = 1; 
+% approach.classifier.options.parameters.p = 1;
 % approach.classifier.options.parameters.lam = 1;
 %% MKL : LMKL
 % approach.classifier.learner = 'LMKL';
@@ -158,9 +158,9 @@ approach.classifier.options.verbose = 0;
 % approach.classifier.options.parameters.nor.dat = {'true', 'true'};
 % approach.classifier.options.parameters.nor.ker = {'true', 'true'};
 % approach.classifier.options.parameters.opt = 'libsvm';
-% approach.classifier.options.parameters.gat.typ = 'linear_softmax'; % gating model function [linear_softmax, linear_sigmoid, rbf_softmax]  
-% approach.classifier.options.parameters.loc.typ = 'linear'; % gating model complexity [linear, quadratic]   
-% approach.classifier.options.parameters.nor.loc = 'true'; 
+% approach.classifier.options.parameters.gat.typ = 'linear_softmax'; % gating model function [linear_softmax, linear_sigmoid, rbf_softmax]
+% approach.classifier.options.parameters.loc.typ = 'linear'; % gating model complexity [linear, quadratic]
+% approach.classifier.options.parameters.nor.loc = 'true';
 % approach.classifier.options.parameters.see = 7332; % seed
 %% MKL : MKL
 % approach.classifier.learner = 'MKL';
@@ -183,9 +183,18 @@ approach.classifier.options.verbose = 0;
 % approach.classifier.options.d = 500; %  number of fatures in a kernel
 % approach.classifier.options.r = 500; % number of weak kernels
 % approach.classifier.options.tracenorm = 1;
+%% Gaussian Process
+approach.classifier.learner = 'GP';
+approach.classifier.options.mean = 'Const';
+approach.classifier.options.cov = 'SEiso'; % kernel
+approach.classifier.options.hyp.mean = 0;
+approach.classifier.options.hyp.cov  = log([1 1]);
+approach.classifier.options.inference = 'Laplace';
+approach.classifier.options.likelihood = 'Logistic'; 
+approach.classifier.options.nfunc = 100;
 %% Cross-validation
 approach.cv.method = 'KFOLD';
-approach.cv.nfolds = 0; 
+approach.cv.nfolds = 0;
 % approach.cv.nfolds = 5;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
@@ -195,8 +204,8 @@ approach.cv.parallel.nWorkers = 3;
 [results, output, model] = run_analysis_ERP(set, approach, report);
 nSubj = length(model);
 for subj = 1:nSubj
-%     plot_roc_curve(output{subj}{1})
-%     plot_roc_curve(output{subj}{2})
+        plot_roc_curve(output{subj}{1})
+        plot_roc_curve(output{subj}{2})
     plot_classifier_scores(output{subj}{2})
 end
 toc

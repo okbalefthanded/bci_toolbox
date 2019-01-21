@@ -61,7 +61,12 @@ if(num_classes == 2)
     output.precision = 1 - output.false_detection; % PPV (positive predictive value)
     output.hf_difference = output.sensitivity - output.false_detection; % H-F
     %     output.f1 = 2*(output.precision * output.sensitivity) / (output.precision + output.sensitivity);
-    [~,~,~,output.auc] = perfcurve(output.trueClasses', output.score, 1);
+    if(ndims(output.score)> 1)
+        sc = max(output.score,[], 2);
+    else
+        sc = score;
+    end
+    [~,~,~,output.auc] = perfcurve(output.trueClasses', sc, 1);
 else
     % multi-class
     acc = output.accuracy / 100;

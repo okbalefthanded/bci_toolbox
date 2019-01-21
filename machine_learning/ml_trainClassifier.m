@@ -108,6 +108,8 @@ switch upper(alg.learner)
     case 'MDM'
         % TODO
         model = ml_trainMDM(features, alg);
+    case 'GP'
+        model = ml_trainGP(features, alg);
     case 'CCA'
         model = ml_trainCCA(features, alg);
     case 'L1MCCA'
