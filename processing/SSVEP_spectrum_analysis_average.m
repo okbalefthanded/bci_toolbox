@@ -13,12 +13,13 @@ for subj = 1:nSubj
     nyquist = trainEEG.fs / 2;
     frequencies = linspace(0, nyquist, floor(samples/2)+1);
     fq_count = trainEEG.paradigm.stimuli_count;
-    trials_per_class = trials / fq_count;
+%     trials_per_class = round(trials / fq_count);
     power = zeros(length(frequencies), channels, trials);
     fourierCoefs = cell(1, fq_count);
     epo = trainEEG.epochs.signal;
     for frq = 1:fq_count
         epo_frq = epo(:,:, trainEEG.epochs.y == frq);
+        trials_per_class = round(sum(trainEEG.epochs.y == frq) / fq_count);
         for chidx = 1:channels
             for tr = 1:trials_per_class
                 f = fft(epo_frq(:, chidx, tr)) / samples;

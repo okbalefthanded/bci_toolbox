@@ -62,9 +62,9 @@ if(num_classes == 2)
     output.hf_difference = output.sensitivity - output.false_detection; % H-F
     %     output.f1 = 2*(output.precision * output.sensitivity) / (output.precision + output.sensitivity);
     if(ndims(output.score)> 1)
-        sc = max(output.score,[], 2);
+        sc = output.score(:,1);
     else
-        sc = score;
+        sc = output.score;
     end
     [~,~,~,output.auc] = perfcurve(output.trueClasses', sc, 1);
 else

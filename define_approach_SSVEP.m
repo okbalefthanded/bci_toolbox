@@ -2,16 +2,16 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-% set.title = 'SSVEP_EXOSKELETON';
+set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
-set.title = 'SSVEP_TSINGHUA';
+% set.title = 'SSVEP_TSINGHUA';
 % set.title = 'SSVEP_SANDIEGO';
 % set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;
 %% vanilla CCA
-approach.classifier.learner = 'CCA';
-approach.classifier.options.harmonics = 2;
+% approach.classifier.learner = 'CCA';
+% approach.classifier.options.harmonics = 2;
 %% L1 Multiway CCA
 % approach.classifier.learner = 'L1MCCA';
 % approach.classifier.options.harmonics = 2;
@@ -136,6 +136,16 @@ approach.classifier.options.harmonics = 2;
 % approach.classifier.options.b = [0, 1.5];
 %% ITCCA
 % approach.classifier.learner = 'ITCCA';
+%% Gaussian Process
+approach.features.alg = 'MLR';
+approach.classifier.learner = 'GP';
+approach.classifier.options.mean = 'Const';
+approach.classifier.options.cov = 'SEiso'; % kernel
+approach.classifier.options.hyp.mean = 0;
+approach.classifier.options.hyp.cov  = log([1 1]);
+approach.classifier.options.inference = 'Laplace';
+approach.classifier.options.likelihood = 'Logistic'; 
+approach.classifier.options.nfunc = 40;
 %%
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;

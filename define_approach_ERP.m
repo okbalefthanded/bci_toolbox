@@ -29,8 +29,8 @@ approach.features.options.moving_average = 12;
 % approach.classifier.options.penter = 0.1;
 % approach.classifier.options.premove = 0.15;
 %% BLDA
-% approach.classifier.learner = 'BLDA';
-% approach.classifier.options.verbose = 0;
+approach.classifier.learner = 'BLDA';
+approach.classifier.options.verbose = 0;
 %% SVM approach
 % approach.classifier.normalization = 'ZSCORE';
 % approach.classifier.learner = 'SVM';
@@ -184,14 +184,14 @@ approach.features.options.moving_average = 12;
 % approach.classifier.options.r = 500; % number of weak kernels
 % approach.classifier.options.tracenorm = 1;
 %% Gaussian Process
-approach.classifier.learner = 'GP';
-approach.classifier.options.mean = 'Const';
-approach.classifier.options.cov = 'SEiso'; % kernel
-approach.classifier.options.hyp.mean = 0;
-approach.classifier.options.hyp.cov  = log([1 1]);
-approach.classifier.options.inference = 'Laplace';
-approach.classifier.options.likelihood = 'Logistic'; 
-approach.classifier.options.nfunc = 100;
+% approach.classifier.learner = 'GP';
+% approach.classifier.options.mean = 'Const';
+% approach.classifier.options.cov = 'SEiso'; % kernel
+% approach.classifier.options.hyp.mean = 0;
+% approach.classifier.options.hyp.cov  = log([1 1]);
+% approach.classifier.options.inference = 'Laplace';
+% approach.classifier.options.likelihood = 'Logistic'; 
+% approach.classifier.options.nfunc = 100;
 %% Cross-validation
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;

@@ -10,21 +10,40 @@ function [model] = ml_trainGP(features, alg)
 % last modified -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
-%TODO Mlticlass
+nClasses = numel(unique(features.y));
+nSamples = size(features.x, 1);
+
 hyp = alg.options.hyp;
 nFunc = -alg.options.nfunc;
 infFunc = str2func(strcat('inf', alg.options.inference));
 meanFunc = str2func(strcat('mean', alg.options.mean));
 covFunc = str2func(strcat('cov', alg.options.cov));
 likFunc = str2func(strcat('lik', alg.options.likelihood));
-% hyperparameter tuning is performed without cross-validation
-hyp = minimize(hyp, @gp, nFunc, infFunc, meanFunc, covFunc, likFunc, ...
-               features.x, features.y);
-% train
-[nl, dnl] = gp(hyp, infFunc, meanFunc, covFunc, likFunc, ...,
-              features.x, features.y);
-model.nl = nl;
-model.hyp = hyp;
+if(nClasses <= 2)
+    % hyperparameter tuning is performed without cross-validation
+    hyp = minimize(hyp, @gp, nFunc, infFunc, meanFunc, covFunc, likFunc, ...
+        features.x, features.y);
+    % train
+    [nl, dnl] = gp(hyp, infFunc, meanFunc, covFunc, likFunc, ...,
+        features.x, features.y);
+    model.nl = nl;
+    model.hyp = hyp;
+else
+    models = cell(1, nClasses);
+    for m = 1:nClasses
+        yy = ones(nSamples, 1);
+        yy(features.y~=m) = -1;
+        h = hyp;
+        h = minimize(h, @gp, nFunc, infFunc, meanFunc, covFunc, likFunc, ...
+            features.x, yy);
+        % train
+        [nl, dnl] = gp(hyp, infFunc, meanFunc, covFunc, likFunc, ...,
+                       features.x, yy);
+        models{m}.nl = nl;
+        models{m}.hyp = h;
+    end
+end
+model.models = models;
 model.infFunc = infFunc;
 model.meanFunc = meanFunc;
 model.covFunc = covFunc;

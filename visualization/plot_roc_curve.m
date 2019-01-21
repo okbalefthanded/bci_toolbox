@@ -5,7 +5,7 @@ function [] = plot_roc_curve(output)
 % last modified -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 if(ndims(output.score)> 1)
-    pred = max(output.score, [], 2);
+    pred = output.score(:,1);
 else
     pred = output.score;
 end
