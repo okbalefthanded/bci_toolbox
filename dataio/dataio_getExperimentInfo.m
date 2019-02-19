@@ -1,6 +1,8 @@
 function [stimulation, pause, title] = dataio_getExperimentInfo(events)
-%DATAIO_GETEXPERIMENTINFO Summary of this function goes here
-%   Detailed explanation goes here
+%DATAIO_GETEXPERIMENTINFO returns 
+% Arguments :
+%   In : 
+%   return :
 % created : 11-14-2018
 % last modified: -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>

@@ -17,6 +17,13 @@ function [] = dataio_create_epochs_SM_ALS(epoch_length, filter_band)
 %
 % Dependencies :
 %   eeg_filter.m from EEGLAB toolbox
+% 
+% Reference: 
+%   A. Riccio, L. Simione, F. Schettini, A. Pizzimenti, M. Inghilleri, 
+%   M. O. Belardinelli, D. Mattia, e F. Cincotti, «Attention and P300-based
+%   BCI performance in people with amyotrophic lateral sclerosis», Front. 
+%   Hum. Neurosci., vol. 7:, pag. 732, 2013.
+%   DOI : 10.3389/fnhum.2013.00732
 
 % created : 07-11-2018
 % last modified : -- -- --

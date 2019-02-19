@@ -20,7 +20,13 @@ function [] = dataio_create_epochs_SM_III_CH(epoch_length, filter_band)
 %
 % Dependencies :
 %   eeg_filter.m from EEGLAB toolbox
-
+%
+% Reference :
+%   Blankertz, B., Müller, K., Krusienski, D., Schalk, G., Wolpaw, 
+%   J. R., Schlögl, A., Birbaumer, N. (2006). The BCI Competition III : 
+%   Validating Alternative Approaches to Actual BCI Problems, XX(1), 100–107.
+%   DOI: 10.1109/TNSRE.2006.875642 
+%   
 % created : 07-10-2018
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>

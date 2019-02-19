@@ -64,7 +64,17 @@ for file = 1:nFiles
     emptyEntries = ~cellfun(@isempty, markers);
     markers = markers(emptyEntries(:,1), :);
     data.events.pos = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', false));
-    data.events.desc = cell2mat(cellfun(@str2num, markers(:,1),  'UniformOutput', false));
+    
+    length_markers = unique(cell2mat(cellfun(@length, markers(:,1), 'UniformOutput', false)));
+    
+    if(length(length_markers) > 1)
+        data.events.desc = [];
+    else
+        data.events.desc = cell2mat(cellfun(@str2num, markers(:,1),  'UniformOutput', false));
+    end
+    
+    
+    
     [data.paradigm.stimulation, data.paradigm.pause, data.paradigm.title] = dataio_getExperimentInfo(data.events);
     if(strcmp(data.paradigm.title,'SSVEP_OV_LARESI'))
         data.events = dataio_geteventsLARESI(data.events, data.fs);        

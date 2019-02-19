@@ -24,10 +24,12 @@ function [] = dataio_create_epochs_SM_SanDiego(epoch_length, filter_band)
 % dataset paradigm:
 % Square-joint frequency-phase modulation (JFPM) 1s, 4s,
 % Reference:
-% Masaki Nakanishi, Yijun Wang, Yu-Te Wang and Tzyy-Ping Jung,
-% "A Comparison Study of Canonical Correlation Analysis Based Methods for
+%   Masaki Nakanishi, Yijun Wang, Yu-Te Wang and Tzyy-Ping Jung,
+%   "A Comparison Study of Canonical Correlation Analysis Based Methods for
 %   Detecting Steady-State Visual Evoked Potentials,"
-% PLoS One, vol.10, no.10, e140703, 2015.
+%   PLoS One, vol.10, no.10, e140703, 2015.
+%   DOI : 10.1371/journal.pone.0140703
+
 
 disp('Creating epochs for San Diego lab JPFM SSVEP dataset');
 

@@ -32,6 +32,7 @@ function [] = dataio_create_epochs_SM_Tsinghua(epoch_length, filter_band)
 %  [1] X. Chen, Y. Wang, M. Nakanishi, X. Gao, T. -P. Jung, S. Gao,
 %       "High-speed spelling with a noninvasive brain-computer interface",
 %       Proc. Int. Natl. Acad. Sci. U. S. A, 112(44): E6058-6067, 2015.
+%   DOI: 10.1073/pnas.1508080112
 tic
 disp('Creating epochs for Tsinghua lab JPFM SSVEP dataset');
 

@@ -17,7 +17,13 @@ function [] = dataio_create_epochs_SM_EPFL(epoch_length, filter_band)
 %
 % Dependencies :
 %   eeg_filter.m from EEGLAB toolbox
-
+%
+% Reference :
+%   Ulrich Hoffmann, Jean-Marc Vesin, Karin Diserens, and Touradj Ebrahimi.
+%   An efficient P300-based brain-compuer interface for disabled subjects.
+%   Journal of Neuroscience Methods, 2007
+%   DOI : 10.1016/j.jneumeth.2007.03.005
+%
 % created : 07-11-2018
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>

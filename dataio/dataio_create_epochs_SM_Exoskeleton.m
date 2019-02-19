@@ -15,8 +15,12 @@ function [] = dataio_create_epochs_SM_Exoskeleton(epoch_length, filter_band)
 %
 % Dependencies :
 %   eeg_filter.m from EEGLAB toolbox
-% References
-% [dataset]
+%
+% Reference :
+%   Emmanuel K. Kalunga, Sylvain Chevallier, Quentin Barthelemy. "Online
+%   SSVEP-based BCI using Riemannian Geometry". Neurocomputing, 2016.
+%   arXiv research report on arXiv:1501.03227.
+%
 % created 07-11-2018
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>

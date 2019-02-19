@@ -204,8 +204,8 @@ approach.cv.parallel.nWorkers = 3;
 [results, output, model] = run_analysis_ERP(set, approach, report);
 nSubj = length(model);
 for subj = 1:nSubj
-        plot_roc_curve(output{subj}{1})
-        plot_roc_curve(output{subj}{2})
+%         plot_roc_curve(output{subj}{1})
+%         plot_roc_curve(output{subj}{2})
     plot_classifier_scores(output{subj}{2})
 end
 toc
