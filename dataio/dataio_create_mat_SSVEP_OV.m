@@ -65,11 +65,16 @@ for file = 1:nFiles
     markers = markers(emptyEntries(:,1), :);
     data.events.pos = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', false));
     
-    length_markers = unique(cell2mat(cellfun(@length, markers(:,1), 'UniformOutput', false)));
+    length_markers_each = cell2mat(cellfun(@length, markers(:,1), 'UniformOutput', false));
+    length_markers = unique(length_markers_each);
     
     if(length(length_markers) > 1)
+        % in some entries a single entry of markers has two : makrer1:marker2
+        longer_markers_id = length_markers_each == length_markers(2);
+        
         data.events.desc = [];
     else
+        % sequential markers, normal case
         data.events.desc = cell2mat(cellfun(@str2num, markers(:,1),  'UniformOutput', false));
     end
     
@@ -82,7 +87,7 @@ for file = 1:nFiles
         data.events = dataio_geteventsOV(data.events, data.fs);
     end
     clear datacell datacell_stim all_str
-%     stimuli = {'idle', '6','7.5','8.57','10'};
+%     stimuli = {'idle', '6','7.5','8.57','10'}; stimuli pattern
     if(isscalar(unique(data.events.y)))
         data.paradigm.stimuli = stimuli{data.events.y(1)};
     else
