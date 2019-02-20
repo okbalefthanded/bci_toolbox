@@ -63,37 +63,44 @@ for file = 1:nFiles
     markers = all(2:end, event_id_idx:event_id_idx+2);
     emptyEntries = ~cellfun(@isempty, markers);
     markers = markers(emptyEntries(:,1), :);
-    data.events.pos = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', false));
     
+    clear datacell datacell_stim all_str
+    
+%     data.events.pos = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', false));
+%     tmp_pos = cellfun(@(s) strsplit(s, ':'),markers(:,2),'UniformOutput', false);
+%     data.events.pos = str2double([tmp_pos{:}]');
     length_markers_each = cell2mat(cellfun(@length, markers(:,1), 'UniformOutput', false));
     length_markers = unique(length_markers_each);
     
     if(length(length_markers) > 1)
         % in some entries a single entry of markers has two : makrer1:marker2
-        longer_markers_id = length_markers_each == length_markers(2);
-        
-        data.events.desc = [];
+        % longer_markers_id = length_markers_each == length_markers(2);
+        tmp_pos = cellfun(@(s) strsplit(s, ':'),markers(:,2),'UniformOutput', false);
+        tmp_markers = cellfun(@(s) strsplit(s, ':'),markers(:,1),'UniformOutput', false);
+        data.events.pos = str2double([tmp_pos{:}]');
+        data.events.desc = str2double([tmp_markers{:}]');
     else
         % sequential markers, normal case
         data.events.desc = cell2mat(cellfun(@str2num, markers(:,1),  'UniformOutput', false));
+        data.events.pos = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', false));
     end
     
     
     
     [data.paradigm.stimulation, data.paradigm.pause, data.paradigm.title] = dataio_getExperimentInfo(data.events);
     if(strcmp(data.paradigm.title,'SSVEP_OV_LARESI'))
-        data.events = dataio_geteventsLARESI(data.events, data.fs);        
+        data.events = dataio_geteventsLARESI(data.events, data.fs);
     else
         data.events = dataio_geteventsOV(data.events, data.fs);
     end
-    clear datacell datacell_stim all_str
-%     stimuli = {'idle', '6','7.5','8.57','10'}; stimuli pattern
+    
+    %     stimuli = {'idle', '6','7.5','8.57','10'}; stimuli pattern
     if(isscalar(unique(data.events.y)))
         data.paradigm.stimuli = stimuli{data.events.y(1)};
     else
-%         data.paradigm.stimuli = {stimuli{1:max(data.events.y)}};
-         data.paradigm.stimuli = stimuli;
-    end    
+        %         data.paradigm.stimuli = {stimuli{1:max(data.events.y)}};
+        data.paradigm.stimuli = stimuli;
+    end
     data.paradigm.stimuli_count = length(data.paradigm.stimuli);
     data.paradigm.type = 'ON/OFF';
     folder_parts = strsplit(folder, '\');
