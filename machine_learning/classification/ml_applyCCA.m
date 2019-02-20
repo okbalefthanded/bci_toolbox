@@ -1,9 +1,15 @@
 function [output] = ml_applyCCA(features, model)
 %ML_APPLYCCA 
 
-% created 03-21-2016
+% created 03-21-2018
 % last modification -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
+
+if(strcmp(model.mode, 'sync'))
+    sync_epochs = features.y ~= model.idle_ind;
+    features.signal = features.signal(:,:,sync_epochs);
+    features.y = features.y(sync_epochs) - 1;
+end
 
 [~,~,epochs] = size(features.signal);
 stimuli_count = length(model.ref);

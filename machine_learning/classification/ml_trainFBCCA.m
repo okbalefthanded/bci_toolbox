@@ -17,7 +17,7 @@ end
 model.fs = features.fs;
 [samples, ~, ~] = size(features.signal);
 
-frqs = utils_get_frequencies(features.stimuli_frequencies);
+[frqs, idle_ind] = utils_get_frequencies(features.stimuli_frequencies);
 
 stimuli_count = length(frqs);
 reference_signals = cell(1, stimuli_count);
@@ -34,15 +34,18 @@ if(cv.nfolds == 0)
             alg.options.harmonics...
             );
     end
+    if(strcmp(alg.options.mode, 'sync'))
+        model.idle_ind = idle_ind;
+    end
     model.alg.learner = 'FBCCA';
     model.ref = reference_signals;
     model.nrFbs = alg.options.nrFbs;
 else
-       % parallel settings
+    % parallel settings
     [settings, datacell, fHandle] = parallel_getInputs(cv,...
-                                                       features,...
-                                                       alg.learner...
-                                                       );
+        features,...
+        alg.learner...
+        );
     %     generate param cell
     paramcell = genParams(alg, settings);
     %     start parallel CV
@@ -73,7 +76,7 @@ if(isfield(alg,'o'))
         [alg.options.('a')] = alg.o.('a');
         fields = {fields{:}, 'a'};
     end
-     if(isfield(alg.o,'b'))
+    if(isfield(alg.o,'b'))
         [alg.options.('b')] = alg.o.('b');
         fields = {fields{:}, 'a'};
     end
@@ -117,8 +120,8 @@ off = 0;
 for i=1:nWorkers
     tmp = cell(1, paramsplit+off);
     for k=1:(paramsplit+off)
-        alg.o.a = a(m);       
-        alg.o.b = b(n);      
+        alg.o.a = a(m);
+        alg.o.b = b(n);
         tmp{k} = {alg, cv};
         n = n + 1;
         if(n > length(b) && m < length(a))

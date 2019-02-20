@@ -5,6 +5,13 @@ function [output] = ml_applyFBCCA(features, model)
 % last modification -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
+
+if(strcmp(model.mode, 'sync'))
+    sync_epochs = features.y ~= model.idle_ind;
+    features.signal = features.signal(:,:,sync_epochs);
+    features.y = features.y(sync_epochs) - 1;
+end
+
 [~,~,epochs] = size(features.signal);
 % stimuli_count = max(features.events);
 % simuli_count = max(features.y);

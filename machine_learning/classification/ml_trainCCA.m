@@ -11,7 +11,7 @@ if(~isfield(alg, 'options'))
 end
 
 [samples, ~, ~] = size(features.signal);
-frqs = utils_get_frequencies(features.stimuli_frequencies);
+[frqs, idle_ind] = utils_get_frequencies(features.stimuli_frequencies);
 stimuli_count = length(frqs);
 reference_signals = cell(1, stimuli_count);
 
@@ -22,7 +22,13 @@ for stimulus=1:stimuli_count
                                          alg.options.harmonics);
 end
 
+if(strcmp(alg.options.mode, 'sync'))
+    model.idle_ind = idle_ind;
+end
+
 model.alg.learner = 'CCA';
 model.ref = reference_signals;
+model.mode = alg.options.mode;
+
 end
 
