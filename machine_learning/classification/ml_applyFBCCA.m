@@ -6,7 +6,7 @@ function [output] = ml_applyFBCCA(features, model)
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
 
-if(strcmp(model.mode, 'sync'))
+if(strcmp(model.mode, 'sync') && ~isempty(model.idle_ind))
     sync_epochs = features.y ~= model.idle_ind;
     features.signal = features.signal(:,:,sync_epochs);
     features.y = features.y(sync_epochs) - 1;
