@@ -22,8 +22,10 @@ for stimulus=1:stimuli_count
                                          alg.options.harmonics);
 end
 
-if(strcmp(alg.options.mode, 'sync'))
+if(strcmp(alg.options.mode, 'sync') && ~isempty(idle_ind))
     model.idle_ind = idle_ind;
+else
+    model.idle_ind = [];
 end
 
 model.alg.learner = 'CCA';

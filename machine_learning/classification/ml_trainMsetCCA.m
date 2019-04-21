@@ -37,8 +37,10 @@ else
     %     TODO
 end
 
-if(strcmp(alg.options.mode, 'sync'))
+if(strcmp(alg.options.mode, 'sync') && ~isempty(idle_ind))
     model.idle_ind = idle_ind;
+else
+    model.idle_ind = [];
 end
 model.alg.learner = 'MSETCCA';
 model.ref = reference_signals;

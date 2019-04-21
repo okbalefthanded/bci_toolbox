@@ -2,10 +2,10 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-set.title = 'SSVEP_EXOSKELETON';
+% set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
 % set.title = 'SSVEP_TSINGHUA';
-% set.title = 'SSVEP_SANDIEGO';
+set.title = 'SSVEP_SANDIEGO';
 % set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;
@@ -20,9 +20,11 @@ approach.classifier.options.mode = 'sync';
 % approach.classifier.options.n_comp = 1;  % number of projection components for learning the reference signals
 % approach.classifier.options.lambda = 0.02; % regularization parameter for the 3rd-way (i.e., trial-way), which can be more precisely decided by cross-validation
 % approach.classifier.options.lambda = [0, 0.2];
+% approach.classifier.options.mode = 'sync';
 %% Mset CCA
 % approach.classifier.learner = 'MSETCCA';
 % approach.classifier.options.n_comp = 1;
+% approach.classifier.options.mode = 'sync';
 %% MLR-SVM
 % approach.features.alg = 'MLR';
 % approach.features.options = [];

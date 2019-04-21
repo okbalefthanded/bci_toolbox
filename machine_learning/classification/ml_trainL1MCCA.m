@@ -60,8 +60,10 @@ if (cv.nfolds == 0)
         op_refer{stimulus} = op_refer{stimulus}.data;
         op_refer{stimulus} = w1{stimulus}'*op_refer{stimulus};
     end
-    if(strcmp(alg.options.mode, 'sync'))
+    if(strcmp(alg.options.mode, 'sync') && ~isempty(idle_ind))
         model.idle_ind = idle_ind;
+    else
+        model.idle_ind = [];
     end
     model.alg.learner = 'L1MCCA';
     model.ref = op_refer;
