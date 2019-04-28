@@ -2,10 +2,10 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-% set.title = 'SSVEP_EXOSKELETON';
+set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
 % set.title = 'SSVEP_TSINGHUA';
-set.title = 'SSVEP_SANDIEGO';
+% set.title = 'SSVEP_SANDIEGO';
 % set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;
@@ -157,13 +157,7 @@ approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %%
 [results, output, model] = run_analysis_SSVEP(set, approach, report);
-t = toc;
-if(t>=60)
-    t = t/60;
-    disp(['Time elapsed for computing: ' num2str(t) ' minutes']);
-else
-    disp(['Time elapsed for computing: ' num2str(t) ' seconds']);
-end
+utils_get_time(toc);
 %% Report analysis
 % data sets, approach,
 % subject  method

@@ -33,8 +33,11 @@ function [] = dataio_create_mat_SSVEP_OV(folder, stimuli)
 tic
 set_path = ['datasets\',folder];
 dataSetFiles = dir([set_path,'\*.csv']);
+filesDates = {dataSetFiles.date};
 dataSetFiles = {dataSetFiles.name};
 nFiles = length(dataSetFiles);
+frame_freqs = [6. 7.5, 8.57, 10, 12];
+
 % file_signal = dataSetFiles{1};
 for file = 1:nFiles
     % fs, montage, signal, events
@@ -66,9 +69,9 @@ for file = 1:nFiles
     
     clear datacell datacell_stim all_str
     
-%     data.events.pos = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', false));
-%     tmp_pos = cellfun(@(s) strsplit(s, ':'),markers(:,2),'UniformOutput', false);
-%     data.events.pos = str2double([tmp_pos{:}]');
+    %     data.events.pos = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', false));
+    %     tmp_pos = cellfun(@(s) strsplit(s, ':'),markers(:,2),'UniformOutput', false);
+    %     data.events.pos = str2double([tmp_pos{:}]');
     length_markers_each = cell2mat(cellfun(@length, markers(:,1), 'UniformOutput', false));
     length_markers = unique(length_markers_each);
     
@@ -86,7 +89,6 @@ for file = 1:nFiles
     end
     
     
-    
     [data.paradigm.stimulation, data.paradigm.pause, data.paradigm.title] = dataio_getExperimentInfo(data.events);
     if(strcmp(data.paradigm.title,'SSVEP_OV_LARESI'))
         data.events = dataio_geteventsLARESI(data.events, data.fs);
@@ -102,10 +104,21 @@ for file = 1:nFiles
         data.paradigm.stimuli = stimuli;
     end
     data.paradigm.stimuli_count = length(data.paradigm.stimuli);
-    data.paradigm.type = 'ON/OFF';
+    if(sum(mod(60,frame_freqs)==0)) %
+        data.paradigm.type = 'ON/OFF';
+    else
+        data.paradigm.type = 'Sinusoidal';
+    end
+    
     folder_parts = strsplit(folder, '\');
-    date = folder_parts(end);
-    data.subject = folder_parts(end-1);
+    if(isnan(str2double(folder_parts(end))))
+        data.subject = folder_parts(end-3);
+        subject_folder = [folder_parts{end-1} '\' folder_parts{end}];
+    else
+        data.subject = folder_parts(end-2);
+        subject_folder = ['\',folder_parts(end)];
+    end
+    date = datestr(filesDates{file},'dd_mmmm_yyyy_HH.MM.SS.FFF');
     disp(['Creating mat files for subject: ' data.subject]);
     % save
     tmp = strsplit(file_signal, 'CSV');
@@ -113,12 +126,13 @@ for file = 1:nFiles
     if(~exist(path,'dir'))
         mkdir(path);
     end
-    path = [path,date{:},'\'];
+    path = [path,subject_folder,'\'];
     if(~exist(path,'dir'))
         mkdir(path);
     end
-    save([path data.subject{:},date{:},'_ssvep_ov_',num2str(file),'_.mat'], 'data');
+    save([path data.subject{:},'_',date,'_ssvep_ov.mat'], 'data');
 end
-toc
+utils_get_time(toc);
+
 end
 

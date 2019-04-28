@@ -208,4 +208,5 @@ for subj = 1:nSubj
 %         plot_roc_curve(output{subj}{2})
     plot_classifier_scores(output{subj}{2})
 end
-toc
+%%
+utils_get_time(toc);
