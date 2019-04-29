@@ -47,24 +47,24 @@ switch upper(set.title)
         else
             data = load([ssvep_sandiego 'testEEG.mat']);
             data = data.testEEG;
-        end 
+        end
     case 'SSVEP_LARESI'
         folders = dir([path,'ssvep_laresi\SM']);
         folders(1:2) = [];
         folders = {folders.name};
-%         ssvep_laresi = [path,'ssvep_laresi\SM\',folders{end},'\',subj];
+        %         ssvep_laresi = [path,'ssvep_laresi\SM\',folders{end},'\',subj];
         ssvep_laresi = [path,'ssvep_laresi\SM\',folders{end}];
         if(strcmp(datatype,'train'))
-%             data = load([ssvep_laresi,'trainEEG.mat']);
+            %             data = load([ssvep_laresi,'trainEEG.mat']);
             data = load([ssvep_laresi]);
             data = data.trainEEG;
         else
             data = load([ssvep_laresi,'testEEG.mat']);
             data = data.testEEG;
         end
-                
+        
     otherwise
-        error('Incorrect SSVEP Dataset');        
+        error('Incorrect SSVEP Dataset');
 end
 
 end

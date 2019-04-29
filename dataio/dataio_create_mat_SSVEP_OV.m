@@ -111,12 +111,13 @@ for file = 1:nFiles
     
     folder_parts = strsplit(folder, '\');
     if(isnan(str2double(folder_parts(end))))
-        data.subject = folder_parts(end-2);
+%         data.subject = folder_parts(end-1);
         subject_folder = [folder_parts{end-1} '\' folder_parts{end}];
     else
-        data.subject = folder_parts(end-1);
+%         data.subject = folder_parts(end);
         subject_folder = ['\',folder_parts(end)];
     end
+    data.subject = folder_parts{3};
     date = datestr(filesDates{file},'dd_mmmm_yyyy_HH.MM.SS.FFF');
     disp(['Creating mat files for subject: ' data.subject]);
     % save
@@ -129,9 +130,8 @@ for file = 1:nFiles
     if(~exist(path,'dir'))
         mkdir(path);
     end
-    save([path data.subject{:},'_',date,'_ssvep_ov.mat'], 'data');
+    save([path data.subject,'_',date,'_ssvep_ov.mat'], 'data');
 end
 utils_get_time(toc);
-
 end
 
