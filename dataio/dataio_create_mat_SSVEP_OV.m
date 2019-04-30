@@ -36,7 +36,6 @@ dataSetFiles = dir([set_path,'\*.csv']);
 filesDates = {dataSetFiles.date};
 dataSetFiles = {dataSetFiles.name};
 nFiles = length(dataSetFiles);
-% frame_freqs = [6. 7.5, 8.57, 10, 12];
 
 % file_signal = dataSetFiles{1};
 for file = 1:nFiles
@@ -87,13 +86,13 @@ for file = 1:nFiles
         data.events.desc = cell2mat(cellfun(@str2num, markers(:,1),  'UniformOutput', false));
         data.events.pos = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', false));
     end
-        
+    
     [data.paradigm.stimulation, data.paradigm.pause, data.paradigm.title] = dataio_getExperimentInfo(data.events);
     if(strcmp(data.paradigm.title,'SSVEP_OV_LARESI'))
         data.events = dataio_geteventsLARESI(data.events, data.fs);
     else
         data.events = dataio_geteventsOV(data.events, data.fs);
-    end    
+    end
     %     stimuli = {'idle', '6','7.5','8.57','10'}; stimuli pattern
     if(isscalar(unique(data.events.y)))
         data.paradigm.stimuli = stimuli{data.events.y(1)};
@@ -104,17 +103,15 @@ for file = 1:nFiles
     data.paradigm.stimuli_count = length(data.paradigm.stimuli);
     
     if(sum(mod(60,str2double(stimuli))==0)) %
-        data.paradigm.type = 'ON/OFF';
+        data.paradigm.type = 'ON_OFF';
     else
         data.paradigm.type = 'Sinusoidal';
     end
     
     folder_parts = strsplit(folder, '\');
     if(isnan(str2double(folder_parts(end))))
-%         data.subject = folder_parts(end-1);
         subject_folder = [folder_parts{end-1} '\' folder_parts{end}];
     else
-%         data.subject = folder_parts(end);
         subject_folder = ['\',folder_parts(end)];
     end
     data.subject = folder_parts{3};
