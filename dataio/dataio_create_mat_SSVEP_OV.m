@@ -102,7 +102,7 @@ for file = 1:nFiles
     end
     data.paradigm.stimuli_count = length(data.paradigm.stimuli);
     
-    if(sum(mod(60,str2double(stimuli))==0)) %
+    if(sum(mod(60,str2double(stimuli))==0) > length(stimuli)/2) %%
         data.paradigm.type = 'ON_OFF';
     else
         data.paradigm.type = 'Sinusoidal';
@@ -127,7 +127,9 @@ for file = 1:nFiles
     if(~exist(path,'dir'))
         mkdir(path);
     end
-    save([path data.subject,'_',date,'_ssvep_ov.mat'], 'data');
+    file_name = [path data.subject,'_',date,'_ssvep_ov.mat'];
+    save(file_name, 'data');
+    disp([' file saved in: ', file_name]);
 end
 utils_get_time(toc);
 end
