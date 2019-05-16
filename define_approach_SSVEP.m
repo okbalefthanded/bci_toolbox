@@ -4,8 +4,8 @@
 tic
 % set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
-% set.title = 'SSVEP_TSINGHUA';
-set.title = 'SSVEP_SANDIEGO';
+set.title = 'SSVEP_TSINGHUA';
+% set.title = 'SSVEP_SANDIEGO';
 % set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;

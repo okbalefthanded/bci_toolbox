@@ -1,8 +1,8 @@
-function [] = dataio_create_mat_LARESI(files)
-%DATAIO_CREATE_MAT_LARESI Summary of this function goes here
-%   Detailed explanation goes here
+function [] = dataio_create_mat_LARESI_legacy(files)
+%DATAIO_CREATE_MAT_LARESI converting CSV ERP files to mat 
+% OpenVibe <2.0.0
 % created : 10-11-2017
-% last modified : -- -- --
+% last modified : 05-16-2019
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 
 % 80ms stimulations - 40 ms ISI
