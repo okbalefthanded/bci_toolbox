@@ -42,6 +42,7 @@ if(cv.nfolds == 0)
     model.alg.learner = 'FBCCA';
     model.ref = reference_signals;
     model.nrFbs = alg.options.nrFbs;
+    model.mode = alg.options.mode;
 else
     % parallel settings
     [settings, datacell, fHandle] = parallel_getInputs(cv,...

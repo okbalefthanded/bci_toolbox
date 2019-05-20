@@ -84,7 +84,7 @@ for smp=1:nSamples
 end
 nMisClassified = sum(output.trueClasses ~= output.y);
 output.accuracy = ((nSamples - nMisClassified)/nSamples) *100;
-output = ml_get_performance(output);
+% output = ml_get_performance(output);
 output.subject = '';
 output.alg = model.alg;
 end

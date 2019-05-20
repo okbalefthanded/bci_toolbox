@@ -30,7 +30,7 @@ function [] = dataio_create_epochs_SM_SanDiego(epoch_length, filter_band)
 %   PLoS One, vol.10, no.10, e140703, 2015.
 %   DOI : 10.1371/journal.pone.0140703
 
-
+tic
 disp('Creating epochs for San Diego lab JPFM SSVEP dataset');
 
 set_path = 'datasets\ssvep_sandiego';
