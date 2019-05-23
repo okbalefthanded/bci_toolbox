@@ -94,7 +94,7 @@ for file = 1:nFiles
         desc = cell2mat(cellfun(@str2num, markers(:,1),  'UniformOutput', false));
         pos = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', false));
     end    
-    exp_start = find(desc == OVTK_StimulationId_ExperimentStart);
+    exp_start = find(desc == OVTK_StimulationId_ExperimentStart, 1);
     ends_idx  = find(desc == OVTK_StimulationId_ExperimentStop);
     ends = pos(ends_idx); 
     if(isempty(exp_start))

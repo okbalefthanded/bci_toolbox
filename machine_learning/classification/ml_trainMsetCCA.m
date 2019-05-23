@@ -44,5 +44,6 @@ else
 end
 model.alg.learner = 'MSETCCA';
 model.ref = reference_signals;
+model.mode = alg.options.mode;
 end
 

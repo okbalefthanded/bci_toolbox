@@ -67,6 +67,7 @@ if (cv.nfolds == 0)
     end
     model.alg.learner = 'L1MCCA';
     model.ref = op_refer;
+    model.mode = alg.options.mode;
 else
     cv.method = 'stratifiedkfold';
     cv.y = features.y;
