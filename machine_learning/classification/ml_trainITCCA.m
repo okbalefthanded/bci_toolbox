@@ -12,5 +12,6 @@ for stimulus=1:stimuli_count
 end
 model.alg.learner = 'ITCCA';
 model.ref = reference_signals;
+model.mode = 'async';
 end
 

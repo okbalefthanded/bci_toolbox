@@ -2,9 +2,9 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-% set.title = 'SSVEP_EXOSKELETON';
+set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
-set.title = 'SSVEP_TSINGHUA';
+% set.title = 'SSVEP_TSINGHUA';
 % set.title = 'SSVEP_SANDIEGO';
 % set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
@@ -22,9 +22,9 @@ report = 0;
 % approach.classifier.options.lambda = [0, 0.2];
 % approach.classifier.options.mode = 'sync';
 %% Mset CCA
-approach.classifier.learner = 'MSETCCA';
-approach.classifier.options.n_comp = 1;
-approach.classifier.options.mode = 'sync';
+% approach.classifier.learner = 'MSETCCA';
+% approach.classifier.options.n_comp = 1;
+% approach.classifier.options.mode = 'sync';
 %% MLR-SVM
 % approach.features.alg = 'MLR';
 % approach.features.options = [];
@@ -133,15 +133,15 @@ approach.classifier.options.mode = 'sync';
 % approach.classifier.options.is_ensemble = 1;
 %% FBCCA
 % approach.classifier.learner = 'FBCCA';
-% approach.classifier.options.harmonics = 2;
-% approach.classifier.options.nrFbs = 2;
-% approach.classifier.options.a = 2.5;
-% approach.classifier.options.b = 1.5;
+% approach.classifier.options.harmonics = 5;
+% approach.classifier.options.nrFbs = 5;
+% approach.classifier.options.a = 1.8;
+% approach.classifier.options.b = 0.4;
 % approach.classifier.options.mode = 'sync';
 % approach.classifier.options.a = [0, 2.5];
 % approach.classifier.options.b = [0, 1.5];
 %% ITCCA
-% approach.classifier.learner = 'ITCCA';
+approach.classifier.learner = 'ITCCA';
 %% Gaussian Process
 % approach.features.alg = 'MLR';
 % approach.classifier.learner = 'GP';
