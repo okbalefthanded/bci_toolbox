@@ -28,6 +28,7 @@ if(nClasses <= 2)
         features.x, features.y);
     model.nl = nl;
     model.hyp = hyp;
+    %     model.models = models;
 else
     models = cell(1, nClasses);
     for m = 1:nClasses
@@ -38,12 +39,13 @@ else
             features.x, yy);
         % train
         [nl, dnl] = gp(hyp, infFunc, meanFunc, covFunc, likFunc, ...,
-                       features.x, yy);
+            features.x, yy);
         models{m}.nl = nl;
         models{m}.hyp = h;
     end
+    model.models = models;
 end
-model.models = models;
+
 model.infFunc = infFunc;
 model.meanFunc = meanFunc;
 model.covFunc = covFunc;

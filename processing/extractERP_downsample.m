@@ -60,7 +60,7 @@ function [features] = extractERP_downsample(EEG, opt)
 % created 11-02-2017
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
-if(isempty(opt))
+if(isempty(opt) || ~isfield(opt,'decimation_factor') || ~isfield(opt,'moving_average') )
     decimation = 12;
     moving_average = 12;
 else

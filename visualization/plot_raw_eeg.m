@@ -21,6 +21,7 @@ plot(time,sig,'Color','b');
 hold on,
 plot(time, baseline,'k--')
 set(gca,'ytick', flip(baseline(1,:)),'yticklabel', flip(eeg.montage));
-xlabel('Time [seconds]')
+xlabel('Time [seconds]');
+title('Raw continuous EEG');
 end
 

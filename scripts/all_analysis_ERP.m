@@ -4,9 +4,11 @@
 % ERP
 tic
 
-sets = { 'LARESI_FACE_SPELLER_150', 'P300-ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
+% sets = { 'LARESI_FACE_SPELLER_150', 'P300-ALS', 'III_CH', 'EPFL_IMAGE_SPELLER'};
+sets = {'LARESI_FACE_SPELLER'};
+
 features.algs = {'DOWNSAMPLE'};
-learners = {'LDA','RLDA', 'SWLDA', 'SVM', 'LR', 'RF', 'GBOOST'};
+learners = {'LDA','RLDA', 'SWLDA', 'BLDA','SVM', 'LR', 'RF', 'GBOOST'};
 
 approach.features.options = [];
 approach.classifier.options = [];

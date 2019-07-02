@@ -13,7 +13,9 @@ function [model] = ml_trainBLDA(features, alg, cv)
 % The algorithm implemented here was originally described by
 % MacKay, D. J. C., 1992. Bayesian interpolation.
 % Neural Computation 4 (3), pp. 415-447.
-
+if(~isfield(alg,'verbose'))
+    alg.verbose = 0;
+end
 %% compute regression targets from class labels (to do lda via regression)
 y = features.y';
 n_posexamples = sum(y==1);
