@@ -1,4 +1,4 @@
-function [] = dataio_create_mat_online_hybrid(folder, ssvep_stimuli)
+function [] = dataio_create_mat_online_Hybrid(folder, ssvep_stimuli)
 %DATAIO_CREATE_ONLINE_HYBRID convert CSV datafiles recorded in an online
 % Hybrid ERP/SSVEP experiments using OpenVibe (>= 2.2.0) to a mat file.
 %
@@ -42,7 +42,7 @@ OVTK_StimulationId_ExperimentStop = 32770;
 
 ssvep_montage = {'Pz','PO5','PO3','POz','PO4','PO6', 'O1','Oz','O2'};
 
-set_path = ['datasets\',folder];
+set_path = ['datasets\',folder,'\online\copy'];
 dataSetFiles = dir([set_path,'\*.csv']);
 filesDates = {dataSetFiles.date};
 dataSetFiles = {dataSetFiles.name};
@@ -59,7 +59,7 @@ for file = 1:nFiles
     datacell = textscan(fid, fmt, 'Delimiter', ',', 'CollectOutput', 1);
     fclose(fid);
     %
-        header = datacell{1,1}(1,:);
+    header = datacell{1,1}(1,:);
     event_id_idx = find(strcmp(header, 'Event Id'), 1);
     fs = strsplit(header{1},':');
     fs = strsplit(fs{2},'Hz');
@@ -92,8 +92,8 @@ for file = 1:nFiles
         % sequential markers, normal case
         desc = cell2mat(cellfun(@str2num, markers(:,1),  'UniformOutput', false));
         pos = cell2mat(cellfun(@str2num, markers(:,2),  'UniformOutput', false));
-    end 
-    % trials start and end 
+    end
+    % trials start and end
     exp_start = find(desc == OVTK_StimulationId_ExperimentStart, 1);
     ends_idx  = find(desc == OVTK_StimulationId_ExperimentStop);
     ends = pos(ends_idx);
@@ -107,7 +107,7 @@ for file = 1:nFiles
     erp_trials_start = pos_trials_start(1:2:end);
     ssvep_trials_start = pos_trials_start(2:2:end);
     erp_trials_end = pos_trials_end(1:2:end);
-    ssvep_trials_end = pos_trials_end(2:2:end);    
+    ssvep_trials_end = pos_trials_end(2:2:end);
     
     erp_id = bsxfun(@ge, pos, erp_trials_start') & bsxfun(@le, pos, erp_trials_end');
     ssvep_id = bsxfun(@ge, pos, ssvep_trials_start') & bsxfun(@le, pos, ssvep_trials_end');
@@ -129,16 +129,16 @@ for file = 1:nFiles
     erp.interval = [ceil(erp_trials_start*fs),ceil(ceil(erp_trials_end*fs))];
     erp.events.desc = ERP_desc;
     erp.events.pos = ERP_pos;
-    erp.events = dataio_geteventsLARESI(erp.events, fs);  
+    erp.events = dataio_geteventsLARESI(erp.events, fs);
     erp.paradigm.title = 'Inverted_Face_Speller';
     erp.paradigm.stimulation = 100;
     erp.paradigm.isi = 50;
-    erp.paradigm.repetition = 10;
+    %     erp.paradigm.repetition = 10;
     erp.paradigm.stimuli_count = 9;
     erp.paradigm.type = 'SC';
-    erp.desired_phrase = '123456789'; 
+    erp.desired_phrase = '123456789';
     erp.mode = 'online';
-     
+    
     % SSVEP data
     ssvep.montage = ssvep_montage;
     ssvep.interval = [ceil(ssvep_trials_start*fs),ceil(ceil(ssvep_trials_end*fs))];
@@ -161,13 +161,13 @@ for file = 1:nFiles
         ssvep.mode = 'sync_online';
     end
     
-    % all data 
+    % all data
     data.signal = signal;
     data.fs = fs;
     data.montage = montage;
     data.subject = subject;
     data.erp = erp;
-    data.ssvep = ssvep;    
+    data.ssvep = ssvep;
     
     if(isnan(str2double(folder_parts(end))))
         subject_folder = [folder_parts{end-1} '\' folder_parts{end}];
@@ -183,15 +183,16 @@ for file = 1:nFiles
     if(~exist(path,'dir'))
         mkdir(path);
     end
-    path = [path,subject_folder,'\'];
+    
+    path = [path,subject_folder,'\online\copy\'];
     if(~exist(path,'dir'))
         mkdir(path);
     end
     file_name = [path data.subject,'_',date,'_hybrid_online_ov.mat'];
     save(file_name, 'data');
     disp([' file saved in: ', file_name]);
-    
 end
-utils_get_time(toc);
+
 end
+
 
