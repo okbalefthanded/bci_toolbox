@@ -1,6 +1,7 @@
-function [] = dataio_create_epochs_online_HYBRID_LARESI(set, erp_epoch, erp_band, ssvep_epoch, ssvep_band)
-%DATAIO_CREATE_EPOCHS_HYBRID_ONLINE_LARESI
-% created : 06-16-2019
+function [] = dataio_create_epochs_calib_HYBRID_LARESI(set, erp_epoch, erp_band, ssvep_epoch, ssvep_band)
+%DATAIO_CREATE_EPOCHS_HYBRID_LARESI Summary of this function goes here
+%   Detailed explanation goes here
+% created : 05-15-2019
 % last modified : -- -- --
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 % EEG structure: epochs     : struct
@@ -22,7 +23,7 @@ function [] = dataio_create_epochs_online_HYBRID_LARESI(set, erp_epoch, erp_band
 tic
 disp('Creating epochs for LARESI SSVEP dataset');
 Config_path_SM = 'datasets\epochs\hybrid_laresi\SM';
-dataSetFiles = dir(['datasets\',set,'\online\copy\*.mat']);
+dataSetFiles = dir(['datasets\',set,'\calib\*.mat']);
 dataSetFiles = {dataSetFiles.name};
 
 
@@ -51,22 +52,15 @@ wnd = [correctionInterval(1) erp_wnd(2)];
 
 for subj=1:nSubj
     disp(['Loading data for subject S0' num2str(subj)]);
-    subject_path = ['datasets\',set,'\online\copy\',dataSetFiles{subj}];
+    subject_path = ['datasets\',set,'\calib\',dataSetFiles{subj}];
     load(subject_path);
     % ERP
     erp = data.erp;
-    ssvep = data.ssvep;
     erp.subject = data.subject;
     erp.fs = data.fs;
-    n_trials = length(erp.interval);
-    for tr = 1:n_trials
-        s = eeg_filter(data.signal(erp.interval(tr,1):erp.interval(tr,2),:),...
-            data.fs, erp_band(1), erp_band(2), erp_filter_order);
-        data.signal(erp.interval(tr,1):erp.interval(tr,2),:) = s;
-        s = eeg_filter(data.signal(ssvep.interval(tr,1):ssvep.interval(tr,2),:),...
-            data.fs, ssvep_band(1), ssvep_band(2),ssvep_filter_order);
-        data.signal(ssvep.interval(tr,1):ssvep.interval(tr,2),:) = s;
-    end
+    s = eeg_filter(data.signal(erp.interval(1):erp.interval(2),:),...
+                   data.fs, erp_band(1), erp_band(2), erp_filter_order);
+    data.signal(erp.interval(1):erp.interval(2),:) = s;
     events = erp.events;
     trials_train_count = length(train_trials);
     epoch_count = erp.paradigm.repetition * erp.paradigm.stimuli_count;
@@ -80,33 +74,33 @@ for subj=1:nSubj
     erp.correctionInterval = correctionInterval;
     erp.phrase = erp.desired_phrase;
     erp.y = y_train;
-    ERP_testEEG = getEEGstruct(data.signal, wnd, events_train, erp, trials_train_count);
+    ERP_trainEEG = getEEGstruct(data.signal, wnd, events_train, erp, trials_train_count);
     % SSVEP
-    %     ssvep = data.ssvep;
-    %     s = eeg_filter(data.signal(ssvep.interval(1):ssvep.interval(2),:),...
-    %                    data.fs, ssvep_band(1), ssvep_band(2),ssvep_filter_order);
-    %     data.signal(ssvep.interval(1):ssvep.interval(2),:) = s;
-    SSVEP_testEEG.epochs.signal = dataio_getERPEpochs(ssvep_wnd, ...
-        ssvep.events.pos, data.signal);
-    SSVEP_testEEG.epochs.events = ssvep.events.desc;
-    SSVEP_testEEG.epochs.y = ssvep.events.y';
-    SSVEP_testEEG.fs = data.fs;
-    SSVEP_testEEG.montage.clab = ssvep.montage;
-    SSVEP_testEEG.classes = ssvep.paradigm.stimuli;
-    SSVEP_testEEG.paradigm = ssvep.paradigm;
-    SSVEP_testEEG.subject.id = num2str(subj);
-    SSVEP_testEEG.subject.gender = 'M';
-    SSVEP_testEEG.subject.age = 0;
-    SSVEP_testEEG.subject.condition = 'healthy';
+    ssvep = data.ssvep;
+    s = eeg_filter(data.signal(ssvep.interval(1):ssvep.interval(2),:),... 
+                   data.fs, ssvep_band(1), ssvep_band(2),ssvep_filter_order);
+    data.signal(ssvep.interval(1):ssvep.interval(2),:) = s;
+    SSVEP_trainEEG.epochs.signal = dataio_getERPEpochs(ssvep_wnd, ...
+                             ssvep.events.pos, data.signal);
+    SSVEP_trainEEG.epochs.events = ssvep.events.desc;
+    SSVEP_trainEEG.epochs.y = ssvep.events.y';
+    SSVEP_trainEEG.fs = data.fs;
+    SSVEP_trainEEG.montage.clab = ssvep.montage;
+    SSVEP_trainEEG.classes = ssvep.paradigm.stimuli;
+    SSVEP_trainEEG.paradigm = ssvep.paradigm;
+    SSVEP_trainEEG.subject.id = num2str(subj);
+    SSVEP_trainEEG.subject.gender = 'M';
+    SSVEP_trainEEG.subject.age = 0;
+    SSVEP_trainEEG.subject.condition = 'healthy';
     % save
-    testEEG.ERP_testEEG = ERP_testEEG;
-    testEEG.SSVEP_testEEG = SSVEP_testEEG;
+    trainEEG.ERP_trainEEG = ERP_trainEEG;
+    trainEEG.SSVEP_trainEEG = SSVEP_trainEEG;
     disp(['Processing Train data succeed for subject: ' num2str(subj)]);
     if(~exist(Config_path_SM,'dir'))
         mkdir(Config_path_SM);
     end
-    save([Config_path_SM,'\','S0',num2str(subj),'testEEG.mat'],'testEEG', '-v7.3');
-    
+    save([Config_path_SM,'\','S0',num2str(subj),'trainEEG.mat'],'trainEEG', '-v7.3');
+    % TODO test data     
 end
 end
 

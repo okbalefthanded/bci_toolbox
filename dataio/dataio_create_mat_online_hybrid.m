@@ -133,7 +133,9 @@ for file = 1:nFiles
     erp.paradigm.title = 'Inverted_Face_Speller';
     erp.paradigm.stimulation = 100;
     erp.paradigm.isi = 50;
+    % TODO automatically calculate number of repetitions in an erp trial
     %     erp.paradigm.repetition = 10;
+    erp.paradigm.repetition = 2;
     erp.paradigm.stimuli_count = 9;
     erp.paradigm.type = 'SC';
     erp.desired_phrase = '123456789';
@@ -192,7 +194,7 @@ for file = 1:nFiles
     save(file_name, 'data');
     disp([' file saved in: ', file_name]);
 end
-
+utils_get_time(toc);
 end
 
 

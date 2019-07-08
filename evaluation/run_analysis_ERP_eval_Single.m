@@ -23,8 +23,10 @@ for subj = 1:nSubj
     approach.features.options.mode = 'estimate';
     features = extractERP_features(trainEEG, approach);    
     clear trainEEG    
+    % plot features
     model{subj} = ml_trainClassifier(features, approach.classifier, approach.cv);
     output_train = ml_applyClassifier(features, model{subj});
+    
     %% Test
     testEEG = dataio_read_ERP(set, 'test');
     if(isfield(features, 'af'))
