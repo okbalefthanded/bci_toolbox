@@ -29,7 +29,7 @@ switch upper(set.title)
             data = data.testEEG;
         end
         
-    case 'SSVEP_TSINGHUA'
+    case 'SSVEP_TSINGHUA_JFPM'
         ssvep_tsinghua = [path 'ssvep_tsinghua_jfpm\SM\' subj];
         if (strcmp(datatype,'train'))
             data = load([ssvep_tsinghua 'trainEEG.mat']);

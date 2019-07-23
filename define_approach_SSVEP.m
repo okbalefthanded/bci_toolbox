@@ -2,10 +2,10 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-set.title = 'SSVEP_EXOSKELETON';
+% set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
-% set.title = 'SSVEP_TSINGHUA';
-% set.title = 'SSVEP_SANDIEGO';
+% set.title = 'SSVEP_TSINGHUA_JFPM';
+set.title = 'SSVEP_SANDIEGO';
 % set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;
@@ -141,17 +141,17 @@ report = 0;
 % approach.classifier.options.a = [0, 2.5];
 % approach.classifier.options.b = [0, 1.5];
 %% ITCCA
-approach.classifier.learner = 'ITCCA';
+% approach.classifier.learner = 'ITCCA';
 %% Gaussian Process
-% approach.features.alg = 'MLR';
-% approach.classifier.learner = 'GP';
-% approach.classifier.options.mean = 'Const';
-% approach.classifier.options.cov = 'SEiso'; % kernel
-% approach.classifier.options.hyp.mean = 0;
-% approach.classifier.options.hyp.cov  = log([1 1]);
-% approach.classifier.options.inference = 'Laplace';
-% approach.classifier.options.likelihood = 'Logistic'; 
-% approach.classifier.options.nfunc = 40;
+approach.features.alg = 'MLR';
+approach.classifier.learner = 'GP';
+approach.classifier.options.mean = 'Const';
+approach.classifier.options.cov = 'SEiso'; % kernel
+approach.classifier.options.hyp.mean = 0;
+approach.classifier.options.hyp.cov  = log([0.5 0.5]);
+approach.classifier.options.inference = 'Laplace';
+approach.classifier.options.likelihood = 'Logistic'; 
+approach.classifier.options.nfunc = 10;
 %%
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;
