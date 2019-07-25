@@ -2,8 +2,8 @@
 %data : feature x samples
 function Proj_W=pca_func(data)
 Proj_W=[];
- meanData=mean(data,2);
- data=data-repmat(meanData,1,size(data,2));
+meanData=mean(data,2);
+data=data-repmat(meanData,1,size(data,2));
 % stdVar=std(data')';
 % staData=(data-repmat(meanData,1,size(data,2)))./repmat(stdVar,1,size(data,2));
 % data=staData;

@@ -26,7 +26,7 @@ for subj = 1:nSubj
         approach.features.options.mode = 'estimate';
         features = extractSSVEP_features(trainEEG, approach);
         approach = utils_augment_approach(approach, features.af);
-        approach.features.mode = 'transform';
+        approach.features.options.mode = 'transform';
         test_features = extractSSVEP_features(testEEG, approach);
     end
     clear trainEEG testEEG
