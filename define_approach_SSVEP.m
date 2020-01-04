@@ -141,7 +141,7 @@ approach.classifier.options.mode = 'sync';
 % approach.classifier.options.a = [0, 2.5];
 % approach.classifier.options.b = [0, 1.5];
 %% ITCCA
-% approach.classifier.learner = 'ITCCA';
+approach.classifier.learner = 'ITCCA';
 %% Gaussian Process
 % approach.features.alg = 'MLR';
 % approach.classifier.learner = 'GP';
