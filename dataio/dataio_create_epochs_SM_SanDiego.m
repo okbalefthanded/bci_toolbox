@@ -1,4 +1,4 @@
-function [] = dataio_create_epochs_SM_SanDiego(epoch_length, filter_band)
+function [] = dataio_create_epochs_SM_SanDiego(epoch_length, filter_band, augment)
 %DATAIO_CREATE_EPOCHS_SM_SANDIEGO Summary of this function goes here
 %   Detailed explanation goes here
 % created 07-11-2018
@@ -89,8 +89,18 @@ for subj=1:nSubj
             filter_order...
             );
     end
-    %     segment data
-    eeg = eeg(stimulation_onset:stimulation_onset+wnd(2),:,:,:);
+    % segment data
+    er = [];
+    if augment
+        for stride=0:3
+            er = cat(3,er,eeg(stimulation_onset+(stride*fs):stimulation_onset+wnd(2)+(stride*fs),:,:,:));         
+        end
+        eeg = er;
+        nTrainBlocks = 40;
+        nTestBlocks = 20;
+    else
+        eeg = eeg(stimulation_onset:stimulation_onset+wnd(2),:,:,:);
+    end
     [samples,~,~,~] = size(eeg);
     train_data = eeg(:,:,1:nTrainBlocks,:);
     test_data = eeg(:,:,nTrainBlocks+1:end,:);

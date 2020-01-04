@@ -1,5 +1,5 @@
-%% SSVEP paradigm evaluation
-% 03-21-2018
+%% SSVEP paradigm evaluation, comparison
+% 01-02-2020
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
 % set.title = 'SSVEP_EXOSKELETON';
@@ -159,7 +159,8 @@ approach.cv.nfolds = 0;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %%
-[results, output, model] = run_analysis_SSVEP(set, approach, report);
+load folds
+[results, output, model] = run_analysis_SSVEP_compare(set, approach, folds);
 utils_get_time(toc);
 %% Report analysis
 % data sets, approach,

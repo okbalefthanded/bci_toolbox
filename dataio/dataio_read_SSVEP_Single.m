@@ -41,13 +41,17 @@ switch upper(set.title)
         
     case 'SSVEP_SANDIEGO'
         ssvep_sandiego = [path 'ssvep_sandiego\SM\' subj];
-        if (strcmp(datatype,'train'))
-            data = load([ssvep_sandiego 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([ssvep_sandiego 'testEEG.mat']);
-            data = data.testEEG;
+        if (strcmp(datatype,'all'))
+            data = dataio_fuse_data(ssvep_sandiego);
+        else if (strcmp(datatype,'train'))
+                data = load([ssvep_sandiego 'trainEEG.mat']);
+                data = data.trainEEG;
+            else
+                data = load([ssvep_sandiego 'testEEG.mat']);
+                data = data.testEEG;
+            end
         end
+        
     case 'SSVEP_LARESI'
         folders = dir([path,'ssvep_laresi\SM']);
         folders(1:2) = [];

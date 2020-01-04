@@ -16,7 +16,7 @@ function [epochs] = dataio_baselineCorrection(epochs, correctionInterval)
 % last modified : 02-10-2019
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 correctionInterval = round(correctionInterval);
-idx = [0:diff(correctionInterval)] +1;
+idx = [0:diff(correctionInterval)] + 1;
 baseline = mean(epochs(idx,:,:), 1);
 epochs = bsxfun(@minus, epochs, baseline);
 epochs = epochs(idx(end)+1:end,:,:);
