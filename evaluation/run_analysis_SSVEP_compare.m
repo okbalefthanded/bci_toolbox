@@ -10,14 +10,27 @@ interSubject_results = zeros(2, nSubj);
 % results = zeros(2, nSubj);
 eval_duration = 1; % 1 second time for evaluation
 % fold : subjects, nfolds, phase (phase=train/test, 1 :train;2:test)
+
+if ismatrix(folds)
+   nfolds = size(folds,1);   
+else
+    nfolds = size(folds,2);
+end
+
 for subj = 1:nSubj
     set.subj = subj;
     %     trainEEG = dataio_read_SSVEP(set,'train');
     %     testEEG = dataio_read_SSVEP(set, 'test');
     data = dataio_read_SSVEP(set, 'all');
     %
-    for fld = 1:size(folds,2)         
-        [trainEEG, testEEG] = split_data(data, {folds{subj,fld,1:2}});
+  
+    for fld = 1:nfolds
+        if ismatrix(folds)
+            f = {folds{fld,1:2}};
+        else
+            f = {folds{subj,fld,1:2}};
+        end
+        [trainEEG, testEEG] = split_data(data, f);
         samples = size(trainEEG.epochs.signal,1);
         windowLength = samples/trainEEG.fs;
         disp(['Analyising data from subject:' ' ' trainEEG.subject.id]);

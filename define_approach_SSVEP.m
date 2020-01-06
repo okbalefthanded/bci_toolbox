@@ -10,9 +10,9 @@ set.title = 'SSVEP_SANDIEGO';
 set.mode = 'SM';
 report = 0;
 %% vanilla CCA
-approach.classifier.learner = 'CCA';
-approach.classifier.options.harmonics = 2;
-approach.classifier.options.mode = 'sync';
+% approach.classifier.learner = 'CCA';
+% approach.classifier.options.harmonics = 2;
+% approach.classifier.options.mode = 'sync';
 %% L1 Multiway CCA
 % approach.classifier.learner = 'L1MCCA';
 % approach.classifier.options.harmonics = 2;
