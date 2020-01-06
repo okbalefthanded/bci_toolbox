@@ -42,7 +42,9 @@ switch upper(set.title)
     case 'SSVEP_SANDIEGO'
         ssvep_sandiego = [path 'ssvep_sandiego\SM\' subj];
         if (strcmp(datatype,'all'))
-            data = dataio_fuse_data(ssvep_sandiego);
+%             data = dataio_fuse_data(ssvep_sandiego);
+            data = load([ssvep_sandiego 'trainEEG.mat']);
+            data = data.trainEEG;
         else if (strcmp(datatype,'train'))
                 data = load([ssvep_sandiego 'trainEEG.mat']);
                 data = data.trainEEG;

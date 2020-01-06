@@ -1,4 +1,4 @@
-function [] = dataio_create_epochs_SM_SanDiego(epoch_length, filter_band, augment)
+function [] = dataio_create_epochs_SM_SanDiego(epoch_length, filter_band, augment, all)
 %DATAIO_CREATE_EPOCHS_SM_SANDIEGO Summary of this function goes here
 %   Detailed explanation goes here
 % created 07-11-2018
@@ -93,7 +93,7 @@ for subj=1:nSubj
     er = [];
     if augment
         for stride=0:3
-            er = cat(3,er,eeg(stimulation_onset+(stride*fs):stimulation_onset+wnd(2)+(stride*fs),:,:,:));         
+            er = cat(3,er,eeg(stimulation_onset+(stride*fs):stimulation_onset+wnd(2)+(stride*fs),:,:,:));
         end
         eeg = er;
         nTrainBlocks = 40;
@@ -102,8 +102,6 @@ for subj=1:nSubj
         eeg = eeg(stimulation_onset:stimulation_onset+wnd(2),:,:,:);
     end
     [samples,~,~,~] = size(eeg);
-    train_data = eeg(:,:,1:nTrainBlocks,:);
-    test_data = eeg(:,:,nTrainBlocks+1:end,:);
     events = repmat(paradigm.stimuli, [nTrainBlocks+nTestBlocks 1]);
     y = repmat(classes, [nTrainBlocks+nTestBlocks 1]);
     info.clab = clab;
@@ -113,23 +111,61 @@ for subj=1:nSubj
     info.subj = subj;
     info.samples = samples;
     info.channels = channels;
-    info.Blocks = nTrainBlocks;
-    ev = reshape(events(1:nTrainBlocks, :), [1 nTrainBlocks*max(classes)]);
-    y_tr = reshape(y(1:nTrainBlocks, :), [1 nTrainBlocks*max(classes)]);
-    trainEEG = getEEGstruct(train_data, ev, y_tr, fs, info);
-    dataio_save_mat(Config_path_SM, subj, 'trainEEG');
-    %     split data
-    disp(['Spliting data for subject S0' num2str(subj)]);
-    clear trainEEG train_data eeg    
-  
- 
-    info.Blocks = nTestBlocks;
-    ev = reshape(events(nTrainBlocks+1:end,:), [1 nTestBlocks*max(classes)]);
-    y_ts = reshape(y(nTrainBlocks+1:end,:), [1 nTestBlocks*max(classes)]);
-    testEEG = getEEGstruct(test_data, ev, y_ts, fs, info);
-    dataio_save_mat(Config_path_SM, subj, 'testEEG');
-    clear testEEG test_data event
+    if all
+        train_data = eeg;
+        blocks = nTrainBlocks+nTestBlocks;
+        info.Blocks = blocks;
+        ev = reshape(events, [1 blocks*max(classes)]);
+        y_tr = reshape(y, [1 blocks*max(classes)]);
+        trainEEG = getEEGstruct(train_data, ev, y_tr, fs, info);
+        dataio_save_mat(Config_path_SM, subj, 'trainEEG');
+    else
+        train_data = eeg(:,:,1:nTrainBlocks,:);
+        test_data = eeg(:,:,nTrainBlocks+1:end,:);
+        info.Blocks = nTrainBlocks;
+        ev = reshape(events(1:nTrainBlocks, :), [1 nTrainBlocks*max(classes)]);
+        y_tr = reshape(y(1:nTrainBlocks, :), [1 nTrainBlocks*max(classes)]);
+        trainEEG = getEEGstruct(train_data, ev, y_tr, fs, info);
+        dataio_save_mat(Config_path_SM, subj, 'trainEEG');
+        %     split data
+        disp(['Spliting data for subject S0' num2str(subj)]);
+        clear trainEEG train_data eeg
+        %
+        info.Blocks = nTestBlocks;
+        ev = reshape(events(nTrainBlocks+1:end,:), [1 nTestBlocks*max(classes)]);
+        y_ts = reshape(y(nTrainBlocks+1:end,:), [1 nTestBlocks*max(classes)]);
+        testEEG = getEEGstruct(test_data, ev, y_ts, fs, info);
+        dataio_save_mat(Config_path_SM, subj, 'testEEG');
+        clear testEEG test_data event
+    end
     
+    %     train_data = eeg(:,:,1:nTrainBlocks,:);
+    %     test_data = eeg(:,:,nTrainBlocks+1:end,:);
+    %     events = repmat(paradigm.stimuli, [nTrainBlocks+nTestBlocks 1]);
+    %     y = repmat(classes, [nTrainBlocks+nTestBlocks 1]);
+    %     info.clab = clab;
+    %     info.classes = classes;
+    %     info.classes_c = classes_c;
+    %     info.paradigm = paradigm;
+    %     info.subj = subj;
+    %     info.samples = samples;
+    %     info.channels = channels;
+    %     info.Blocks = nTrainBlocks;
+    %     ev = reshape(events(1:nTrainBlocks, :), [1 nTrainBlocks*max(classes)]);
+    %     y_tr = reshape(y(1:nTrainBlocks, :), [1 nTrainBlocks*max(classes)]);
+    %     trainEEG = getEEGstruct(train_data, ev, y_tr, fs, info);
+    %     dataio_save_mat(Config_path_SM, subj, 'trainEEG');
+    %     %     split data
+    %     disp(['Spliting data for subject S0' num2str(subj)]);
+    %     clear trainEEG train_data eeg
+    %     %
+    %     info.Blocks = nTestBlocks;
+    %     ev = reshape(events(nTrainBlocks+1:end,:), [1 nTestBlocks*max(classes)]);
+    %     y_ts = reshape(y(nTrainBlocks+1:end,:), [1 nTestBlocks*max(classes)]);
+    %     testEEG = getEEGstruct(test_data, ev, y_ts, fs, info);
+    %     dataio_save_mat(Config_path_SM, subj, 'testEEG');
+    %     clear testEEG test_data event
+    %
     disp('Data epoched saved in:');
     disp(Config_path_SM);
 end
