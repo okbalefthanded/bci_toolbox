@@ -1,4 +1,4 @@
-function [] = dataio_create_epochs_SM_Exoskeleton(epoch_length, filter_band)
+function [] = dataio_create_epochs_SM_Exoskeleton(epoch_length, filter_band,augment)
 %DATAIO_CREATE_EPOCHS_EXOSKELETON segment ssvep-exoskeleton dataset and
 %  save epochs  in seperate files for each subject
 % Arguments:
@@ -82,20 +82,34 @@ for subj = 1:nSubj
         [signal, header] = mexSLOAD([subject_path '\' subject_files(file).name]);
         signal = signal * gain; % amplifying the signal
         if(~isempty(filter_band))
-            signal = eeg_filter(signal, fs, filter_band(1), filter_band(2), filter_order);            
+            signal = eeg_filter(signal, fs, filter_band(1), filter_band(2), filter_order);
         end
+        % v = [eeg_epoch(raw_signal, epoch + np.diff(epoch) * i, pos) for i in range(augmented)]
         events = dataio_geteventsExoskeleton(header);
-        epochs = dataio_getERPEpochs(wnd, events.pos, signal);
-        epo = cat(3, epo, epochs);
-        ev.desc = cat(1, ev.desc, events.desc);
-        ev.y = cat(1, ev.y, events.y);
+        if augment
+            ep = diff(epoch_length) * fs / 10^3;
+            agmt = floor(paradigm.stimulation / diff(epoch_length));
+            for i=0:agmt-1
+                epochs = dataio_getERPEpochs(wnd + ep*i, events.pos, signal);
+                epo = cat(3, epo, epochs);
+            end
+            ev.desc = repmat(cat(1, ev.desc, events.desc), [agmt,1]);
+            ev.y = repmat(cat(1, ev.y, events.y),[agmt,1]);
+        else
+            epochs = dataio_getERPEpochs(wnd, events.pos, signal);
+            epo = cat(3, epo, epochs);
+            ev.desc = cat(1, ev.desc, events.desc);
+            ev.y = cat(1, ev.y, events.y);
+        end
+        %         epochs = dataio_getERPEpochs(wnd, events.pos, signal);
+        %         epo = cat(3, epo, epochs);
+        %         ev.desc = repmat(cat(1, ev.desc, events.desc), []);
+        %         ev.y = repmet(cat(1, ev.y, events.y));
     end
     trainEEG = getEEGstruct(epo, ev, fs, header, paradigm, subj);
     dataio_save_mat(Config_path_SM, subj, 'trainEEG');
     disp(['Processing Train data succeed for subject: ' num2str(subj)]);
-
-    clear signal header trainEEG
-    
+    clear signal header trainEEG ev events
     
     disp(['Processing Test data succeed for subject: ' num2str(subj)]);
     % Test data
@@ -105,12 +119,29 @@ for subj = 1:nSubj
         signal = eeg_filter(signal, fs, filter_band(1), filter_band(2), filter_order);
     end
     events = dataio_geteventsExoskeleton(header);
-    epochs = dataio_getERPEpochs(wnd, events.pos, signal);
-    testEEG = getEEGstruct(epochs, events, fs, header, paradigm, subj);
+    epo = [];
+    ev.desc = [];
+    ev.y = [];
+    if augment
+        for i=0:agmt-1
+            epochs = dataio_getERPEpochs(wnd + ep*i, events.pos, signal);
+            epo = cat(3, epo, epochs);
+        end
+        epochs = epo;
+        ev.desc = repmat(cat(1, ev.desc, events.desc), [agmt,1]);
+        ev.y = repmat(cat(1, ev.y, events.y),[agmt,1]);
+    else
+        epochs = dataio_getERPEpochs(wnd, events.pos, signal);
+        ev.desc = cat(1, ev.desc, events.desc);
+        ev.y = cat(1, ev.y, events.y);
+    end
+    %     events = dataio_geteventsExoskeleton(header);
+    %     epochs = dataio_getERPEpochs(wnd, events.pos, signal);
+    testEEG = getEEGstruct(epochs, ev, fs, header, paradigm, subj);
     dataio_save_mat(Config_path_SM, subj, 'testEEG');
     disp(['Processing Test data succeed for subject: ' num2str(subj)]);
     
-    clear signal header testEEG    
+    clear signal header testEEG events
     disp('Data epoched saved in:');
     disp(Config_path_SM);
 end

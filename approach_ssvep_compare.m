@@ -128,9 +128,9 @@ report = 0;
 % approach.classifier.options.parameters.nor.loc = 'true'; 
 % approach.classifier.options.parameters.see = 7332; % seed
 %% TRCA
-% approach.classifier.learner = 'TRCA';
-% approach.classifier.options.num_fbs = 5;
-% approach.classifier.options.is_ensemble = 1;
+approach.classifier.learner = 'TRCA';
+approach.classifier.options.num_fbs = 5;
+approach.classifier.options.is_ensemble = 1;
 %% FBCCA
 % approach.classifier.learner = 'FBCCA';
 % approach.classifier.options.harmonics = 5;
@@ -141,7 +141,7 @@ report = 0;
 % approach.classifier.options.a = [0, 2.5];
 % approach.classifier.options.b = [0, 1.5];
 %% ITCCA
-approach.classifier.learner = 'ITCCA'; 
+% approach.classifier.learner = 'ITCCA'; 
 %% Gaussian Process
 % approach.features.alg = 'MLR';
 % approach.classifier.learner = 'GP';

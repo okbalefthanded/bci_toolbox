@@ -1,4 +1,4 @@
-function [] = dataio_create_epochs_SM_Tsinghua(epoch_length, filter_band)
+function [] = dataio_create_epochs_SM_Tsinghua(epoch_length, filter_band, augment, all)
 %DATAIO_CREATE_EPOCHS_TSINGHUA Summary of this function goes here
 %   Detailed explanation goes here
 % created 07-11-2018
@@ -65,6 +65,7 @@ nSubj = 35;
 %
 fs = 250;
 filter_order = 6;
+ep = epoch_length;
 epoch_length = epoch_length + 500;
 wnd = (epoch_length * fs) / 10^3;
 nTrainBlocks = 4;
@@ -97,7 +98,22 @@ for subj=1:nSubj
             );
     end
     %     segment data
-    eeg = eeg(wnd(1):wnd(2),:,:,:);
+    er = [];
+    if augment
+        % TODO
+        % agmt = np.floor(stimulation / np.diff(epoch))[0].astype(int)
+        agmt = floor(paradigm.stimulation / diff(ep));
+        % for stride=0:3
+        for stride=0:agmt-1            
+            er = cat(3,er,eeg(wnd(1)+(stride*fs):wnd(2)+(stride*fs),:,:,:));
+        end
+        eeg = er;
+        nTrainBlocks = 4*agmt;
+        nTestBlocks = 2*agmt;
+    else
+        eeg = eeg(wnd(1):wnd(2),:,:,:);
+    end
+    %
     [samples, ~, ~, ~] = size(eeg);
     %     split data
     disp(['Spliting data for subject S0' num2str(subj)]);
@@ -105,22 +121,29 @@ for subj=1:nSubj
     data.fs = fs;
     data.clab = clab;
     data.classes = classes;
-    data.classes_r = classes_r;    
+    data.classes_r = classes_r;
     subj_info = strsplit(subjects_info{subj}, ' ');
-    
-    train_data = reshape(eeg(:,:,:,1:nTrainBlocks), [samples channels nTrainBlocks*targets]); 
-    
-    data.blocks = nTrainBlocks;
-    trainEEG = getEEGstruct(train_data, paradigm, data, subj_info);
-    dataio_save_mat(Config_path_SM, subj, 'trainEEG');
-    clear trainEEG
-    
-    test_data = reshape(eeg(:,:,:,nTrainBlocks+1:end), [samples channels nTestBlocks*targets]);
-    data.blocks = nTestBlocks;
-    testEEG = getEEGstruct(test_data, paradigm, data, subj_info);
-    dataio_save_mat(Config_path_SM, subj, 'testEEG');
-    clear testEEG eeg
-    
+    if all
+        blocks = nTrainBlocks + nTestBlocks;
+        train_data = reshape(eeg, [samples channels blocks*targets]);
+        data.blocks = blocks;
+        trainEEG = getEEGstruct(train_data, paradigm, data, subj_info);
+        dataio_save_mat(Config_path_SM, subj, 'trainEEG');
+        clear trainEEG
+    else
+        train_data = reshape(eeg(:,:,:,1:nTrainBlocks), [samples channels nTrainBlocks*targets]);
+        
+        data.blocks = nTrainBlocks;
+        trainEEG = getEEGstruct(train_data, paradigm, data, subj_info);
+        dataio_save_mat(Config_path_SM, subj, 'trainEEG');
+        clear trainEEG
+        
+        test_data = reshape(eeg(:,:,:,nTrainBlocks+1:end), [samples channels nTestBlocks*targets]);
+        data.blocks = nTestBlocks;
+        testEEG = getEEGstruct(test_data, paradigm, data, subj_info);
+        dataio_save_mat(Config_path_SM, subj, 'testEEG');
+        clear testEEG eeg
+    end
     disp('Data epoched saved in:');
     disp(Config_path_SM);
 end
