@@ -2,17 +2,17 @@
 % 01-02-2020
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-% set.title = 'SSVEP_EXOSKELETON';
+set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
 % set.title = 'SSVEP_TSINGHUA_JFPM';
-set.title = 'SSVEP_SANDIEGO';
+% set.title = 'SSVEP_SANDIEGO';
 % set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;
 %% vanilla CCA
-% approach.classifier.learner = 'CCA';
-% approach.classifier.options.harmonics = 3;
-% approach.classifier.options.mode = 'sync';
+approach.classifier.learner = 'CCA';
+approach.classifier.options.harmonics = 3;
+approach.classifier.options.mode = 'sync';
 %% L1 Multiway CCA
 % approach.classifier.learner = 'L1MCCA';
 % approach.classifier.options.harmonics = 2;
@@ -128,9 +128,9 @@ report = 0;
 % approach.classifier.options.parameters.nor.loc = 'true'; 
 % approach.classifier.options.parameters.see = 7332; % seed
 %% TRCA
-approach.classifier.learner = 'TRCA';
-approach.classifier.options.num_fbs = 5;
-approach.classifier.options.is_ensemble = 1;
+% approach.classifier.learner = 'TRCA';
+% approach.classifier.options.num_fbs = 5;
+% approach.classifier.options.is_ensemble = 1;
 %% FBCCA
 % approach.classifier.learner = 'FBCCA';
 % approach.classifier.options.harmonics = 5;

@@ -92,9 +92,11 @@ for subj = 1:nSubj
             for i=0:agmt-1
                 epochs = dataio_getERPEpochs(wnd + ep*i, events.pos, signal);
                 epo = cat(3, epo, epochs);
+                ev.desc = cat(1, ev.desc, events.desc);
+                ev.y = cat(1, ev.y, events.y);
             end
-            ev.desc = repmat(cat(1, ev.desc, events.desc), [agmt,1]);
-            ev.y = repmat(cat(1, ev.y, events.y),[agmt,1]);
+%             ev.desc = repmat(cat(1, ev.desc, events.desc), [agmt,1]);
+%             ev.y = repmat(cat(1, ev.y, events.y),[agmt,1]);
         else
             epochs = dataio_getERPEpochs(wnd, events.pos, signal);
             epo = cat(3, epo, epochs);

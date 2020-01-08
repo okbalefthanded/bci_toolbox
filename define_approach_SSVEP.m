@@ -10,9 +10,9 @@ set.title = 'SSVEP_EXOSKELETON';
 set.mode = 'SM';
 report = 0;
 %% vanilla CCA
-% approach.classifier.learner = 'CCA';
-% approach.classifier.options.harmonics = 3;
-% approach.classifier.options.mode = 'sync';
+approach.classifier.learner = 'CCA';
+approach.classifier.options.harmonics = 3;
+approach.classifier.options.mode = 'sync';
 %% L1 Multiway CCA
 % approach.classifier.learner = 'L1MCCA';
 % approach.classifier.options.harmonics = 2;
@@ -141,7 +141,7 @@ report = 0;
 % approach.classifier.options.a = [0, 2.5];
 % approach.classifier.options.b = [0, 1.5];
 %% ITCCA
-approach.classifier.learner = 'ITCCA';
+% approach.classifier.learner = 'ITCCA';
 %% Gaussian Process
 % approach.features.alg = 'MLR';
 % approach.classifier.learner = 'GP';
