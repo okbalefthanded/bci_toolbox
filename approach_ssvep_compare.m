@@ -2,17 +2,17 @@
 % 01-02-2020
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-set.title = 'SSVEP_EXOSKELETON';
+% set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
 % set.title = 'SSVEP_TSINGHUA_JFPM';
-% set.title = 'SSVEP_SANDIEGO';
+set.title = 'SSVEP_SANDIEGO';
 % set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;
 %% vanilla CCA
-approach.classifier.learner = 'CCA';
-approach.classifier.options.harmonics = 3;
-approach.classifier.options.mode = 'sync';
+% approach.classifier.learner = 'CCA';
+% approach.classifier.options.harmonics = 3;
+% approach.classifier.options.mode = 'sync';
 %% L1 Multiway CCA
 % approach.classifier.learner = 'L1MCCA';
 % approach.classifier.options.harmonics = 2;
@@ -143,15 +143,15 @@ approach.classifier.options.mode = 'sync';
 %% ITCCA
 % approach.classifier.learner = 'ITCCA'; 
 %% Gaussian Process
-% approach.features.alg = 'MLR';
-% approach.classifier.learner = 'GP';
-% approach.classifier.options.mean = 'Const';
-% approach.classifier.options.cov = 'SEiso'; % kernel
-% approach.classifier.options.hyp.mean = 0;
-% approach.classifier.options.hyp.cov  = log([0.5 0.5]);
-% approach.classifier.options.inference = 'Laplace';
-% approach.classifier.options.likelihood = 'Logistic'; 
-% approach.classifier.options.nfunc = 10;
+approach.features.alg = 'MLR';
+approach.classifier.learner = 'GP';
+approach.classifier.options.mean = 'Const';
+approach.classifier.options.cov = 'SEiso'; % kernel
+approach.classifier.options.hyp.mean = 0;
+approach.classifier.options.hyp.cov  = log([0.5 0.5]);
+approach.classifier.options.inference = 'Laplace';
+approach.classifier.options.likelihood = 'Logistic'; 
+approach.classifier.options.nfunc = 10;
 %%
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;
@@ -159,7 +159,7 @@ approach.cv.nfolds = 0;
 approach.cv.parallel.isWorker = 1;
 approach.cv.parallel.nWorkers = 3;
 %%
-load folds
+% load folds
 [results, output, model] = run_analysis_SSVEP_compare(set, approach, folds);
 utils_get_time(toc);
 %% Report analysis

@@ -153,7 +153,7 @@ end
 %%
 function [EEG] = getEEGstruct(epo, ev, fs, header, paradigm, subj)
 EEG.epochs.signal = epo;
-EEG.epochs.events = ev.desc;
+EEG.epochs.events = ev.desc';
 EEG.epochs.y = ev.y';
 EEG.fs = fs;
 EEG.montage.clab = header.Label;

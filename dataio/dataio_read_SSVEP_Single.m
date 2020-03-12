@@ -11,12 +11,16 @@ switch upper(set.title)
     
     case 'SSVEP_EXOSKELETON'
         ssvep_exoskeleton = [path 'ssvep_exoskeleton\SM\' subj];
-        if (strcmp(datatype,'train'))
-            data = load([ssvep_exoskeleton 'trainEEG.mat']);
-            data = data.trainEEG;
-        else
-            data = load([ssvep_exoskeleton 'testEEG.mat']);
-            data = data.testEEG;
+        if  (strcmp(datatype,'all'))
+            data = dataio_fuse_data(ssvep_exoskeleton);
+            
+        else if (strcmp(datatype,'train'))
+                data = load([ssvep_exoskeleton 'trainEEG.mat']);
+                data = data.trainEEG;
+            else
+                data = load([ssvep_exoskeleton 'testEEG.mat']);
+                data = data.testEEG;
+            end
         end
         
     case 'SSVEP_DEMO'
@@ -42,7 +46,7 @@ switch upper(set.title)
     case 'SSVEP_SANDIEGO'
         ssvep_sandiego = [path 'ssvep_sandiego\SM\' subj];
         if (strcmp(datatype,'all'))
-%             data = dataio_fuse_data(ssvep_sandiego);
+            % data = dataio_fuse_data(ssvep_sandiego);
             data = load([ssvep_sandiego 'trainEEG.mat']);
             data = data.trainEEG;
         else if (strcmp(datatype,'train'))
