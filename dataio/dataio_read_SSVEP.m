@@ -56,6 +56,8 @@ switch upper(set.mode)
         EEGdata = dataio_read_SSVEP_Batch(set.title, datatype);
     case 'SM'
         EEGdata = dataio_read_SSVEP_Single(set, datatype);
+    case 'CROSS' % concatenate single subject data into one cell
+        EEGdata = dataio_read_SSVEP_Cross(set, datatype);
     otherwise
         error('Incorrect Data read mode');
 end

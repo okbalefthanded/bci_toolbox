@@ -71,7 +71,12 @@ wnd = (epoch_length * fs) / 10^3;
 nTrainBlocks = 4;
 nTestBlocks = 2;
 classes = 1:40;
-%
+chs = {'PO8', 'PO7', 'PO6', 'PO5', 'PO4', 'PO3', 'POz', ' O2', ' O1',' Oz'}; 
+index = [];
+for i=1:length(chs)
+index = [index,find(strcmpi(clab, chs{i}))];
+end
+
 % save
 
 Config_path_SM = 'datasets\epochs\ssvep_tsinghua_jfpm\SM';
@@ -86,6 +91,7 @@ for subj=1:nSubj
     subject_path = [set_path '\' dataSetFiles{subj}];
     rawData = load(subject_path);
     eeg = permute(rawData.data, [2 1 3 4]);
+    eeg = eeg(:,index,:,:);
     [~, channels, targets, blocks] = size(eeg);
     disp(['Filtering data for subject S0' num2str(subj)]);
     % filter data
@@ -101,6 +107,7 @@ for subj=1:nSubj
     er = [];
     if augment
         % TODO
+        
         % agmt = np.floor(stimulation / np.diff(epoch))[0].astype(int)
         agmt = floor(paradigm.stimulation / diff(ep));
         % for stride=0:3

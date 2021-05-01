@@ -22,13 +22,12 @@ for subj = 1:nSubj
     %     trainEEG = dataio_read_SSVEP(set,'train');
     %     testEEG = dataio_read_SSVEP(set, 'test');
     data = dataio_read_SSVEP(set, 'all');
-    %
   
     for fld = 1:nfolds
         if ismatrix(folds)
-            f = {folds{fld,1:2}};
+            f = {folds{fld,1:3}};
         else
-            f = {folds{subj,fld,1:2}};
+            f = {folds{subj,fld,1:3}};
         end
         [trainEEG, testEEG] = split_data(data, f);
         samples = size(trainEEG.epochs.signal,1);
@@ -75,8 +74,8 @@ disp(['Average accuracy on ' set.title ' ' num2str(mean(interSubject_results(2,:
 end
 
 function [trainEEG, testEEG] = split_data(data,fold)
-fld_train = fold{1} + 1;
-fld_test = fold{2} + 1;
+fld_train = [fold{1},fold{2}] + 1;
+fld_test = fold{3} + 1;
 %
 trainEEG.fs = data.fs;
 trainEEG.classes = data.classes;

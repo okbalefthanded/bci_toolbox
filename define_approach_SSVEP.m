@@ -2,10 +2,10 @@
 % 03-21-2018
 % Okba Bekhelifi, <okba.bekhelif@univ-usto.dz>
 tic
-set.title = 'SSVEP_EXOSKELETON';
+% set.title = 'SSVEP_EXOSKELETON';
 % set.title = 'SSVEP_DEMO'; 
 % set.title = 'SSVEP_TSINGHUA_JFPM';
-% set.title = 'SSVEP_SANDIEGO';
+set.title = 'SSVEP_SANDIEGO';
 % set.title = 'SSVEP_LARESI';
 set.mode = 'SM';
 report = 0;
@@ -130,7 +130,7 @@ report = 0;
 %% TRCA
 approach.classifier.learner = 'TRCA';
 approach.classifier.options.num_fbs = 5;
-approach.classifier.options.is_ensemble = 1;
+approach.classifier.options.is_ensemble = 0;
 %% FBCCA
 % approach.classifier.learner = 'FBCCA';
 % approach.classifier.options.harmonics = 5;

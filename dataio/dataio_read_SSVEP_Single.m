@@ -35,12 +35,18 @@ switch upper(set.title)
         
     case 'SSVEP_TSINGHUA_JFPM'
         ssvep_tsinghua = [path 'ssvep_tsinghua_jfpm\SM\' subj];
-        if (strcmp(datatype,'train'))
+        if (strcmp(datatype,'all'))
+            % data = dataio_fuse_data(ssvep_sandiego);
+            data = load([ssvep_tsinghua 'trainEEG.mat']);
+            data = data.trainEEG;
+        
+        else if (strcmp(datatype,'train'))
             data = load([ssvep_tsinghua 'trainEEG.mat']);
             data = data.trainEEG;
         else
             data = load([ssvep_tsinghua 'testEEG.mat']);
             data = data.testEEG;
+            end
         end
         
     case 'SSVEP_SANDIEGO'

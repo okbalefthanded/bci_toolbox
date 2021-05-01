@@ -18,7 +18,13 @@ targets_count = max(features.y);
 % TODO check for class imbalance / how to deal with it? (resample)
 eeg = features.signal(:,:, idx);
 eeg = permute(eeg, [3 2 1]);
-eeg = reshape(eeg, [epochs/targets_count targets_count channels samples]);
+if isinteger(epochs/targets_count)
+    eeg = reshape(eeg, [epochs/targets_count targets_count channels samples]);
+else
+    tr = floor(epochs/targets_count);
+    eeg = reshape(eeg(1:tr*targets_count,:,:,:), [tr targets_count channels samples]);
+end
+% eeg = reshape(eeg, [epochs/targets_count targets_count channels samples]);
 eeg = permute(eeg, [2 3 4 1]);
 
 model = train_trca(eeg, features.fs, alg.options.num_fbs);

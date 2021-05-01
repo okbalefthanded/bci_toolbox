@@ -128,9 +128,9 @@ report = 0;
 % approach.classifier.options.parameters.nor.loc = 'true'; 
 % approach.classifier.options.parameters.see = 7332; % seed
 %% TRCA
-% approach.classifier.learner = 'TRCA';
-% approach.classifier.options.num_fbs = 5;
-% approach.classifier.options.is_ensemble = 1;
+approach.classifier.learner = 'TRCA';
+approach.classifier.options.num_fbs = 5;
+approach.classifier.options.is_ensemble = 0;
 %% FBCCA
 % approach.classifier.learner = 'FBCCA';
 % approach.classifier.options.harmonics = 5;
@@ -143,15 +143,15 @@ report = 0;
 %% ITCCA
 % approach.classifier.learner = 'ITCCA'; 
 %% Gaussian Process
-approach.features.alg = 'MLR';
-approach.classifier.learner = 'GP';
-approach.classifier.options.mean = 'Const';
-approach.classifier.options.cov = 'SEiso'; % kernel
-approach.classifier.options.hyp.mean = 0;
-approach.classifier.options.hyp.cov  = log([0.5 0.5]);
-approach.classifier.options.inference = 'Laplace';
-approach.classifier.options.likelihood = 'Logistic'; 
-approach.classifier.options.nfunc = 10;
+% approach.features.alg = 'MLR';
+% approach.classifier.learner = 'GP';
+% approach.classifier.options.mean = 'Const';
+% approach.classifier.options.cov = 'SEiso'; % kernel
+% approach.classifier.options.hyp.mean = 0;
+% approach.classifier.options.hyp.cov  = log([0.5 0.5]);
+% approach.classifier.options.inference = 'Laplace';
+% approach.classifier.options.likelihood = 'Logistic'; 
+% approach.classifier.options.nfunc = 10;
 %%
 approach.cv.method = 'KFOLD';
 approach.cv.nfolds = 0;

@@ -51,6 +51,7 @@ for targ_i = 1:1:num_targs
     for fb_i = 1:1:num_fbs
         eeg_tmp = filterbank(eeg_tmp, fs, fb_i);
         trains(targ_i,fb_i,:,:) = squeeze(mean(eeg_tmp, 3));
+%         w_tmp = real(trca(eeg_tmp));
         w_tmp = trca(eeg_tmp);
         W(fb_i, targ_i, :) = w_tmp(:,1);
     end % fb_i
